@@ -1,0 +1,177 @@
+name: Release on version tag + retag latest & major
+
+on:
+  push:
+    tags:
+      # Stable: v1.2.3
+      - "v*.*.*"
+      # RC prerelease only: v1.2.3-rc.1
+      - "v*.*.*-rc.*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-and-retag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Extract version info
+        id: v
+        shell: bash
+        run: |
+          TAG="${{ github.ref_name }}"      # e.g. v1.2.3 or v1.2.3-rc.1
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          MAJOR="${TAG%%.*}"                # e.g. v1
+          echo "major=$MAJOR" >> "$GITHUB_OUTPUT"
+
+          if [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          elif [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Tag '$TAG' is not a supported release tag (expected vX.Y.Z or vX.Y.Z-rc.N)."
+            exit 1
+          fi
+
+      - name: Move latest + major tags to this tag's commit (GitHub API)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = "${{ steps.v.outputs.tag }}";
+            const major = "${{ steps.v.outputs.major }}";
+            const isPrerelease = "${{ steps.v.outputs.prerelease }}" === "true";
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+
+            // Resolve pushed tag -> commit SHA (handles annotated tags)
+            const ref = await github.rest.git.getRef({ owner, repo, ref: `tags/${tag}` });
+            let sha = ref.data.object.sha;
+
+            if (ref.data.object.type === "tag") {
+              const tagObj = await github.rest.git.getTag({ owner, repo, tag_sha: sha });
+              sha = tagObj.data.object.sha; // commit SHA
+            }
+
+            async function upsertTag(tagName, targetSha) {
+              const refName = `tags/${tagName}`;
+              try {
+                await github.rest.git.updateRef({
+                  owner, repo,
+                  ref: refName,
+                  sha: targetSha,
+                  force: true,
+                });
+              } catch (e) {
+                if (e.status === 404) {
+                  await github.rest.git.createRef({
+                    owner, repo,
+                    ref: `refs/${refName}`,
+                    sha: targetSha,
+                  });
+                } else {
+                  throw e;
+                }
+              }
+            }
+
+            // Always move major tag (e.g. v1) to this tag's commit
+            await upsertTag(major, sha);
+
+            // Only move 'latest' for stable releases (recommended)
+            if (!isPrerelease) {
+              await upsertTag("latest", sha);
+              core.info(`Moved tags: latest -> ${sha}, ${major} -> ${sha}`);
+            } else {
+              core.info(`RC prerelease: moved ${major} -> ${sha} (left latest unchanged)`);
+            }
+
+      - name: Create Release with scoped notes (GitHub API)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+
+            const tag = "${{ steps.v.outputs.tag }}";
+            const isPrerelease = "${{ steps.v.outputs.prerelease }}" === "true";
+
+            const stableRe = /^v\d+\.\d+\.\d+$/;
+            const rcRe     = /^v\d+\.\d+\.\d+-rc\.\d+$/;
+
+            // List tags (a few pages is usually enough)
+            async function listAllTags(maxPages = 5) {
+              const tags = [];
+              for (let page = 1; page <= maxPages; page++) {
+                const res = await github.rest.repos.listTags({ owner, repo, per_page: 100, page });
+                tags.push(...res.data.map(t => t.name));
+                if (res.data.length < 100) break;
+              }
+              return tags;
+            }
+
+            const allTags = await listAllTags(5);
+            const stableTags = allTags.filter(t => stableRe.test(t));
+
+            // Choose previous stable tag for scoping notes:
+            // - RC release: use most recent stable tag (if any)
+            // - Stable release: use next-most-recent stable tag excluding current tag
+            let previousTag = null;
+            if (isPrerelease) {
+              previousTag = stableTags[0] ?? null;
+            } else {
+              previousTag = stableTags.find(t => t !== tag) ?? null;
+            }
+
+            core.info(`Current tag: ${tag}`);
+            core.info(`Prerelease (RC): ${isPrerelease}`);
+            core.info(`Previous stable tag for notes: ${previousTag ?? "(none)"}`);
+
+            // Generate notes scoped to previous tag (when available)
+            let body = "";
+            try {
+              const gen = await github.rest.repos.generateReleaseNotes({
+                owner,
+                repo,
+                tag_name: tag,
+                previous_tag_name: previousTag ?? undefined,
+              });
+              body = gen.data.body || "";
+            } catch (e) {
+              core.warning(`Could not generate release notes via API: ${e.message}`);
+              body = `Automated release for ${tag}.`;
+            }
+
+            // Create (or update) the release for this tag
+            try {
+              const created = await github.rest.repos.createRelease({
+                owner,
+                repo,
+                tag_name: tag,
+                name: tag,
+                body,
+                prerelease: isPrerelease,
+                draft: false,
+              });
+              core.info(`Created release: ${created.data.html_url}`);
+            } catch (e) {
+              if (e.status === 422) {
+                const existing = await github.rest.repos.getReleaseByTag({ owner, repo, tag });
+                await github.rest.repos.updateRelease({
+                  owner,
+                  repo,
+                  release_id: existing.data.id,
+                  name: tag,
+                  body,
+                  prerelease: isPrerelease,
+                  draft: false,
+                });
+                core.info(`Updated existing release: ${existing.data.html_url}`);
+              } else {
+                throw e;
+              }
+            }
