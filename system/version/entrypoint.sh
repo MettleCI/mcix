@@ -28,26 +28,14 @@ MCIX_STATUS=0
 write_step_summary() {
   rc=$1
 
-  status_emoji="✅"
-  status_title="Success"
   [ "$rc" -ne 0 ] && status_emoji="❌" && status_title="Failure"
-
-  project_display="${PROJECT:-<none>}"
-  [ -n "${PROJECT_ID:-}" ] && project_display="${project_display} (ID: ${PROJECT_ID})"
 
   {
     cat <<EOF
-### ${status_emoji} MCIX System Version – ${status_title}
-
-| Property    | Value                          |
-|------------|---------------------------------|
-| **Project**  | \`${project_display}\`        |
-| **Assets**   | \`${PARAM_ASSETS:-<none>}\`   |
+### MCIX System Version
 EOF
 
     if [ -n "${CMD_OUTPUT:-}" ]; then
-      printf '\n### MettleCI Command Output\n\n'
-
       echo '```text'
       printf '%s\n' "$CMD_OUTPUT" | awk '
         /^Loaded plugins:/ { in_plugins = 1; next }
