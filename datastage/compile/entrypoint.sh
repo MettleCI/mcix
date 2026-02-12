@@ -145,7 +145,7 @@ write_return_code_and_summary() {
   rc=${MCIX_STATUS:-$?}
 
   echo "return-code=$rc" >>"$GITHUB_OUTPUT"
-  echo "junit-path=$PARAM_REPORT" >>"$GITHUB_OUTPUT"
+  echo "junit-path=$report_display" >>"$GITHUB_OUTPUT"
 
   [ -z "${GITHUB_STEP_SUMMARY:-}" ] && return
 
