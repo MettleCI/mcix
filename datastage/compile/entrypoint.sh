@@ -127,13 +127,24 @@ fi
 # Step summary
 # ------------
 write_step_summary() {
-  rc=$1
+  if [ -n "${junit_xml:-}" ] && [ -f "$junit_xml" ]; then
+    if [ -x "$MCIX_JUNIT_CMD" ]; then
+      "$MCIX_JUNIT_CMD" "$junit_xml" "$GITHUB_STEP_SUMMARY" || \
+        echo "Warning: junit summariser failed" >&2
+    else
+      echo "Warning: junit summariser not found or not executable: $MCIX_JUNIT_CMD" >&2
+    fi
+  else
+    echo "Warning: JUnit XML file not found: ${junit_xml:-<unset>}" >&2
+  fi
 
   # Only attempt a summary if GitHub provided a writable summary file
   if [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
     "$MCIX_JUNIT_CMD" "$PARAM_REPORT" "MCIX DataStage Compile" >>"$GITHUB_STEP_SUMMARY" || true
   else
-    echo "GitHub didn't provide a writable summary file; skipping junit summary generation" >>"$GITHUB_STEP_SUMMARY"
+    # GITHUB_STEP_SUMMARY is not available/writable (?), so write a warning to stderr 
+    # but don't fail the action since the main command did run and produce a report.
+    echo "GitHub didn't provide a writable summary file; skipping junit summary generation" >&2
   fi
 }
 
@@ -156,21 +167,51 @@ trap write_return_code_and_summary EXIT
 # -------
 # Execute
 # -------
-echo "Executing: $*"
+
+# Register secret parameters so they get redacted in logs when echoed
+# Note that GitHub Actions only redacts values, not keys, so we still 
+# choose to take control of this redaction process to be careful not
+# to echo anything we deem sensitive.
+is_secret_flag() {
+  case "$1" in
+    -api-key|-token|-password) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+redacted_argv=""
+skip_next=0
+
+for arg in "$@"; do
+  if [ "$skip_next" -eq 1 ]; then
+    redacted_argv="$redacted_argv ***"
+    skip_next=0
+    continue
+  fi
+
+  if is_secret_flag "$arg"; then
+    redacted_argv="$redacted_argv $arg"
+    skip_next=1
+  else
+    redacted_argv="$redacted_argv $arg"
+  fi
+done
+
+echo "Executing:${redacted_argv}"
 
 # Check the repository has been checked out
-if [ ! -e "/github/workspace/.git" ] && [ ! -e "/github/workspace/$PARAM_ASSETS" ]; then
+if [ ! -e "/github/workspace/.git" ]; then
   die "Repo contents not found in /github/workspace. Did you forget to run actions/checkout@v4 before this action?"
 fi
 
 # Run the command, capture its output and status, but don't let `set -e` kill us.
 set +e
-CMD_OUTPUT="$("$@" 2>&1)"
+"$@" 2>&1
 MCIX_STATUS=$?
 set -e
 
-# Echo original command output into the job logs
-printf '%s\n' "$CMD_OUTPUT"
+# write outputs / summary based on MCIX_STATUS 
+echo "return-code=$MCIX_STATUS" >> "$GITHUB_OUTPUT"
 
 # Let the trap handle outputs & summary using MCIX_STATUS
 exit "$MCIX_STATUS"
