@@ -9,12 +9,18 @@
 # ██║ ╚═╝ ██║███████╗   ██║      ██║   ███████╗███████╗╚██████╗██║
 # ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝ ╚═════╝╚═╝
 # MettleCI DevOps for DataStage       (C) 2025-2026 Data Migrators
-#      _       _            _                                               _ _
-#   __| | __ _| |_ __ _ ___| |_ __ _  __ _  ___    ___ ___  _ __ ___  _ __ (_) | ___
-#  / _` |/ _` | __/ _` / __| __/ _` |/ _` |/ _ \  / __/ _ \| '_ ` _ \| '_ \| | |/ _ \
-# | (_| | (_| | || (_| \__ \ || (_| | (_| |  __/ | (_| (_) | | | | | | |_) | | |  __/
-#  \__,_|\__,_|\__\__,_|___/\__\__,_|\__, |\___|  \___\___/|_| |_| |_| .__/|_|_|\___|
-#                                    |___/                           |_|
+#      _       _            _
+#   __| | __ _| |_ __ _ ___| |_ __ _  __ _  ___
+#  / _` |/ _` | __/ _` / __| __/ _` |/ _` |/ _ \
+# | (_| | (_| | || (_| \__ \ || (_| | (_| |  __/
+#  \__,_|\__,_|\__\__,_|___/\__\__,_|\__, |\___|
+#                                    |___/
+#                            _ _
+#   ___ ___  _ __ ___  _ __ (_) | ___
+#  / __/ _ \| '_ ` _ \| '_ \| | |/ _ \
+# | (_| (_) | | | | | | |_) | | |  __/
+#  \___\___/|_| |_| |_| .__/|_|_|\___|
+#                     |_|
 
 set -eu
 
@@ -24,6 +30,7 @@ set -eu
 export MCIX_BIN_DIR="/usr/share/mcix/bin"
 export MCIX_CMD="mcix" 
 export MCIX_JUNIT_CMD="/usr/share/mcix/mcix-junit-to-summary"
+export MCIX_JUNIT_CMD_OPTIONS="--annotations"
 # Make us immune to runner differences or potential base-image changes
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
 
@@ -121,6 +128,7 @@ choose_project
 # Optional scalar flags
 # None in this action
 
+# Optional boolean flags (with parameter variation handling)
 include_flag="$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")"
 include_label="No"
 
@@ -135,10 +143,10 @@ fi
 write_step_summary() {
   if [ -n "${junit_xml:-}" ] && [ -f "$junit_xml" ]; then
     if [ -x "$MCIX_JUNIT_CMD" ]; then
-      "$MCIX_JUNIT_CMD" "$junit_xml" "$GITHUB_STEP_SUMMARY" || \
-        echo "Warning: junit summariser failed" >&2
+      "$MCIX_JUNIT_CMD" "$MCIX_JUNIT_CMD_OPTIONS" "$junit_xml" "$GITHUB_STEP_SUMMARY" || \
+        echo "Warning: JUnit summarizer failed" >&2
     else
-      echo "Warning: junit summariser not found or not executable: $MCIX_JUNIT_CMD" >&2
+      echo "Warning: JUnit summarizer not found or not executable: $MCIX_JUNIT_CMD" >&2
     fi
   else
     echo "Warning: JUnit XML file not found: ${junit_xml:-<unset>}" >&2
