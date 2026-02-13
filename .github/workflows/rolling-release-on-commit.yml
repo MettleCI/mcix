@@ -1,0 +1,22 @@
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  rolling-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update rolling release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Latest (rolling)
+          body: |
+            Updated from commit:
+            ${{ github.sha }}
+          prerelease: true
