@@ -17,7 +17,7 @@ set -eu
 # -----
 export MCIX_BIN_DIR="/usr/share/mcix/bin"
 export MCIX_CMD="mcix" 
-export MCIX_JUNIT_CMD="/usr/share//mcix/mcix-junit-to-summary"
+export MCIX_JUNIT_CMD="/usr/share/mcix/mcix-junit-to-summary"
 # Make us immune to runner differences or potential base-image changes
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
 
