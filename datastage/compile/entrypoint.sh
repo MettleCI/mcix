@@ -9,6 +9,12 @@
 # ██║ ╚═╝ ██║███████╗   ██║      ██║   ███████╗███████╗╚██████╗██║
 # ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝ ╚═════╝╚═╝
 # MettleCI DevOps for DataStage       (C) 2025-2026 Data Migrators
+#      _       _            _                                               _ _
+#   __| | __ _| |_ __ _ ___| |_ __ _  __ _  ___    ___ ___  _ __ ___  _ __ (_) | ___
+#  / _` |/ _` | __/ _` / __| __/ _` |/ _` |/ _ \  / __/ _ \| '_ ` _ \| '_ \| | |/ _ \
+# | (_| | (_| | || (_| \__ \ || (_| | (_| |  __/ | (_| (_) | | | | | | |_) | | |  __/
+#  \__,_|\__,_|\__\__,_|___/\__\__,_|\__, |\___|  \___\___/|_| |_| |_| .__/|_|_|\___|
+#                                    |___/                           |_|
 
 set -eu
 
@@ -167,38 +173,6 @@ trap write_return_code_and_summary EXIT
 # -------
 # Execute
 # -------
-
-# Register secret parameters so they get redacted in logs when echoed
-# Note that GitHub Actions only redacts values, not keys, so we still 
-# choose to take control of this redaction process to be careful not
-# to echo anything we deem sensitive.
-is_secret_flag() {
-  case "$1" in
-    -api-key|-token|-password) return 0 ;;
-    *) return 1 ;;
-  esac
-}
-
-redacted_argv=""
-skip_next=0
-
-for arg in "$@"; do
-  if [ "$skip_next" -eq 1 ]; then
-    redacted_argv="$redacted_argv ***"
-    skip_next=0
-    continue
-  fi
-
-  if is_secret_flag "$arg"; then
-    redacted_argv="$redacted_argv $arg"
-    skip_next=1
-  else
-    redacted_argv="$redacted_argv $arg"
-  fi
-done
-
-echo "Executing:${redacted_argv}"
-
 # Check the repository has been checked out
 if [ ! -e "/github/workspace/.git" ]; then
   die "Repo contents not found in /github/workspace. Did you forget to run actions/checkout@v4 before this action?"
