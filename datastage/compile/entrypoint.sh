@@ -129,12 +129,9 @@ choose_project
 # None in this action
 
 # Optional boolean flags (with parameter variation handling)
-include_flag="$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")"
-include_label="No"
-
-if [ "$include_flag" -eq 1 ]; then
+include-asset-in-test-name_flag="$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")"
+if [ "$include-asset-in-test-name_flag" -eq 1 ]; then
   set -- "$@" -include-asset-in-test-name
-  include_label="Yes"
 fi
 
 # ------------

@@ -84,7 +84,6 @@ EOF
         }
       '
 
-
       echo
       echo '</details>'
     fi
@@ -118,12 +117,12 @@ echo "Executing: $*"
 
 # Run the command, capture its output and status, but don't let `set -e` kill us.
 set +e
-CMD_OUTPUT="$("$@" 2>&1)"
+"$@" 2>&1
 MCIX_STATUS=$?
 set -e
 
-# Echo original command output into the job logs
-printf '%s\n' "$CMD_OUTPUT"
+# write outputs / summary based on MCIX_STATUS 
+echo "return-code=$MCIX_STATUS" >> "$GITHUB_OUTPUT"
 
 # Let the trap handle outputs & summary using MCIX_STATUS
 exit "$MCIX_STATUS"

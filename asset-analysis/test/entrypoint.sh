@@ -1,20 +1,63 @@
-#!/bin/sh -l
+#!/bin/sh
+# Don't use -l here; we want to preserve the PATH and other env vars 
+# as set in the base image, and not have it overridden by a login shell
+
+# ███╗   ███╗███████╗████████╗████████╗██╗     ███████╗ ██████╗██╗
+# ████╗ ████║██╔════╝╚══██╔══╝╚══██╔══╝██║     ██╔════╝██╔════╝██║
+# ██╔████╔██║█████╗     ██║      ██║   ██║     █████╗  ██║     ██║
+# ██║╚██╔╝██║██╔══╝     ██║      ██║   ██║     ██╔══╝  ██║     ██║
+# ██║ ╚═╝ ██║███████╗   ██║      ██║   ███████╗███████╗╚██████╗██║
+# ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝ ╚═════╝╚═╝
+# MettleCI DevOps for DataStage       (C) 2025-2026 Data Migrators
+#                     _                          _           _
+#   __ _ ___ ___  ___| |_       __ _ _ __   __ _| |_   _ ___(_)___
+#  / _` / __/ __|/ _ \ __|____ / _` | '_ \ / _` | | | | / __| / __|
+# | (_| \__ \__ \  __/ ||_____| (_| | | | | (_| | | |_| \__ \ \__ \
+#  \__,_|___/___/\___|\__|     \__,_|_| |_|\__,_|_|\__, |___/_|___/
+#                                                  |___/
+#  _            _
+# | |_ ___  ___| |_
+# | __/ _ \/ __| __|
+# | ||  __/\__ \ |_
+#  \__\___||___/\__|
+# 
+
 set -eu
 
-# Failure handling utility function
-die() { echo "$*" 1>&2 ; exit 1; }
+# -----
+# Setup
+# -----
+export MCIX_BIN_DIR="/usr/share/mcix/bin"
+export MCIX_CMD="mcix" 
+export MCIX_JUNIT_CMD="/usr/share/mcix/mcix-junit-to-summary"
+export MCIX_JUNIT_CMD_OPTIONS="--annotations"
+# Make us immune to runner differences or potential base-image changes
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
 
-MCIX_BIN_DIR="/usr/share/mcix/bin"
-MCIX_CMD="$MCIX_BIN_DIR/mcix"
-PATH="$PATH:$MCIX_BIN_DIR"
+: "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
 
-# Validate required vars
-: "${PARAM_API_KEY:?Missing required input: api-key}"
-: "${PARAM_URL:?Missing required input: url}"
-: "${PARAM_USER:?Missing required input: user}"
-: "${PARAM_REPORT:?Missing required input: report}"
-: "${PARAM_RULES:?Missing required input: rules}"
+# We'll store the real command status here so the trap can see it
+MCIX_STATUS=0
 
+# -----------------
+# Utility functions
+# -----------------
+
+# Failure handling utility functions
+die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
+
+# Validate mutually exclusive project/project-id arguments
+choose_project() {
+  if [ -n "$PARAM_PROJECT" ] && [ -n "$PARAM_PROJECT_ID" ]; then
+    die "Provide either 'project' or 'project-id', not both."
+  fi
+
+  if [ -z "$PARAM_PROJECT" ] && [ -z "$PARAM_PROJECT_ID" ]; then
+    die "You must provide either 'project' or 'project-id'."
+  fi
+}
+
+# Normalise "true/false", "1/0", etc.
 normalise_bool() {
   case "$1" in
     1|true|TRUE|yes|YES|on|ON) echo 1 ;;
@@ -23,57 +66,152 @@ normalise_bool() {
   esac
 }
 
-# Optional arguments
+# Ensure report file lands in the GitHub workspace so it survives container exit
+resolve_report_path() {
+  p="$1"
+
+  # If already absolute, keep it
+  case "$p" in
+    /*) echo "$p" ;;
+    *)
+      # If relative, anchor it under workspace
+      base="${GITHUB_WORKSPACE:-/github/workspace}"
+      echo "${base}/${p#./}"
+      ;;
+  esac
+}
+
+# -------------------
+# Validate parameters
+# -------------------
+
+# Required arguments
+require() {
+  # $1 = var name, $2 = human label (for error)
+  eval "v=\${$1-}"
+  if [ -z "$v" ]; then
+    die "Missing required input: $2"
+  fi
+}
+
+# Validate required vars
+require PARAM_API_KEY "api-key"
+require PARAM_URL "url"
+require PARAM_USER "user"
+require PARAM_REPORT "report"
+require PARAM_RULES "rules"
+
+# Ensure PARAM_REPORT will always be /github/workspace/...
+# so it survives container exit and is accessible as an artifact.
+PARAM_REPORT="$(resolve_report_path "$PARAM_REPORT")"
+mkdir -p "$(dirname "$PARAM_REPORT")"
+report_display="${PARAM_REPORT#${GITHUB_WORKSPACE:-/github/workspace}/}"
+
+# ------------------------
+# Build command to execute
+# ------------------------
+
+# Start argv
+set -- "$MCIX_CMD" asset-analysis test
+
+# Core flags
+set -- "$@" -api-key "$PARAM_API_KEY"
+set -- "$@" -url "$PARAM_URL"
+set -- "$@" -user "$PARAM_USER"
+set -- "$@" -report "$PARAM_REPORT"
+set -- "$@" -rules "$PARAM_RULES"
+
+# Mutually exclusive project / project-id handling (safe with set -u)
 PROJECT="${PARAM_PROJECT:-}"
 PROJECT_ID="${PARAM_PROJECT_ID:-}"
+choose_project
+[ -n "$PROJECT" ]    && set -- "$@" -project "$PROJECT"
+[ -n "$PROJECT_ID" ] && set -- "$@" -project-id "$PROJECT_ID"
 
-# 1) Fail if BOTH project and project-id were provided
-if [ -n "$PROJECT" ] && [ -n "$PROJECT_ID" ]; then
-  die "ERROR: Both 'project' and 'project-id' were provided. Please specify only one."
+# Optional flags
+if [ -n "$PARAM_INCLUDED_TAGS" ]; then
+  set -- "$@" -include-tags "$PARAM_INCLUDED_TAGS"
 fi
 
-# 2) Fail if NEITHER project or project-id were provided
-if [ -z "$PROJECT" ] && [ -z "$PROJECT_ID" ]; then
-  die "ERROR: You must provide either 'project' or 'project-id'." 
-fi
-
-# Build command to execute
-CMD="$MCIX_CMD asset-analysis test \
- -api-key \"$PARAM_API_KEY\" \
- -url \"$PARAM_URL\" \
- -user \"$PARAM_USER\" \
- -report \"$PARAM_REPORT\" \
- -rules \"$PARAM_RULES\""
-
-# Add optional project/project-id
-[ -n "$PROJECT" ] && CMD="$CMD -project \"$PROJECT\""
-[ -n "$PROJECT_ID" ] && CMD="$CMD -project-id \"$PROJECT_ID\""
-
-# Echo diagnostics for included and excluded tags
-[ -n "$PARAM_INCLUDED_TAGS" ] && CMD="$CMD -include-tags $PARAM_INCLUDED_TAGS"
 if [ -n "$PARAM_EXCLUDED_TAGS" ]; then 
-  CMD="$CMD -exclude-tags example,$PARAM_EXCLUDED_TAGS"
-else
-  CMD="$CMD -exclude-tags example"
+  set -- "$@" -exclude-tags "$PARAM_EXCLUDED_TAGS"
 fi
 
-[ -n "$PARAM_TEST_SUITE" ] && CMD="$CMD -test-suite \"$PARAM_TEST_SUITE\""
-
-if [ -n "$PARAM_IGNORE_TEST_FAILURES" ] && [ "$(normalise_bool "${PARAM_IGNORE_TEST_FAILURES:-0}")" = "1" ]; then 
-  CMD="$CMD -ignore-test-failures"
+if [ -n "$PARAM_TEST_SUITE" ]; then 
+  set -- "$@" -test-suite "$PARAM_TEST_SUITE"
 fi
 
-if [ -n "$PARAM_INCLUDE_ASSET_IN_TEST_NAME" ] && [ "$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")" = "1" ]; then
-  CMD="$CMD -include-asset-in-test-name"
+# Optional scalar flags
+# None in this action
+
+# Optional boolean flags (with parameter variation handling)
+ignore-test-failures_flag="$(normalise_bool "${PARAM_IGNORE_TEST_FAILURES:-0}")"
+if [ "$ignore-test-failures_flag" -eq 1 ]; then
+  set -- "$@" -ignore-test-failures
 fi
 
-echo "Executing: $CMD"
+include-asset-in-test-name_flag="$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")"
+if [ "$include-asset-in-test-name_flag" -eq 1 ]; then
+  set -- "$@" -include-asset-in-test-name
+fi
 
-# Execute the command
-# shellcheck disable=SC2086
-sh -c "$CMD"
-status=$?
+# ------------
+# Step summary
+# ------------
+write_step_summary() {
+  if [ -n "${junit_xml:-}" ] && [ -f "$junit_xml" ]; then
+    if [ -x "$MCIX_JUNIT_CMD" ]; then
+      "$MCIX_JUNIT_CMD" "$MCIX_JUNIT_CMD_OPTIONS" "$junit_xml" "$GITHUB_STEP_SUMMARY" || \
+        echo "Warning: JUnit summarizer failed" >&2
+    else
+      echo "Warning: JUnit summarizer not found or not executable: $MCIX_JUNIT_CMD" >&2
+    fi
+  else
+    echo "Warning: JUnit XML file not found: ${junit_xml:-<unset>}" >&2
+  fi
 
-echo "return-code=$status" >> "$GITHUB_OUTPUT"
-echo "report=$PARAM_REPORT" >> "$GITHUB_OUTPUT"
-exit "$status"
+  # Only attempt a summary if GitHub provided a writable summary file
+  if [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+    "$MCIX_JUNIT_CMD" "$PARAM_REPORT" "MCIX DataStage Compile" >>"$GITHUB_STEP_SUMMARY" || true
+  else
+    # GITHUB_STEP_SUMMARY is not available/writable (?), so write a warning to stderr 
+    # but don't fail the action since the main command did run and produce a report.
+    echo "GitHub didn't provide a writable summary file; skipping junit summary generation" >&2
+  fi
+}
+
+# ---------
+# Exit trap
+# ---------
+write_return_code_and_summary() {
+  # Prefer MCIX_STATUS if set; fall back to $?
+  rc=${MCIX_STATUS:-$?}
+
+  echo "return-code=$rc" >>"$GITHUB_OUTPUT"
+  echo "junit-path=$report_display" >>"$GITHUB_OUTPUT"
+
+  [ -z "${GITHUB_STEP_SUMMARY:-}" ] && return
+
+  write_step_summary "$rc"
+}
+trap write_return_code_and_summary EXIT
+
+# -------
+# Execute
+# -------
+# Check the repository has been checked out
+if [ ! -e "/github/workspace/.git" ]; then
+  die "Repo contents not found in /github/workspace. Did you forget to run actions/checkout@v4 before this action?"
+fi
+
+# Run the command, capture its output and status, but don't let `set -e` kill us.
+set +e
+"$@" 2>&1
+MCIX_STATUS=$?
+set -e
+
+# write outputs / summary based on MCIX_STATUS 
+echo "return-code=$MCIX_STATUS" >> "$GITHUB_OUTPUT"
+
+# Let the trap handle outputs & summary using MCIX_STATUS
+exit "$MCIX_STATUS"
