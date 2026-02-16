@@ -75,12 +75,8 @@ validate_project
 [ -n "$PROJECT" ]    && set -- "$@" -project "$PROJECT"
 [ -n "$PROJECT_ID" ] && set -- "$@" -project-id "$PROJECT_ID"
 
-# Optional scalar flags
-# None in this action
-
-# Optional boolean flags (with parameter variation handling)
-include-asset-in-test-name_flag="$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")"
-if [ "$include-asset-in-test-name_flag" -eq 1 ]; then
+# Optional boolean flags
+if [ "$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")" -eq 1 ]; then
   set -- "$@" -include-asset-in-test-name
 fi
 

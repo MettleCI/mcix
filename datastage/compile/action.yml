@@ -6,6 +6,9 @@ branding:
   icon: 'zap'
   color: 'blue'
 
+# Note that true/false boolean inputs accept:
+# 1, true, TRUE, yes, YES, on, ON, and 
+# 0, false, FALSE, no, NO, off, OFF
 inputs:
 
   api-key:
@@ -36,9 +39,9 @@ inputs:
     default: ""
 
   include-asset-in-test-name:
-    description: 'Whether to include asset names in test names in the report'
+    description: 'Include asset names in test names in the report (true/false)'
     required: false
-    default: "false"
+    default: ""         # Optional boolean input; if not provided, defaults to false
 
 outputs:
   return-code:
