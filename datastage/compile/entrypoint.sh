@@ -84,7 +84,7 @@ fi
 # Step summary
 # ------------
 write_step_summary() {
-  # Do we have a junit_xml variable pointing to a file?
+  # Do we have a variable pointing to a JUnit XML file?
   if [ -z "${PARAM_REPORT:-}" ] || [ ! -f "$PARAM_REPORT" ]; then
     gh_warn "JUnit XML file not found" "Path: ${PARAM_REPORT:-<unset>}"
 
@@ -98,7 +98,8 @@ write_step_summary() {
 
   # Generate summary
   else
-    gh_notice "Generating step summary" "Running JUnit summarizer and appending to GITHUB_STEP_SUMMARY."
+    # Commenting out for now (too verbose.)
+    # gh_notice "Generating step summary" "Running JUnit summarizer and appending to GITHUB_STEP_SUMMARY."
 
     # mcix-junit-to-summary [--annotations] [--max-annotations N] <junit.xml> [title]
     echo "Executing: $MCIX_JUNIT_CMD $MCIX_JUNIT_CMD_OPTIONS $PARAM_REPORT \"MCIX DataStage Compile\""
@@ -122,7 +123,7 @@ write_return_code_and_summary() {
 
   [ -z "${GITHUB_STEP_SUMMARY:-}" ] && return
 
-  write_step_summary "$rc"
+  write_step_summary
 }
 trap write_return_code_and_summary EXIT
 

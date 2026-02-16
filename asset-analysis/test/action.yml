@@ -1,7 +1,13 @@
 name: 'MCIX asset-analysis test action'
 author: 'Data Migrators Pty Ltd'
 description: 'Runs mcix asset-analysis test'
+branding:
+  icon: 'search'
+  color: 'blue'
 
+# Note that true/false boolean inputs accept:
+# 1, true, TRUE, yes, YES, on, ON, and 
+# 0, false, FALSE, no, NO, off, OFF
 inputs:
 
   api-key:
@@ -34,7 +40,7 @@ inputs:
   rules:
     description: 'Path to the compliance rules'
     required: true
-    default: /app/rules
+    default: ""
 
   included-tags:
     description: 'Comma-separated list of tags to include'
@@ -52,13 +58,15 @@ inputs:
     default: 'mcix tests'
 
   include-asset-in-test-name:
-    description: 'Whether to include asset names in test names in the report'
+    description: 'Include asset names in test names in the report? (true/false)'
     required: false
-    default: "false"
+    default: ""         # Optional boolean input; if not provided, defaults to false
+
 
   ignore-test-failures:
-    description: 'Ignore test failures (always return 0)'
+    description: 'Ignore test failures (always return 0)? (true/false)'
     required: false
+    default: ""         # Optional boolean input; if not provided, defaults to false
 
 outputs:
   return-code:
@@ -82,6 +90,3 @@ runs:
     PARAM_TEST_SUITE: ${{ inputs.test-suite }}
     PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
     PARAM_IGNORE_TEST_FAILURES: ${{ inputs.ignore-test-failures }}
-branding:
-  icon: 'search'
-  color: 'blue'
