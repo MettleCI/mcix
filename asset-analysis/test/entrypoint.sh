@@ -54,7 +54,7 @@ require PARAM_RULES "rules"
 
 # Ensure PARAM_REPORT will always be /github/workspace/...
 # so it survives container exit and is accessible as an artifact.
-PARAM_REPORT="$(resolve_report_path "$PARAM_REPORT")"
+PARAM_REPORT="$(resolve_workspace_path "$PARAM_REPORT")"
 mkdir -p "$(dirname "$PARAM_REPORT")"
 report_display="${PARAM_REPORT#${GITHUB_WORKSPACE:-/github/workspace}/}"
 
