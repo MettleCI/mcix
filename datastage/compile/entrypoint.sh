@@ -75,7 +75,9 @@ validate_project
 [ -n "$PROJECT" ]    && set -- "$@" -project "$PROJECT"
 [ -n "$PROJECT_ID" ] && set -- "$@" -project-id "$PROJECT_ID"
 
-# Optional boolean flags
+# Optional flags
+
+# -include-asset-in-test-name (PARAM_INCLUDE_ASSET_IN_TEST_NAME)
 if [ "$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")" -eq 1 ]; then
   set -- "$@" -include-asset-in-test-name
 fi
@@ -99,7 +101,7 @@ write_step_summary() {
   # Generate summary
   else
     # Commenting out for now (too verbose.)
-    # gh_notice "Generating step summary" "Running JUnit summarizer and appending to GITHUB_STEP_SUMMARY."
+    # gh_notice "Generating datastage compile step summary" "Running JUnit summarizer and appending to GITHUB_STEP_SUMMARY."
 
     # mcix-junit-to-summary [--annotations] [--max-annotations N] <junit.xml> [title]
     echo "Executing: $MCIX_JUNIT_CMD $MCIX_JUNIT_CMD_OPTIONS $PARAM_REPORT \"MCIX DataStage Compile\""
