@@ -129,8 +129,8 @@ def build_generated_block(action_dir: Path, meta: Dict[str, Any]) -> str:
     if description:
         out.append(description)
         out.append("")
-    out.append(f"> Namespace: `{ns}`  ")
-    out.append(f"> Action: `{act}`  ")
+    out.append(f"> Namespace: `{ns}`<br>")
+    out.append(f"> Action: `{act}`<br>")
     out.append(f"> Usage: `{usage_ref}`")
     out.append("")
     out.append(f"... where `{DEFAULT_VERSION}` is the version of the action you wish to use.")
@@ -232,8 +232,8 @@ def build_generated_block(action_dir: Path, meta: Dict[str, Any]) -> str:
     out.append("")
     out.append("## 🧩 Notes")
     out.append("")
-    out.append("- The section above is auto-generated from `action.yml`.")
-    out.append("- To edit documentation, update `action.yml` (name/description/inputs/outputs).")
+    out.append("- The sections above are auto-generated from `action.yml`.")
+    out.append("- To edit this documentation, update `action.yml` (name/description/inputs/outputs).")
     out.append("")
 
     return normalize_md("\n".join(out)).rstrip("\n")
