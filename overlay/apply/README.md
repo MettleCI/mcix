@@ -163,8 +163,8 @@ See  https://nextgen.mettleci.io/mettleci-cli/overlay-namespace/#overlay-apply
 
 Apply overlay directories to DataStage export assets using the MCIX overlay apply command.
 
-> Namespace: `overlay`
-> Action: `apply`
+> Namespace: `overlay`<br>
+> Action: `apply`<br>
 > Usage: `${{ github.repository }}/overlay/apply@v1`
 
 ... where `v1` is the version of the action you wish to use.
@@ -224,6 +224,6 @@ jobs:
 
 ## 🧩 Notes
 
-- The section above is auto-generated from `action.yml`.
-- To edit documentation, update `action.yml` (name/description/inputs/outputs).
+- The sections above are auto-generated from `action.yml`.
+- To edit this documentation, update `action.yml` (name/description/inputs/outputs).
 <!-- END MCIX-ACTION-DOCS -->

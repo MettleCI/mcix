@@ -7,8 +7,8 @@ Reports the MCIX toolset version available in the container.
 
 Runs mcix system version
 
-> Namespace: `system`
-> Action: `version`
+> Namespace: `system`<br>
+> Action: `version`<br>
 > Usage: `${{ github.repository }}/system/version@v1`
 
 ... where `v1` is the version of the action you wish to use.
@@ -52,8 +52,8 @@ jobs:
 
 ## 🧩 Notes
 
-- The section above is auto-generated from `action.yml`.
-- To edit documentation, update `action.yml` (name/description/inputs/outputs).
+- The sections above are auto-generated from `action.yml`.
+- To edit this documentation, update `action.yml` (name/description/inputs/outputs).
 <!-- END MCIX-ACTION-DOCS -->
 ## 📚 More information
 
