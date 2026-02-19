@@ -2,25 +2,9 @@
 
 Reports the MCIX toolset version available in the container.
 
-> Namespace: `system`  
-> Action: `version`  
-> Usage: `DataMigrators/mcix/system/version@v1`
+<!-- BEGIN MCIX-ACTION-DOCS -->
 
-## 🚀 Usage
-
-```yaml
-- uses: DataMigrators/mcix/system/version@v1
-```
-
-## 🔧 Inputs
-
-None.
-
-## 📤 Outputs
-
-| Name | Description |
-|------|-------------|
-| version | MCIX version string |
+<!-- END MCIX-ACTION-DOCS -->
 
 ## 📚 More information
 
