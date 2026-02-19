@@ -4,8 +4,8 @@ Apply one or more **overlay directories** to DataStage export assets using the M
 
 This action lets you take an existing DataStage export (zip or directory), apply a sequence of overlay directories (in order), and write the updated assets to a new zip or directory. Overlays can contain modified JSON, additional assets, or changes driven by a properties file.
 
-> Namespace: `overlay`  
-> Action: `apply`  
+> Namespace: `overlay`
+> Action: `apply`
 > Usage: `DataMigrators/mcix/overlay/apply@v1`
 
 ---
@@ -157,3 +157,73 @@ jobs:
 ## 📚 More information
 
 See  https://nextgen.mettleci.io/mettleci-cli/overlay-namespace/#overlay-apply
+
+<!-- BEGIN MCIX-ACTION-DOCS -->
+# MCIX DataStage Overlay Apply
+
+Apply overlay directories to DataStage export assets using the MCIX overlay apply command.
+
+> Namespace: `overlay`
+> Action: `apply`
+> Usage: `${{ github.repository }}/overlay/apply@v1`
+
+... where `v1` is the version of the action you wish to use.
+
+---
+
+## 🚀 Usage
+
+Minimal example:
+
+```yaml
+jobs:
+  overlay-apply:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run MCIX DataStage Overlay Apply
+        id: overlay-apply
+        uses: ${{ github.repository }}/overlay/apply@v1
+        with:
+          assets: <required>
+          output: <required>
+          overlay: <required>
+          # properties: <optional>
+```
+
+---
+
+## 🔧 Inputs
+
+| Name | Required | Default | Description |
+| --- | --- | --- | --- |
+| `assets` | ✅ |  | Path to DataStage export zip file or directory. |
+| `output` | ✅ |  | Zip file or directory to write updated assets. |
+| `overlay` | ✅ |  | Directory containing asset overlays. Each overlay will be applied in specified order when providing multiple (e.g., -overlay dir1 -overlay dir2) |
+| `properties` | ❌ |  | Optional properties file with replacement values. |
+
+---
+
+## 📤 Outputs
+
+| Name | Description |
+| --- | --- |
+| `return-code` | Exit code returned by the mcix overlay apply command. |
+
+---
+
+## 🧱 Implementation details
+
+- `runs.using`: `docker`
+- `runs.image`: `Dockerfile`
+
+---
+
+## 🧩 Notes
+
+- The section above is auto-generated from `action.yml`.
+- To edit documentation, update `action.yml` (name/description/inputs/outputs).
+<!-- END MCIX-ACTION-DOCS -->
