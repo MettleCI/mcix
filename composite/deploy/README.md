@@ -2,9 +2,9 @@
 
 This composite GitHub Action performs a **full DataStage deployment** by orchestrating three existing MCIX actions in sequence:
 
-1. **Apply overlays** to exported DataStage assets  
-2. **Import** the resulting assets into a DataStage project  
-3. **Compile** the project and emit a JUnit report  
+1. **Apply overlays** to exported DataStage assets
+2. **Import** the resulting assets into a DataStage project
+3. **Compile** the project and emit a JUnit report
 
 It is designed to be used from a workflow with a **job-level GitHub Environment**, allowing environment-specific configuration via repository / environment variables.
 
@@ -175,3 +175,96 @@ environment: prod
 ## License
 
 See repository license.
+
+<!-- BEGIN MCIX-ACTION-DOCS -->
+# MCIX Deploy (Overlay + Import + Compile)
+
+Applies overlays to DataStage assets, imports them, then compiles and emits JUnit.
+
+> Namespace: `composite`<br>
+> Action: `deploy`<br>
+> Usage: `${{ github.repository }}/composite/deploy@v1`
+
+... where `v1` is the version of the action you wish to use.
+
+---
+
+## 🚀 Usage
+
+Minimal example:
+
+```yaml
+jobs:
+  composite-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run MCIX Deploy (Overlay + Import + Compile)
+        id: composite-deploy
+        uses: ${{ github.repository }}/composite/deploy@v1
+        with:
+          api-key: <required>
+          url: <required>
+          user: <required>
+          assets: <required>
+          overlay: <required>
+          # project: <optional>
+          # project-id: <optional>
+          # properties: <optional>
+          # overlay-output: <optional>
+          # report: compile-report.xml
+          # include-asset-in-test-name: false
+```
+
+---
+
+### Project selection rules
+
+- Provide **exactly one** of `project` or `project-id`.
+- If both are supplied, the action should fail fast (ambiguous).
+
+---
+
+## 🔧 Inputs
+
+| Name | Required | Default | Description |
+| --- | --- | --- | --- |
+| `api-key` | ✅ |  | API key for authentication |
+| `url` | ✅ |  | URL of the DataStage server |
+| `user` | ✅ |  | Username for authentication |
+| `project` | ❌ |  | DataStage project name (required if project-id not set) |
+| `project-id` | ❌ |  | DataStage project id (required if project not set) |
+| `assets` | ✅ |  | Path to DataStage export zip file or directory (input assets) |
+| `overlay` | ✅ |  | Directory containing asset overlays |
+| `properties` | ❌ |  | Optional properties file with replacement values |
+| `overlay-output` | ❌ |  | Zip file or directory to write updated assets (default: derived) |
+| `report` | ❌ | compile-report.xml | Path to output the compile report |
+| `include-asset-in-test-name` | ❌ | false (if omitted) | Include asset names in test names in the report? (true/false) |
+
+---
+
+## 📤 Outputs
+
+| Name | Description |
+| --- | --- |
+| `overlay-assets` | Path to the overlaid assets produced by overlay apply |
+| `import-return-code` | Return code from import |
+| `compile-return-code` | Return code from compile |
+| `junit-path` | Path to the JUnit report produced by compile |
+
+---
+
+## 🧱 Implementation details
+
+- `runs.using`: `composite`
+
+---
+
+## 🧩 Notes
+
+- The sections above are auto-generated from `action.yml`.
+- To edit this documentation, update `action.yml` (name/description/inputs/outputs).
+<!-- END MCIX-ACTION-DOCS -->
