@@ -1,0 +1,117 @@
+name: "MCIX Deploy (Overlay + Import + Compile)"
+description: "Applies overlays to DataStage assets, imports them, then compiles and emits JUnit."
+author: "Data Migrators Pty Ltd"
+
+branding:
+  icon: "layers"
+  color: "blue"
+
+inputs:
+  # Shared (import + compile)
+  api-key:
+    description: "API key for authentication"
+    required: true
+  url:
+    description: "URL of the DataStage server"
+    required: true
+  user:
+    description: "Username for authentication"
+    required: true
+
+  # Target project selection (import + compile)
+  project:
+    description: "DataStage project name (required if project-id not set)"
+    required: false
+    default: ""
+  project-id:
+    description: "DataStage project id (required if project not set)"
+    required: false
+    default: ""
+
+  # Assets + overlay
+  assets:
+    description: "Path to DataStage export zip file or directory (input assets)"
+    required: true
+  overlay:
+    description: "Directory containing asset overlays"
+    required: true
+  properties:
+    description: "Optional properties file with replacement values"
+    required: false
+    default: ""
+
+  # Where to write overlaid assets (passed to overlay apply; then imported)
+  overlay-output:
+    description: "Zip file or directory to write updated assets (default: derived)"
+    required: false
+    default: ""
+
+  # Compile report options
+  report:
+    description: "Path to output the compile report"
+    required: false
+    default: "compile-report.xml"
+  include-asset-in-test-name:
+    description: "Include asset names in test names in the report? (true/false)"
+    required: false
+    default: ""
+
+outputs:
+  overlay-assets:
+    description: "Path to the overlaid assets produced by overlay apply"
+    value: ${{ steps.prep.outputs.overlay_assets }}
+  import-return-code:
+    description: "Return code from import"
+    value: ${{ steps.import.outputs.return-code }}
+  compile-return-code:
+    description: "Return code from compile"
+    value: ${{ steps.compile.outputs.return-code }}
+  junit-path:
+    description: "Path to the JUnit report produced by compile"
+    value: ${{ steps.compile.outputs.junit-path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare paths / defaults
+      id: prep
+      shell: bash
+      run: |
+        "${{ github.action_path }}/entrypoint.sh"
+      env:
+        INPUT_ASSETS: ${{ inputs.assets }}
+        INPUT_OVERLAY: ${{ inputs.overlay }}
+        INPUT_PROPERTIES: ${{ inputs.properties }}
+        INPUT_OVERLAY_OUTPUT: ${{ inputs.overlay-output }}
+
+    - name: Apply overlays
+      id: overlay
+      uses: ../../overlay/apply
+      with:
+        assets: ${{ inputs.assets }}
+        output: ${{ steps.prep.outputs.overlay_assets }}
+        overlay: ${{ inputs.overlay }}
+        properties: ${{ inputs.properties }}
+
+    - name: Import assets
+      id: import
+      uses: ../../datastage/import
+      with:
+        api-key: ${{ inputs.api-key }}
+        url: ${{ inputs.url }}
+        user: ${{ inputs.user }}
+        assets: ${{ steps.prep.outputs.overlay_assets }}
+        project: ${{ inputs.project }}
+        project-id: ${{ inputs.project-id }}
+
+    - name: Compile project
+      id: compile
+      uses: ../../datastage/compile
+      with:
+        api-key: ${{ inputs.api-key }}
+        url: ${{ inputs.url }}
+        user: ${{ inputs.user }}
+        report: ${{ inputs.report }}
+        project: ${{ inputs.project }}
+        project-id: ${{ inputs.project-id }}
+        include-asset-in-test-name: ${{ inputs.include-asset-in-test-name }}
