@@ -45,7 +45,7 @@ inputs:
     description: "Zip file or directory to write updated assets (default: derived)"
     required: false
     default: ""
-
+ 
   # Compile report options
   report:
     description: "Path to output the compile report"
