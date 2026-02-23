@@ -11,26 +11,26 @@ It provides:
 * **Quality gates for your CI/CD pipelines**
 * **Fully scriptable CLI for DevOps automation**
 
-This repository exposes MCIX as a set of **GitHub Actions** so DataStage teams can run autoamted 
+This repository exposes MCIX as a set of **GitHub Actions** so DataStage teams can run automated 
 quality checks and deployment activities directly inside GitHub workflows.
 
 ---
 
 ## 🔧 Features
 
-✔ Introduce DataStage teams to modern CI/CD practices
-✔ Run MCIX tests as part of continuous integration 
-✔ Fail builds automatically on quality rule violations
-✔ Upload test results as workflow artifacts
-✔ Authenticate securely using GitHub Secrets
-✔ Integrate with GitHub seamlessly using native Actions
-✔ Run MCIX on GitHub cloud infrastructure
-✔ Repeatable static analysis of DataStage assets
-✔ Zero-configuration default scans — or fully custom rulesets
+✅ Introduce DataStage teams to modern CI/CD practices<br>
+✅ Run MCIX tests as part of continuous integration <br>
+✅ Fail builds automatically on quality rule violations<br>
+✅ Upload test results as workflow artifacts<br>
+✅ Authenticate securely using GitHub Secrets<br>
+✅ Integrate with GitHub seamlessly using native Actions<br>
+✅ Run MCIX on GitHub cloud infrastructure<br>
+✅ Repeatable static analysis of DataStage assets<br>
+✅ Zero-configuration default scans — or fully custom rulesets
 
 ---
 
-# 📦 Using This Action in Your Workflow
+# 📦 Using These Actions in Your Workflow
 
 ```yaml
 name: Validate DataStage Project
@@ -64,14 +64,14 @@ This runs MCIX against your DataStage project every time someone pushes or opens
 
 | Name         | Required | Description                                                                  |
 | ------------ | -------- | ---------------------------------------------------------------------------- |
-| `api-key`    | ✔        | API key for authentication to your MCIX server                               |
-| `url`        | ✔        | Base URL of your MCIX server (e.g., `https://mcix.example.com/api`)          |
-| `user`       | ✔        | Logical user identity used for audit & tagging                               |
-| `report`     | ✔        | The MCIX report or test suite to run (e.g., `static-analysis`, `unit-tests`) |
+| `api-key`    | ✅        | API key for authentication to your MCIX server                               |
+| `url`        | ✅        | Base URL of your MCIX server (e.g., `https://mcix.example.com/api`)          |
+| `user`       | ✅        | Logical user identity used for audit & tagging                               |
+| `report`     | ✅        | The MCIX report or test suite to run (e.g., `static-analysis`, `unit-tests`) |
 | `project`    | ❓        | Name of the DataStage project to analyse                                     |
 | `project-id` | ❓        | MCIX internal project ID (mutually exclusive with `project`)                 |
 
-> **Note:** `project` and `project-id` cannot be used together.
+> **Note:** One of `project` and `project-id` must be provided, but not both.
 
 ---
 
