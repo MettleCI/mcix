@@ -63,15 +63,8 @@ set -- "$MCIX_CMD" overlay apply
 # Core flags
 set -- "$@" -assets "$PARAM_ASSETS"
 set -- "$@" -output "$PARAM_OUTPUT"
+set -- "$@" -overlay "$PARAM_OVERLAY"
 
-
-# Process one or more '-overlay' options
-# shellcheck disable=SC2086
-for overlay-dir in $PARAM_OVERLAY; do
-  set -- "$@" -overlay "$dir"
-done
-
-# Optional properties file
 # -properties (PARAM_PROPERTIES)
 if [ -n "${PARAM_PROPERTIES:-}" ]; then
   set -- "$@" -properties "$PARAM_PROPERTIES"
