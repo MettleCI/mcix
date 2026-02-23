@@ -251,8 +251,7 @@ jobs:
 | Name | Description |
 | --- | --- |
 | `overlay-assets` | Path to the overlaid assets produced by overlay apply |
-| `import-return-code` | Return code from import |
-| `compile-return-code` | Return code from compile |
+| `return-code` | Return code (0 if overlay, import, and compile commands succeeded, otherwise non-zero) |
 | `junit-path` | Path to the JUnit report produced by compile |
 
 ---
