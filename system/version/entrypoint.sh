@@ -1,4 +1,6 @@
-#!/bin/sh -l
+#!/bin/sh
+# Don't use -l here; we want to preserve the PATH and other env vars 
+# as set in the base image, and not have it overridden by a login shell
 
 # ███╗   ███╗███████╗████████╗████████╗██╗     ███████╗ ██████╗██╗
 # ████╗ ████║██╔════╝╚══██╔══╝╚══██╔══╝██║     ██╔════╝██╔════╝██║
@@ -7,8 +9,21 @@
 # ██║ ╚═╝ ██║███████╗   ██║      ██║   ███████╗███████╗╚██████╗██║
 # ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝ ╚═════╝╚═╝
 # MettleCI DevOps for DataStage       (C) 2025-2026 Data Migrators
+#                _
+#  ___ _   _ ___| |_ ___ _ __ ___
+# / __| | | / __| __/ _ \ '_ ` _ \
+# \__ \ |_| \__ \ ||  __/ | | | | |
+# |___/\__, |___/\__\___|_| |_| |_|
+#      |___/          _
+# __   _____ _ __ ___(_) ___  _ __
+# \ \ / / _ \ '__/ __| |/ _ \| '_ \
+#  \ V /  __/ |  \__ \ | (_) | | | |
+#   \_/ \___|_|  |___/_|\___/|_| |_|
 
 set -eu
+
+# Import MettleCI GitHub Actions utility functions
+. "/usr/share//mcix/common.sh"
 
 # -----
 # Setup
@@ -44,11 +59,9 @@ EOF
         { print }
       '
       echo '```'
-      echo
-
       echo '<details>'
       echo '<summary>Loaded plugins</summary>'
-      echo
+      echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
       echo '| Plugin | Version |'
       echo '| ------ | ------- |'
 
@@ -84,8 +97,12 @@ EOF
           printf("| %s | %s |\n", plugin, version)
         }
       '
+      echo '</details>'
 
-      echo
+      echo '<details>'
+      echo '<summary>Execution Environment</summary>'
+      echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
+      env | sort
       echo '</details>'
     fi
   } >>"$GITHUB_STEP_SUMMARY"
@@ -121,14 +138,6 @@ set +e
 CMD_OUTPUT=$("$@" 2>&1)
 MCIX_STATUS=$?
 set -e
-
-#          echo "CP4DHostName: ${{ vars.CP4DHOSTNAME }}" \
-#          echo "CP4DUserName: ${{ vars.CP4DUSERNAME }}" \
-#          echo " BaseProjectName: ${{ vars.BASEPROJECTNAME }}" \
-#          echo " DataStageProject: ${{ env.DatastageProject }}" \
-#          echo "CP4DKey: ${{ secrets.CP4DKey }}" \
-#          echo "AgentMCIXCmd: ${{ vars.MCIXCMD }}"
-
 
 # write outputs / summary based on MCIX_STATUS 
 echo "return-code=$MCIX_STATUS" >> "$GITHUB_OUTPUT"

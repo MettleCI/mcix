@@ -37,10 +37,45 @@ set -euo pipefail
 # but leaving here in case we want to move some shared logic in the future
 # . "/usr/share//mcix/common.sh"        
 
-assets="${INPUT_ASSETS:-}"
-overlay="${INPUT_OVERLAY:-}"
-properties="${INPUT_PROPERTIES:-}"
-overlay_output="${INPUT_OVERLAY_OUTPUT:-}"
+# -----
+# Setup
+# -----
+export MCIX_BIN_DIR="/usr/share/mcix/bin"
+export MCIX_LOG_DIR="/usr/share/mcix"
+export MCIX_CMD="mcix" 
+export MCIX_JUNIT_CMD="/usr/share/mcix/mcix-junit-to-summary"
+export MCIX_JUNIT_CMD_OPTIONS="--annotations"
+# Make us immune to runner differences or potential base-image changes
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
+
+: "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
+
+# We'll store the real command status here so the trap can see it
+MCIX_STATUS=0
+# Populated if command output matches: "It has been logged (ID ...)"
+MCIX_LOGGED_ERROR_ID=""
+
+# -------------------
+# Validate parameters
+# -------------------
+
+# We don't validate parameters here since we're not actually running a command in this composite action.
+# Checking we have values for mandatory  parameters using 'requires' function, validating the mutual 
+# exclusivity of project and projectid, etc.
+
+#  project:
+#  project-id:
+#  assets:
+#  overlay:
+#  properties:
+#  overlay-output:
+#  report:
+#  include-asset-in-test-name:
+
+export assets="${INPUT_ASSETS:-}"
+export overlay="${INPUT_OVERLAY:-}"
+export properties="${INPUT_PROPERTIES:-}"
+export overlay_output="${INPUT_OVERLAY_OUTPUT:-}"
 
 : "${assets:?INPUT_ASSETS must be set}"
 : "${overlay:?INPUT_OVERLAY must be set}"

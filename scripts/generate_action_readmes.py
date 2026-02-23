@@ -148,7 +148,7 @@ def build_generated_block(action_dir: Path, meta: Dict[str, Any]) -> str:
     out.append("")
     out.append("    steps:")
     out.append("      - name: Checkout repository")
-    out.append("        uses: actions/checkout@v4")
+    out.append("        uses: actions/checkout@v6")
     out.append("")
     out.append(f"      - name: Run {name}")
     out.append(f"        id: {ns}-{act}")
