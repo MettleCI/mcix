@@ -26,22 +26,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Run MCIX system version action
         id: system-version
         uses: ${{ github.repository }}/system/version@v1
-        with:
-          # action-details: <optional>
 ```
-
----
-
-## 🔧 Inputs
-
-| Name | Required | Default | Description |
-| --- | --- | --- | --- |
-| `action-details` | ❌ |  |  |
 
 ---
 
