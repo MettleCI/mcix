@@ -21,6 +21,7 @@ PATH="$PATH:$MCIX_BIN_DIR"
 
 # We'll store the real command status here so the trap can see it
 MCIX_STATUS=0
+$CMD_OUTPUT=""
 
 # ------------
 # Step summary
@@ -117,7 +118,7 @@ echo "Executing: $*"
 
 # Run the command, capture its output and status, but don't let `set -e` kill us.
 set +e
-"$@" 2>&1
+"$@" >> "$CMD_OUTPUT" 2>&1
 MCIX_STATUS=$?
 set -e
 

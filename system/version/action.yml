@@ -6,9 +6,17 @@ branding:
   icon: 'info'
   color: 'blue'
 
+inputs:
+  # Optionally include details about the GitHub Actions execution environment
+  action-details:
+    description: ''
+    required: false
+    default: ""
+
 outputs:
   return-code:
     description: 'The return code of the command'
+
 runs:
   using: 'docker'
   image: 'Dockerfile' # Refers to the Dockerfile in the current directory

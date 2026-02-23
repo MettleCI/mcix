@@ -18,9 +18,9 @@ Assets → [Overlay Apply] → [DataStage Import] → [DataStage Compile] → JU
 
 Internally, this action calls the following MCIX commands/actions in sequence:
 
-- `overlay/apply` [../../overlay/apply/](link)
-- `datastage/import` [../../datastage/import/](link)
-- `datastage/compile` [../../datastage/compile/](link)
+- `overlay/apply` [link](../../overlay/apply/)
+- `datastage/import` [link](../../datastage/import/)
+- `datastage/compile` [link](../../datastage/compile/)
 
 ---
 
