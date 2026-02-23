@@ -83,7 +83,7 @@ runs:
 
     - name: Apply overlays
       id: overlay
-      uses: ../../overlay/apply
+      uses: mettleci/mcix/overlay/apply@latest
       with:
         assets: ${{ inputs.assets }}
         output: ${{ steps.prep.outputs.overlay_assets }}
@@ -92,7 +92,7 @@ runs:
 
     - name: Import assets
       id: import
-      uses: ../../datastage/import
+      uses: mettleci/mcix/datastage/import@latest
       with:
         api-key: ${{ inputs.api-key }}
         url: ${{ inputs.url }}
@@ -103,7 +103,7 @@ runs:
 
     - name: Compile project
       id: compile
-      uses: ../../datastage/compile
+      uses: mettleci/mcix/datastage/compile@latest
       with:
         api-key: ${{ inputs.api-key }}
         url: ${{ inputs.url }}

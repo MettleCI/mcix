@@ -18,15 +18,15 @@ quality checks and deployment activities directly inside GitHub workflows.
 
 ## 🔧 Features
 
-✅ Introduce DataStage teams to modern CI/CD practices<br>
-✅ Run MCIX tests as part of continuous integration <br>
-✅ Fail builds automatically on quality rule violations<br>
-✅ Upload test results as workflow artifacts<br>
-✅ Authenticate securely using GitHub Secrets<br>
-✅ Integrate with GitHub seamlessly using native Actions<br>
-✅ Run MCIX on GitHub cloud infrastructure<br>
-✅ Repeatable static analysis of DataStage assets<br>
-✅ Zero-configuration default scans — or fully custom rulesets
+✔️ Introduce DataStage teams to modern CI/CD practices<br>
+✔️ Run MCIX tests as part of continuous integration <br>
+✔️ Fail builds automatically on quality rule violations<br>
+✔️ Upload test results as workflow artifacts<br>
+✔️ Authenticate securely using GitHub Secrets<br>
+✔️ Integrate with GitHub seamlessly using native Actions<br>
+✔️ Run MCIX on GitHub cloud infrastructure<br>
+✔️ Repeatable static analysis of DataStage assets<br>
+✔️ Zero-configuration default scans — or fully custom rulesets
 
 ---
 
@@ -44,16 +44,22 @@ jobs:
   mcix-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Run MCIX static analysis
         uses: DataMigrators/mcix@v1
         with:
-          api-key: ${{ secrets.MCIX_API_KEY }}
-          url: https://your-mcix-server/api
-          user: datastage.dev
-          report: static-analysis
-          project: MyDataStageProject
+          api-key: ${{ secrets.CP4DKEY }}
+          url: "${{ vars.CP4DHOSTNAME }}" 
+          user: ${{ vars.CP4DUSERNAME }}
+          project: ${{ env.DatastageProject }}         
+          report: "${{ github.workspace }}/somefile.xml"
+          rules: "${{ github.workspace }}/analysis-rules"
+          included-tags: ${{ inputs.IncludeTags }}
+          excluded-tags: ${{ inputs.ExcludeTags }}
+          ignore-test-failures: true
+          include-asset-in-test-name: true
+          test-suite: "${{ inputs.AnalysisSuite }}"
 ```
 
 This runs MCIX against your DataStage project every time someone pushes or opens a pull request.
