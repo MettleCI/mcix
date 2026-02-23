@@ -60,12 +60,9 @@ outputs:
   overlay-assets:
     description: "Path to the overlaid assets produced by overlay apply"
     value: ${{ steps.prep.outputs.overlay_assets }}
-  import-return-code:
-    description: "Return code from import"
+  return-code:
+    description: "Return code (0 if overlay, import, and compile commands succeeded, otherwise non-zero)"
     value: ${{ steps.import.outputs.return-code }}
-  compile-return-code:
-    description: "Return code from compile"
-    value: ${{ steps.compile.outputs.return-code }}
   junit-path:
     description: "Path to the JUnit report produced by compile"
     value: ${{ steps.compile.outputs.junit-path }}
