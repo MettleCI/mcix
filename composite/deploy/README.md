@@ -177,9 +177,9 @@ environment: prod
 See repository license.
 
 <!-- BEGIN MCIX-ACTION-DOCS -->
-# MCIX Deploy (Overlay + Import + Compile)
+# MCIX deploy (overlay, import, compile)
 
-Applies overlays to DataStage assets, imports them, then compiles and emits JUnit.
+Applies overlays to DataStage assets, then imports and compiles them
 
 > Namespace: `composite`<br>
 > Action: `deploy`<br>
@@ -200,9 +200,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Run MCIX Deploy (Overlay + Import + Compile)
+      - name: Run MCIX deploy (overlay, import, compile)
         id: composite-deploy
         uses: ${{ github.repository }}/composite/deploy@v1
         with:
@@ -251,8 +251,9 @@ jobs:
 | Name | Description |
 | --- | --- |
 | `overlay-assets` | Path to the overlaid assets produced by overlay apply |
+| `import-junit-path` | Path to the JUnit report produced by import |
+| `compile-junit-path` | Path to the JUnit report produced by compile |
 | `return-code` | Return code (0 if overlay, import, and compile commands succeeded, otherwise non-zero) |
-| `junit-path` | Path to the JUnit report produced by compile |
 
 ---
 
