@@ -118,7 +118,7 @@ echo "Executing: $*"
 
 # Run the command, capture its output and status, but don't let `set -e` kill us.
 set +e
-"$@" >> "$CMD_OUTPUT" 2>&1
+CMD_OUTPUT=$("$@" 2>&1)
 MCIX_STATUS=$?
 set -e
 
