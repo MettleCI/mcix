@@ -21,7 +21,7 @@ PATH="$PATH:$MCIX_BIN_DIR"
 
 # We'll store the real command status here so the trap can see it
 MCIX_STATUS=0
-$CMD_OUTPUT=""
+CMD_OUTPUT=""
 
 # ------------
 # Step summary
@@ -121,6 +121,14 @@ set +e
 "$@" >> "$CMD_OUTPUT" 2>&1
 MCIX_STATUS=$?
 set -e
+
+#          echo "CP4DHostName: ${{ vars.CP4DHOSTNAME }}" \
+#          echo "CP4DUserName: ${{ vars.CP4DUSERNAME }}" \
+#          echo " BaseProjectName: ${{ vars.BASEPROJECTNAME }}" \
+#          echo " DataStageProject: ${{ env.DatastageProject }}" \
+#          echo "CP4DKey: ${{ secrets.CP4DKey }}" \
+#          echo "AgentMCIXCmd: ${{ vars.MCIXCMD }}"
+
 
 # write outputs / summary based on MCIX_STATUS 
 echo "return-code=$MCIX_STATUS" >> "$GITHUB_OUTPUT"
