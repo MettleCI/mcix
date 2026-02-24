@@ -32,6 +32,7 @@ set -eu
 export MCIX_BIN_DIR="/usr/share/mcix/bin"
 export MCIX_LOG_DIR="/usr/share/mcix"
 export MCIX_CMD="mcix" 
+export MCIX_CMD_NAME="mcix overlay apply"
 export MCIX_JUNIT_CMD="/usr/share/mcix/mcix-junit-to-summary"
 export MCIX_JUNIT_CMD_OPTIONS="--annotations"
 # Make us immune to runner differences or potential base-image changes
@@ -78,7 +79,7 @@ write_step_summary() {
   if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] && \
      [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
     {
-      echo "**❌ Error:** There was an error logged while running the command."
+      echo "**❌ Error:** There was an error logged while running command '$MCIX_CMD_NAME'."
       if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
         # Capture the log entry and include it in the summary for visibility. 
         grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
@@ -87,7 +88,7 @@ write_step_summary() {
     } >>"$GITHUB_STEP_SUMMARY"
     # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
     # but it won't fail the action on its own (since some errors are "log and continue".)
-    gh_error "MCIX Overlay Apply" "There was an error logged during the execution of 'mcix overlay apply'"
+    gh_error "$MCIX_CMD_NAME" "There was an error logged during the execution of '$MCIX_CMD_NAME'"
   fi
 
   # Do we have a variable pointing to a JUnit XML file?
@@ -108,11 +109,11 @@ write_step_summary() {
     # gh_notice "Generating step summary" "Running JUnit summarizer and appending to GITHUB_STEP_SUMMARY."
 
     # mcix-junit-to-summary [--annotations] [--max-annotations N] <junit.xml> [title]
-    echo "Executing: $MCIX_JUNIT_CMD $MCIX_JUNIT_CMD_OPTIONS $PARAM_REPORT \"MCIX Overlay Apply\""
+    echo "Executing: $MCIX_JUNIT_CMD $MCIX_JUNIT_CMD_OPTIONS $PARAM_REPORT \"$MCIX_CMD_NAME\""
     "$MCIX_JUNIT_CMD" \
       "$MCIX_JUNIT_CMD_OPTIONS" \
       "$PARAM_REPORT" \
-      "MCIX Overlay Apply"  >> "$GITHUB_STEP_SUMMARY" || \
+      "$MCIX_CMD_NAME"  >> "$GITHUB_STEP_SUMMARY" || \
       gh_warn "JUnit summarizer failed" "Continuing without failing the action."
   fi
 }
@@ -124,6 +125,7 @@ write_return_code_and_summary() {
   # Prefer MCIX_STATUS if set; fall back to $?
   rc=${MCIX_STATUS:-$?}
 
+  echo "return-code=$rc"
   echo "return-code=$rc" >>"$GITHUB_OUTPUT"
 
   [ -z "${GITHUB_STEP_SUMMARY:-}" ] && return
