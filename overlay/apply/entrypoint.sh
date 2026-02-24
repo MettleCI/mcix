@@ -67,7 +67,7 @@ set -- "$@" -overlay "$PARAM_OVERLAY"
 set -- "$@" -output "$PARAM_OUTPUT"
 
 # Create path to specified output file, since mcix overlay apply doesn't create it if it doesn't exist.
-mktouch "$PARAM_OUTPUT"
+mkdir -p "$(dirname "$PARAM_OUTPUT")"
 
 # -properties (PARAM_PROPERTIES) (optional)
 if [ -n "${PARAM_PROPERTIES:-}" ]; then
@@ -104,13 +104,15 @@ write_step_summary() {
     # Generate summary
     # gh_notice "Generating step summary" "Running JUnit summarizer and appending to GITHUB_STEP_SUMMARY."
 
-    # mcix-junit-to-summary [--annotations] [--max-annotations N] <junit.xml> [title]
-    echo "Executing: $MCIX_JUNIT_CMD $MCIX_JUNIT_CMD_OPTIONS $PARAM_REPORT \"$MCIX_CMD_NAME\""
-    "$MCIX_JUNIT_CMD" \
-      "$MCIX_JUNIT_CMD_OPTIONS" \
-      "$PARAM_REPORT" \
-      "$MCIX_CMD_NAME"  >> "$GITHUB_STEP_SUMMARY" || \
-      gh_warn "JUnit summarizer failed" "Continuing without failing the action."
+    gh_notice "$MCIX_CMD_NAME" "$MCIX_CMD_NAME completed successfully."
+
+#    # mcix-junit-to-summary [--annotations] [--max-annotations N] <junit.xml> [title]
+#    echo "Executing: $MCIX_JUNIT_CMD $MCIX_JUNIT_CMD_OPTIONS $PARAM_REPORT \"$MCIX_CMD_NAME\""
+#    "$MCIX_JUNIT_CMD" \
+#      "$MCIX_JUNIT_CMD_OPTIONS" \
+#      "$PARAM_REPORT" \
+#      "$MCIX_CMD_NAME"  >> "$GITHUB_STEP_SUMMARY" || \
+#      gh_warn "JUnit summarizer failed" "Continuing without failing the action."
   fi
 }
 
