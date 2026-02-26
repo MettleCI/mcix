@@ -99,7 +99,7 @@ create_repo_if_missing() {
   if gh repo view "$full" >/dev/null 2>&1; then
     echo "Repo exists: $full"
   else
-    gh repo create "$full" --public --confirm --description "$desc"
+    gh repo create "$full" --public --description "$desc"
     echo "Created repo: $full"
   fi
 }
