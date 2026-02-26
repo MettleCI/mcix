@@ -16,6 +16,9 @@
 
 set -euo pipefail
 
+# -------------------
+# Setup
+# -------------------
 OWNER="${OWNER:-mettleci}"
 TAG="${TAG:?TAG must be set (e.g. v1.2.3)}"
 CREATE_RELEASES="${CREATE_RELEASES:-true}"
@@ -34,6 +37,9 @@ actions=(
   "unit-test/execute:mcix-unit-test-execute"
 )
 
+# -------------------
+# Functions
+# -------------------
 die() { echo "ERROR: $*" >&2; exit 1; }
 
 # Validate required files exist in subtree
@@ -46,11 +52,11 @@ validate_subtree_files() {
 
 # Fail fast if action.yml references non-root Dockerfile paths
 # Rules:
-# - If using: docker
+# - If using: docker (which we are) then...
 #   - allow: image: Dockerfile
 #   - allow: image: ./Dockerfile
 #   - allow: image: docker://<image>
-#   - disallow: image value containing '/' (e.g. ./datastage/compile/Dockerfile)
+#   - disallow: local image reference containing '/' (e.g. ./datastage/compile/Dockerfile)
 validate_action_yml_docker_image_path() {
   local action_yml="$1"
 
@@ -147,6 +153,9 @@ create_release_if_missing() {
   echo "Created release: $full@$TAG"
 }
 
+# -------------------
+# Main
+# -------------------
 main() {
   git config user.name  "github-actions[bot]"
   git config user.email "github-actions[bot]@users.noreply.github.com"

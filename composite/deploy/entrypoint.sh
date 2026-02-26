@@ -33,11 +33,8 @@
 set -euo pipefail
 
 # Import MettleCI GitHub Actions utility functions
-# Not needed in composite action since we're not running a real entrypoint.sh, 
-# but leaving here in case we want to move some shared logic in the future
-# . "/usr/share//mcix/common.sh"        
+. "/usr/share//mcix/common.sh"
 
-echo "Composite Deploy Action - entrypoint.sh"
 
 # -----
 # Setup
