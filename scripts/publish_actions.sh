@@ -1,4 +1,19 @@
 #!/usr/bin/env bash
+
+# This is a tag-triggered, idempotent publisher workflow that:
+# - creates the action repos if missing
+# - validates each action subtree contains action.yml, Dockerfile, README.md
+# - fails fast if action.yml’s Docker runs.image references a non-root path
+# - splits & force-pushes each subtree to the action repo’s main
+# - pushes tags (vX.Y.Z and moving v1)
+# - optionally creates a GitHub Release per repo/tag (skips if it already exists)
+# 
+# It assumes:
+# - The organisation for publishing customer-facing materials is 'mettleci'
+# - Our monorepo workflow runs on vn.n.n tags (like v1.2.3)
+# - We provide a PAT in secrets.PUSH_MARKETPLACE_REPO_PAT that can create repos in 
+#   the org and push contents/tags, and create releases.
+
 set -euo pipefail
 
 OWNER="${OWNER:-mettleci}"
