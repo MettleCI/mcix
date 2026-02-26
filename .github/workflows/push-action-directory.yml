@@ -1,0 +1,72 @@
+name: Publish actions to per-action repos
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'        # e.g. v1.2.3
+
+permissions:
+  contents: read
+
+#jobs:
+#  split-and-push:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v6
+#        with:
+#          fetch-depth: 0
+#
+#      # overlay/apply -> mettleci/mcix-overlay-apply
+#      - name: Publish overlay/apply
+#        uses: s0/git-publish-subdir-action@develop
+#        env:
+#            REPO: mettleci/mcix-overlay-apply
+#            BRANCH: main
+#            FOLDER: overlay/apply
+#            GITHUB_TOKEN: ${{ secrets.PUSH_MARKETPLACE_REPO_PAT }}
+#
+#      # datastage/import -> mettleci/mcix-datastage-import
+#      - name: Publish datastage/import
+#        uses: s0/git-publish-subdir-action@develop
+#        env:
+#            REPO: mettleci/mcix-datastage-import
+#            BRANCH: main
+#            FOLDER: datastage/import
+#            GITHUB_TOKEN: ${{ secrets.PUSH_MARKETPLACE_REPO_PAT }}
+#
+#      # datastage/compile -> mettleci/mcix-datastage-compile
+#      - name: Publish datastage/compile
+#        uses: s0/git-publish-subdir-action@develop
+#        env:
+#            REPO: mettleci/mcix-datastage-compile
+#            BRANCH: main
+#            FOLDER: datastage/compile
+#            GITHUB_TOKEN: ${{ secrets.PUSH_MARKETPLACE_REPO_PAT }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install GitHub CLI
+        run: |
+          type -p gh >/dev/null || (sudo apt-get update && sudo apt-get install -y gh)
+
+      - name: Authenticate gh
+        env:
+          GH_TOKEN: ${{ secrets.PUSH_MARKETPLACE_REPO_PAT }}
+        run: gh auth status
+
+      - name: Publish action repos
+        env:
+          OWNER: mettleci
+          TAG: ${{ github.ref_name }}          # vX.Y.Z
+          GH_TOKEN: ${{ secrets.PUSH_MARKETPLACE_REPO_PAT }}
+          CREATE_RELEASES: "true"              # set to "false" to disable
+        run: |
+          ./scripts/publish_actions.sh

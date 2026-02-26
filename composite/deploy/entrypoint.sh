@@ -23,7 +23,7 @@
 
 # NOTES
 # Composite actions don’t have a Docker “entrypoint” the way other GitHub actions do. 
-# Instead, the commands in the `runs` section of `action.yml` are executed directly 
+# Instead, the commands in the `runs` section of action.yml are executed directly 
 # by the runner.  The `entrypoint.sh` in this context serves as a placeholder to 
 # encapsulate any required shared logic.
 #
@@ -37,23 +37,17 @@ set -euo pipefail
 # but leaving here in case we want to move some shared logic in the future
 # . "/usr/share//mcix/common.sh"        
 
+echo "Composite Deploy Action - entrypoint.sh"
+
 # -----
 # Setup
 # -----
 export MCIX_BIN_DIR="/usr/share/mcix/bin"
 export MCIX_LOG_DIR="/usr/share/mcix"
-export MCIX_CMD="mcix" 
-export MCIX_JUNIT_CMD="/usr/share/mcix/mcix-junit-to-summary"
-export MCIX_JUNIT_CMD_OPTIONS="--annotations"
 # Make us immune to runner differences or potential base-image changes
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
 
 : "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
-
-# We'll store the real command status here so the trap can see it
-MCIX_STATUS=0
-# Populated if command output matches: "It has been logged (ID ...)"
-MCIX_LOGGED_ERROR_ID=""
 
 # -------------------
 # Validate parameters
@@ -63,36 +57,31 @@ MCIX_LOGGED_ERROR_ID=""
 # Checking we have values for mandatory  parameters using 'requires' function, validating the mutual 
 # exclusivity of project and projectid, etc.
 
-#  project:
-#  project-id:
-#  assets:
-#  overlay:
-#  properties:
-#  overlay-output:
-#  report:
-#  include-asset-in-test-name:
+# Overlay Apply parameters
+echo PARAM_ASSETS is ${PARAM_ASSETS}
+echo PARAM_OVERLAY is ${PARAM_OVERLAY}
+echo PARAM_PROPERTIES is ${PARAM_PROPERTIES}
+echo PARAM_OVERLAY_OUTPUT is ${PARAM_OVERLAY_OUTPUT}
+# DataStage Import parameters
+echo PARAM_API_KEY is ${PARAM_API_KEY}
+echo PARAM_URL is ${PARAM_URL}
+echo PARAM_USER is ${PARAM_USER}
+# PARAM_ASSETS: ${{ inputs.assets }} (overlaid assets path is determined by overlay apply output)
+echo PARAM_PROJECT is ${PARAM_PROJECT}
+echo PARAM_PROJECT_ID is ${PARAM_PROJECT_ID}
+# DataStage Compile parameters
+echo PARAM_REPORT is ${PARAM_REPORT}
+echo PARAM_INCLUDE_ASSET_IN_TEST_NAME is ${PARAM_INCLUDE_ASSET_IN_TEST_NAME}
 
-export assets="${INPUT_ASSETS:-}"
-export overlay="${INPUT_OVERLAY:-}"
-export properties="${INPUT_PROPERTIES:-}"
-export overlay_output="${INPUT_OVERLAY_OUTPUT:-}"
+export assets="${PARAM_ASSETS:-}"
+export overlay="${PARAM_OVERLAY:-}"
+export properties="${PARAM_PROPERTIES:-}"
+export overlay_output="${PARAM_OVERLAY_OUTPUT:-}"
 
-: "${assets:?INPUT_ASSETS must be set}"
-: "${overlay:?INPUT_OVERLAY must be set}"
+: "${assets:?PARAM_ASSETS must be set}"
+: "${overlay:?PARAM_OVERLAY must be set}"
 
 workspace="${GITHUB_WORKSPACE:-$PWD}"
-
-# If a path is relative, anchor it under the workspace
-anchor_path() {
-  local p="${1:-}"
-  if [[ -z "$p" ]]; then
-    echo ""
-  elif [[ "$p" = /* ]]; then
-    echo "$p"
-  else
-    echo "${workspace}/${p#./}"
-  fi
-}
 
 assets_abs="$(anchor_path "$assets")"
 overlay_abs="$(anchor_path "$overlay")"

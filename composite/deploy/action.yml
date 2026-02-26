@@ -93,7 +93,8 @@ outputs:
     value: ${{ steps.compile.outputs.junit-path }}
   return-code:
     description: "Return code (0 if overlay, import, and compile commands succeeded, otherwise non-zero)"
-    value: ${{ steps.import.outputs.return-code }}
+    value: ${{ steps.compile.outputs.return-code }}
+    # Any non-zero return code from a step BEFORE compile will cause the whole action to fail, so we'll never reach this point
 
 runs:
   using: "composite"
@@ -104,10 +105,21 @@ runs:
       run: |
         "${{ github.action_path }}/entrypoint.sh"
       env:
-        INPUT_ASSETS: ${{ inputs.assets }}
-        INPUT_OVERLAY: ${{ inputs.overlay }}
-        INPUT_PROPERTIES: ${{ inputs.properties }}
-        INPUT_OVERLAY_OUTPUT: ${{ inputs.overlay-output }}
+        # Overlay Apply parameters
+        PARAM_ASSETS: ${{ inputs.assets }}
+        PARAM_OVERLAY: ${{ inputs.overlay }}
+        PARAM_PROPERTIES: ${{ inputs.properties }}
+        PARAM_OVERLAY_OUTPUT: ${{ inputs.overlay-output }}
+        # DataStage Import parameters
+        PARAM_API_KEY: ${{ inputs.api-key }}
+        PARAM_URL: ${{ inputs.url }}
+        PARAM_USER: ${{ inputs.user }}
+        # PARAM_ASSETS: ${{ inputs.assets }} (overlaid assets path is determined by overlay apply output)
+        PARAM_PROJECT: ${{ inputs.project }}
+        PARAM_PROJECT_ID: ${{ inputs.project-id }}
+        # DataStage Compile parameters
+        PARAM_REPORT: ${{ inputs.report }}
+        PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
 
     - name: Apply overlays
       id: overlay
