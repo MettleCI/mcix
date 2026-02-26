@@ -54,8 +54,7 @@ EOF
     if [ -n "${CMD_OUTPUT:-}" ]; then
       echo '```text'
       printf '%s\n' "$CMD_OUTPUT" | awk '
-        /^Loaded plugins:/ { in_plugins = 1; next }
-        in_plugins && /^\s*\*/ { next }  # skip plugin lines
+        /^[[:space:]]*$/ { exit }              # stop on first blank line
         { print }
       '
       echo '```'
@@ -100,7 +99,7 @@ EOF
       echo '</details>'
 
       echo '<details>'
-      echo '<summary>Execution Environment</summary>'
+      echo '<summary>Execution environment</summary>'
       echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
       env | sort
       echo '</details>'
