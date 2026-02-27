@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/sh
 # Don't use -l here; we want to preserve the PATH and other env vars 
 # as set in the base image, and not have it overridden by a login shell
 
@@ -35,10 +35,6 @@
 
 set -euo pipefail
 
-# Note that the MettleCI GitHub Actions utility functions (/usr/share/mcix/common.sh) 
-# are not addressable from this entrypoint as this script executes within a bash shell 
-# provided by GitHub, not our mcix container.
-
 # -----
 # Setup
 # -----
@@ -47,11 +43,24 @@ export MCIX_LOG_DIR="/usr/share/mcix"
 # Make us immune to runner differences or potential base-image changes
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
 
+# Verify and store GitHub environment values
 : "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
+workspace="${GITHUB_WORKSPACE:-$PWD}"
 
 # -------------------
 # Functions
 # -------------------
+
+# Required arguments
+# Usage: 
+#   require PARAM_API_KEY "api-key"
+require() {
+    # $1 = var name, $2 = human label (for error)
+    eval "v=\${$1-}"
+    if [ -z "$v" ]; then
+        die "Missing required input: $2"
+    fi
+}
 
 # If a path is relative, anchor it under the workspace
 anchor_path() {
@@ -69,40 +78,20 @@ anchor_path() {
 # Validate parameters
 # -------------------
 
-# We don't validate parameters here since we're not actually running a command in this composite action.
-# Checking we have values for mandatory  parameters using 'requires' function, validating the mutual 
-# exclusivity of project and projectid, etc.
+# These are validated in the individual actions, but there's no harm in failing fast if
+# they're not set at all, or if the mutually exclusive project/project-id are both set.
+require PARAM_API_KEY "api-key"
+require PARAM_URL "url"
+require PARAM_USER "user"
+require PARAM_REPORT "report"
+require PARAM_ASSETS "assets"
+require PARAM_OVERLAY "overlay"
 
-# Overlay Apply parameters
-echo PARAM_ASSETS is ${PARAM_ASSETS}
-echo PARAM_OVERLAY is ${PARAM_OVERLAY}
-echo PARAM_PROPERTIES is ${PARAM_PROPERTIES}
-echo PARAM_OVERLAY_OUTPUT is ${PARAM_OVERLAY_OUTPUT}
-# DataStage Import parameters
-echo PARAM_API_KEY is ${PARAM_API_KEY}
-echo PARAM_URL is ${PARAM_URL}
-echo PARAM_USER is ${PARAM_USER}
-# PARAM_ASSETS: ${{ inputs.assets }} (overlaid assets path is determined by overlay apply output)
-echo PARAM_PROJECT is ${PARAM_PROJECT}
-echo PARAM_PROJECT_ID is ${PARAM_PROJECT_ID}
-# DataStage Compile parameters
-echo PARAM_REPORT is ${PARAM_REPORT}
-echo PARAM_INCLUDE_ASSET_IN_TEST_NAME is ${PARAM_INCLUDE_ASSET_IN_TEST_NAME}
+# Ensure PARAM_REPORT will always be /github/workspace/...
+PARAM_REPORT="$(resolve_workspace_path "$PARAM_REPORT")"
+mkdir -p "$(dirname "$PARAM_REPORT")"
+report_display="${PARAM_REPORT#${GITHUB_WORKSPACE:-/github/workspace}/}"
 
-export assets="${PARAM_ASSETS:-}"
-export overlay="${PARAM_OVERLAY:-}"
-export properties="${PARAM_PROPERTIES:-}"
-export overlay_output="${PARAM_OVERLAY_OUTPUT:-}"
-
-: "${assets:?PARAM_ASSETS must be set}"
-: "${overlay:?PARAM_OVERLAY must be set}"
-
-workspace="${GITHUB_WORKSPACE:-$PWD}"
-
-assets_abs="$(anchor_path "$assets")"
-overlay_abs="$(anchor_path "$overlay")"
-properties_abs="$(anchor_path "$properties")"
-overlay_output_abs="$(anchor_path "$overlay_output")"
 
 # Default overlay output if not provided
 if [[ -z "$overlay_output_abs" ]]; then
@@ -125,5 +114,8 @@ fi
 
 : "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
 {
+  # Generate our output in a normalized form (absolute path) so that 
+  # downstream steps can consume it reliably regardless of how the user 
+  # provided it.
   echo "overlay_assets=$overlay_output_abs"
 } >>"$GITHUB_OUTPUT"
