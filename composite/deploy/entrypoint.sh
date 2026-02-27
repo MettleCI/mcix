@@ -22,19 +22,22 @@
 #            |_|            |___/
 
 # NOTES
-# Composite actions don’t have a Docker “entrypoint” the way other GitHub actions do. 
+# Composite actions don’t have a Docker 'entrypoint' the way other GitHub actions do. 
 # Instead, the commands in the `runs` section of action.yml are executed directly 
-# by the runner.  The `entrypoint.sh` in this context serves as a placeholder to 
-# encapsulate any required shared logic.
+# by the runner.  The `entrypoint.sh` in this context serves as an invocable utility 
+# script which prepares and validates parameters and encapsulates any shared logic.
 #
-# This 'wrapper' action outputs junit-path by mapping from the compile step output
-# (our compile action exposes junit-path)
+# This composite action has only one output:
+# overlay_assets
+#    A normalized version of the overlay_output - the path to the processed 
+#    assets file created by the overlay/apply action.
+
 
 set -euo pipefail
 
-# Import MettleCI GitHub Actions utility functions
-. "/usr/share/mcix/common.sh"
-
+# Note that the MettleCI GitHub Actions utility functions (/usr/share/mcix/common.sh) 
+# are not addressable from this entrypoint as this script executes within a bash shell 
+# provided by GitHub, not our mcix container.
 
 # -----
 # Setup
@@ -45,6 +48,22 @@ export MCIX_LOG_DIR="/usr/share/mcix"
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
 
 : "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
+
+# -------------------
+# Functions
+# -------------------
+
+# If a path is relative, anchor it under the workspace
+anchor_path() {
+  local p="${1:-}"
+  if [[ -z "$p" ]]; then
+    echo ""
+  elif [[ "$p" = /* ]]; then
+    echo "$p"
+  else
+    echo "${workspace}/${p#./}"
+  fi
+}
 
 # -------------------
 # Validate parameters

@@ -101,7 +101,9 @@ EOF
       echo '<details>'
       echo '<summary>Execution environment</summary>'
       echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
+      echo '```'
       env | sort
+      echo '```'
       echo '</details>'
     fi
   } >>"$GITHUB_STEP_SUMMARY"
