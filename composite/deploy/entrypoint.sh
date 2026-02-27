@@ -33,7 +33,7 @@
 #    assets file created by the overlay/apply action.
 
 
-set -euo pipefail
+set -eu
 
 # -----
 # Setup
