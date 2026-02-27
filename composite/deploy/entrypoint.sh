@@ -21,6 +21,11 @@
 #  \__,_|\___| .__/|_|\___/ \__, |
 #            |_|            |___/
 
+set -eu
+
+# Import MettleCI GitHub Actions utility functions
+. "/usr/share/mcix/common.sh"
+
 # NOTES
 # Composite actions don’t have a Docker 'entrypoint' the way other GitHub actions do. 
 # Instead, the commands in the `runs` section of action.yml are executed directly 
@@ -31,9 +36,6 @@
 # overlay_assets
 #    A normalized version of the overlay_output - the path to the processed 
 #    assets file created by the overlay/apply action.
-
-
-set -eu
 
 # -----
 # Setup
