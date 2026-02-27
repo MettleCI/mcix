@@ -23,9 +23,6 @@
 
 set -eu
 
-# Import MettleCI GitHub Actions utility functions
-. "/usr/share/mcix/common.sh"
-
 # NOTES
 # Composite actions don’t have a Docker 'entrypoint' the way other GitHub actions do. 
 # Instead, the commands in the `runs` section of action.yml are executed directly 
@@ -74,6 +71,24 @@ anchor_path() {
   else
     echo "${workspace}/${p#./}"
   fi
+}
+
+# Resolve a path to an absolute path under the workspace, unless already absolute.
+# - "" stays ""
+# - "datastage" -> /github/workspace/datastage
+# - "./datastage" -> /github/workspace/datastage
+# - "/tmp/x" -> /tmp/x
+# Usage: 
+#   resolve_workspace_path "$PARAM_REPORT"
+resolve_workspace_path() {
+    p="${1:-}"
+    [ -z "$p" ] && { echo ""; return; }
+    
+    case "$p" in
+        /*) echo "$p" ;;
+        *)  base="${GITHUB_WORKSPACE:-/github/workspace}"
+        echo "${base}/${p#./}" ;;
+    esac
 }
 
 # -------------------
