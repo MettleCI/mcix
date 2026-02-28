@@ -106,26 +106,28 @@ runs:
         "${{ github.action_path }}/entrypoint.sh"
       env:
         # Overlay Apply parameters
-        PARAM_ASSETS: ${{ inputs.assets }}
-        PARAM_OVERLAY: ${{ inputs.overlay }}
+        PARAM_ASSETS: ${{ inputs.assets }}                  # Required for overlay apply
+        PARAM_OVERLAY: ${{ inputs.overlay }}                # Required for overlay apply
         PARAM_PROPERTIES: ${{ inputs.properties }}
-        PARAM_OVERLAY_OUTPUT: ${{ inputs.overlay-output }}
+        PARAM_OVERLAY_OUTPUT: ${{ inputs.overlay-output }}  # Required for overlay apply (if not set, will be derived as $GITHUB_WORKSPACE/assets-overlay.zip)
+
         # DataStage Import parameters
-        PARAM_API_KEY: ${{ inputs.api-key }}
-        PARAM_URL: ${{ inputs.url }}
-        PARAM_USER: ${{ inputs.user }}
-        # PARAM_ASSETS: ${{ inputs.assets }} (overlaid assets path is determined by overlay apply output)
-        PARAM_PROJECT: ${{ inputs.project }}
-        PARAM_PROJECT_ID: ${{ inputs.project-id }}
+        PARAM_API_KEY: ${{ inputs.api-key }}                # Required for both import and compile
+        PARAM_URL: ${{ inputs.url }}                        # Required for both import and compile 
+        PARAM_USER: ${{ inputs.user }}                      # Required for both import and compile 
+        # PARAM_ASSETS: ${{ inputs.assets }}                # Not used directly; overlay assets path is determined by overlay apply output
+        PARAM_PROJECT: ${{ inputs.project }}                # Required for both import and compile (if project-id not set) 
+        PARAM_PROJECT_ID: ${{ inputs.project-id }}          # Required for both import and compile (if project not set)
+
         # DataStage Compile parameters
-        PARAM_REPORT: ${{ inputs.report }}
+        PARAM_REPORT: ${{ inputs.report }}                  # Required (compile report path)
         PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
 
     - name: Apply overlays
       id: overlay
       uses: mettleci/mcix/overlay/apply@latest
       with:
-        assets: ${{ inputs.assets }}
+        assets: ${{ steps.prep.outputs.assets }}
         output: ${{ steps.prep.outputs.overlay_assets }}
         overlay: ${{ inputs.overlay }}
         properties: ${{ inputs.properties }}

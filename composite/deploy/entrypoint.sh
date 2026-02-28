@@ -75,11 +75,11 @@ anchor_path() {
 
 # Resolve a path to an absolute path under the workspace, unless already absolute.
 # - "" stays ""
-# - "datastage" -> /github/workspace/datastage
+# - "datastage"   -> /github/workspace/datastage
 # - "./datastage" -> /github/workspace/datastage
-# - "/tmp/x" -> /tmp/x
+# - "/tmp/x"      -> /tmp/x
 # Usage: 
-#   resolve_workspace_path "$PARAM_REPORT"
+#   resolve_workspace_path <path>
 resolve_workspace_path() {
     p="${1:-}"
     [ -z "$p" ] && { echo ""; return; }
@@ -100,39 +100,50 @@ resolve_workspace_path() {
 require PARAM_API_KEY "api-key"
 require PARAM_URL "url"
 require PARAM_USER "user"
-require PARAM_REPORT "report"
 require PARAM_ASSETS "assets"
 require PARAM_OVERLAY "overlay"
 
-# Ensure PARAM_REPORT will always be /github/workspace/...
-PARAM_REPORT="$(resolve_workspace_path "$PARAM_REPORT")"
-mkdir -p "$(dirname "$PARAM_REPORT")"
-report_display="${PARAM_REPORT#${GITHUB_WORKSPACE:-/github/workspace}/}"
+# Add some special "if-null" processing for this one 
+# require PARAM_REPORT "report"
 
+# Ensure PARAM_REPORT will always be /github/workspace/...
+report_abs="$(resolve_workspace_path "$PARAM_REPORT")"
+mkdir -p "$(dirname "$report_abs")"
 
 # Default overlay output if not provided
-if [[ -z "$overlay_output_abs" ]]; then
+if [[ -z "$PARAM_OVERLAY" ]]; then
   overlay_output_abs="${workspace}/assets-overlay.zip"
 fi
 
-# Sanity checks (helpful)
-if [[ ! -e "$assets_abs" ]]; then
-  echo "ERROR: assets not found: $assets_abs" >&2
-  exit 1
-fi
-if [[ ! -d "$overlay_abs" ]]; then
-  echo "ERROR: overlay dir not found: $overlay_abs" >&2
-  exit 1
-fi
-if [[ -n "$properties_abs" && ! -f "$properties_abs" ]]; then
-  echo "ERROR: properties file not found: $properties_abs" >&2
-  exit 1
-fi
 
-: "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
+# -------------------
+# Generate outputs
+# -------------------
+# Provide all inputs as outputs so that downstream steps can consume them as needed.
+# This centralizes any validation and normalization logic required of the composite action's 
+# downstream steps here in the entrypoint.
+# Note that we still rely on the logic and validation in the downstream steps, but this gives 
+# us a single source of truth for the composite action's parameters and any required normalization.
 {
-  # Generate our output in a normalized form (absolute path) so that 
-  # downstream steps can consume it reliably regardless of how the user 
-  # provided it.
-  echo "overlay_assets=$overlay_output_abs"
+  # Shared (import + compile)
+  echo "api_key=$PARAM_API_KEY"
+  echo "url=$PARAM_URL"
+  echo "user=$PARAM_USER"
+
+  # Target project selection (import + compile)
+  echo "project=$PARAM_PROJECT"
+  echo "project_id=$PARAM_PROJECT_ID"
+
+  # Assets + overlay
+  echo "assets=$overlay_output_abs"
+  echo "overlay=$PARAM_OVERLAY"
+  echo "properties=$PARAM_PROPERTIES"
+
+  # Where to write overlaid assets (passed to overlay apply; then imported)
+  overlay-output:
+  echo "overlay_output=$PARAM_OVERLAY_OUTPUT"
+ 
+  # Compile report options
+  echo "report=$report_abs"
+  echo "compile_include_asset_in_test_name=$PARAM_INCLUDE_ASSET_IN_TEST_NAME"
 } >>"$GITHUB_OUTPUT"
