@@ -214,7 +214,7 @@ jobs:
           # project: <optional>
           # project-id: <optional>
           # properties: <optional>
-          # overlay-output: <optional>
+          # output: <optional>
           # report: compile-report.xml
           # include-asset-in-test-name: false
 ```
@@ -240,7 +240,7 @@ jobs:
 | `assets` | ✅ |  | Path to DataStage export zip file or directory (input assets) |
 | `overlay` | ✅ |  | Directory containing asset overlays |
 | `properties` | ❌ |  | Optional properties file with replacement values |
-| `overlay-output` | ❌ |  | Zip file or directory to write updated assets (default: derived) |
+| `output` | ❌ |  | Zip file or directory to write updated assets (default: derived) |
 | `report` | ❌ | compile-report.xml | Path to output the compile report |
 | `include-asset-in-test-name` | ❌ | false (if omitted) | Include asset names in test names in the report? (true/false) |
 
@@ -250,7 +250,7 @@ jobs:
 
 | Name | Description |
 | --- | --- |
-| `overlay-assets` | Path to the overlaid assets produced by overlay apply |
+| `overlay-output` | Path to the overlaid assets produced by overlay apply |
 | `import-junit-path` | Path to the JUnit report produced by import |
 | `compile-junit-path` | Path to the JUnit report produced by compile |
 | `return-code` | Return code (0 if overlay, import, and compile commands succeeded, otherwise non-zero) |
