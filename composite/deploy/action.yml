@@ -52,8 +52,16 @@ inputs:
   assets:
     description: "Path to DataStage export zip file or directory (input assets)"
     required: true
-  overlay:
-    description: "Directory containing asset overlays"
+  overlays:
+    description: |
+      One or more overlay directories. Overlays are applied in the order specified.
+      Provide as comma- or newline-separated list.
+      Example:
+        overlays: overlays/base, overlays/customer
+        or
+        overlays: |
+          overlays/base
+          overlays/customer
     required: true
   properties:
     description: "Optional properties file with replacement values"
@@ -77,9 +85,10 @@ inputs:
     default: ""
 
 outputs:
-  overlay-output:
+  # This is the normalized output path from the prep step, which was passed to overlay/apply and then imported by the import step.
+  overlay_output:
     description: "Path to the overlaid assets produced by overlay apply"
-    value: ${{ steps.prep.outputs.overlay_assets }}
+    value: ${{ steps.prep.outputs.output }}  
   import-junit-path:
     description: "Path to the JUnit report produced by import"
     value: ${{ steps.import.outputs.junit-path }}
@@ -101,7 +110,7 @@ runs:
       env:
         # Overlay Apply parameters
         PARAM_ASSETS: ${{ inputs.assets }}
-        PARAM_OVERLAY: ${{ inputs.overlay }}
+        PARAM_OVERLAYS: ${{ inputs.overlays }}
         PARAM_PROPERTIES: ${{ inputs.properties }}
         PARAM_OUTPUT: ${{ inputs.output }}  # optional
 
@@ -121,8 +130,8 @@ runs:
       uses: mettleci/mcix/overlay/apply@v1
       with:
         assets: ${{ steps.prep.outputs.assets }}
-        output: ${{ steps.prep.outputs.overlay_assets }}
-        overlay: ${{ steps.prep.outputs.overlay }}
+        overlays: ${{ steps.prep.outputs.overlays }}
+        output: ${{ steps.prep.outputs.overlay_output }}
         properties: ${{ steps.prep.outputs.properties }}
 
     - name: Import assets
@@ -134,7 +143,7 @@ runs:
         user: ${{ steps.prep.outputs.user }}
         project: ${{ steps.prep.outputs.project }}
         project-id: ${{ steps.prep.outputs.project_id }}
-        assets: ${{ steps.prep.outputs.overlay_assets }}
+        assets: ${{ steps.prep.outputs.overlay_output }}  # output from overlay apply
 
     - name: Compile project
       id: compile

@@ -27,14 +27,7 @@ set -euo pipefail
 # Composite actions don’t have a Docker 'entrypoint' the way other GitHub actions do. 
 # Instead, the commands in the `runs` section of action.yml are executed directly 
 # by the runner.  The `entrypoint.sh` in this context serves as an invocable utility 
-# script which prepares and validates parameters and encapsulates any shared logic.
-#
-# This composite action has only one output:
-# overlay_assets
-#    A normalized version of the overlay_output - the path to the processed 
-#    assets file created by the overlay/apply action.
-
-set -euo pipefail
+# script which prepares and validates parameters and encapsulates any shared logic. 
 
 # -----
 # Setup
@@ -81,7 +74,7 @@ require PARAM_API_KEY "api-key"
 require PARAM_URL "url"
 require PARAM_USER "user"
 require PARAM_ASSETS "assets"
-require PARAM_OVERLAY "overlay"
+require PARAM_OVERLAYS "overlays"
 
 # Project selection must be exactly one of these
 PARAM_PROJECT="${PARAM_PROJECT-}"
@@ -100,11 +93,13 @@ PARAM_OUTPUT="${PARAM_OUTPUT-}"
 PARAM_REPORT="${PARAM_REPORT-}"
 PARAM_INCLUDE_ASSET_IN_TEST_NAME="${PARAM_INCLUDE_ASSET_IN_TEST_NAME-}"
 
+
 # -------------------
 # Normalize paths
 # -------------------
 assets_abs="$(resolve_workspace_path "$PARAM_ASSETS")"
-overlay_abs="$(resolve_workspace_path "$PARAM_OVERLAY")"
+# We don't normalize $PARAM_OVERLAYS as it's a comma- or newline-separated list of paths, 
+# and we want to preserve the original formatting for the overlay/apply action.
 
 # If properties is intended to be a file path, normalize it too.
 # If you allow inline properties content, keep it as-is instead.
@@ -136,11 +131,11 @@ fi
 
   # Assets + overlay
   printf 'assets=%s\n' "$assets_abs"
-  printf 'overlay=%s\n' "$overlay_abs"
+  printf 'overlays=%s\n' "$PARAM_OVERLAYS"
   printf 'properties=%s\n' "$properties_abs"
 
   # Where to write overlaid assets (passed to overlay/apply; then imported)
-  printf 'overlay_assets=%s\n' "$overlay_output_abs"
+  printf 'overlay_output=%s\n' "$overlay_output_abs"
 
   # Compile report options
   printf 'report=%s\n' "$report_abs"
