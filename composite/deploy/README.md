@@ -210,7 +210,7 @@ jobs:
           url: <required>
           user: <required>
           assets: <required>
-          overlay: <required>
+          overlays: <required>
           # project: <optional>
           # project-id: <optional>
           # properties: <optional>
@@ -238,7 +238,14 @@ jobs:
 | `project` | ❌ |  | DataStage project name (required if project-id not set) |
 | `project-id` | ❌ |  | DataStage project id (required if project not set) |
 | `assets` | ✅ |  | Path to DataStage export zip file or directory (input assets) |
-| `overlay` | ✅ |  | Directory containing asset overlays |
+| `overlays` | ✅ |  | One or more overlay directories. Overlays are applied in the order specified.
+Provide as comma- or newline-separated list.
+Example:
+  overlays: overlays/base, overlays/customer
+  or
+  overlays: \|
+    overlays/base
+    overlays/customer |
 | `properties` | ❌ |  | Optional properties file with replacement values |
 | `output` | ❌ |  | Zip file or directory to write updated assets (default: derived) |
 | `report` | ❌ | compile-report.xml | Path to output the compile report |
@@ -250,7 +257,7 @@ jobs:
 
 | Name | Description |
 | --- | --- |
-| `overlay-output` | Path to the overlaid assets produced by overlay apply |
+| `overlay_output` | Path to the overlaid assets produced by overlay apply |
 | `import-junit-path` | Path to the JUnit report produced by import |
 | `compile-junit-path` | Path to the JUnit report produced by compile |
 | `return-code` | Return code (0 if overlay, import, and compile commands succeeded, otherwise non-zero) |
