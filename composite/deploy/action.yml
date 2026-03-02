@@ -26,9 +26,6 @@ branding:
   icon: "layers"
   color: "blue"
 
-# Note that true/false boolean inputs accept:
-# 1, true, TRUE, yes, YES, on, ON, and 
-# 0, false, FALSE, no, NO, off, OFF
 inputs:
   # Shared (import + compile)
   api-key:
@@ -64,11 +61,11 @@ inputs:
     default: ""
 
   # Where to write overlaid assets (passed to overlay apply; then imported)
-  overlay-output:
+  output:
     description: "Zip file or directory to write updated assets (default: derived)"
     required: false
     default: ""
- 
+
   # Compile report options
   report:
     description: "Path to output the compile report"
@@ -80,9 +77,7 @@ inputs:
     default: ""
 
 outputs:
-  # Not required in a composite action as we're responsible for both producing and consuming the file. 
-  # However, we can still declare them here for documentation purposes and to allow referencing them in the 'value' field below.
-  overlay-assets:
+  overlay-output:
     description: "Path to the overlaid assets produced by overlay apply"
     value: ${{ steps.prep.outputs.overlay_assets }}
   import-junit-path:
@@ -94,7 +89,6 @@ outputs:
   return-code:
     description: "Return code (0 if overlay, import, and compile commands succeeded, otherwise non-zero)"
     value: ${{ steps.compile.outputs.return-code }}
-    # Any non-zero return code from a step BEFORE compile will cause the whole action to fail, so we'll never reach this point
 
 runs:
   using: "composite"
@@ -106,51 +100,50 @@ runs:
         "${{ github.action_path }}/entrypoint.sh"
       env:
         # Overlay Apply parameters
-        PARAM_ASSETS: ${{ inputs.assets }}                  # Required for overlay apply
-        PARAM_OVERLAY: ${{ inputs.overlay }}                # Required for overlay apply
+        PARAM_ASSETS: ${{ inputs.assets }}
+        PARAM_OVERLAY: ${{ inputs.overlay }}
         PARAM_PROPERTIES: ${{ inputs.properties }}
-        PARAM_OVERLAY_OUTPUT: ${{ inputs.overlay-output }}  # Required for overlay apply (if not set, will be derived as $GITHUB_WORKSPACE/assets-overlay.zip)
+        PARAM_OUTPUT: ${{ inputs.output }}  # optional
 
         # DataStage Import parameters
-        PARAM_API_KEY: ${{ inputs.api-key }}                # Required for both import and compile
-        PARAM_URL: ${{ inputs.url }}                        # Required for both import and compile 
-        PARAM_USER: ${{ inputs.user }}                      # Required for both import and compile 
-        # PARAM_ASSETS: ${{ inputs.assets }}                # Not used directly; overlay assets path is determined by overlay apply output
-        PARAM_PROJECT: ${{ inputs.project }}                # Required for both import and compile (if project-id not set) 
-        PARAM_PROJECT_ID: ${{ inputs.project-id }}          # Required for both import and compile (if project not set)
+        PARAM_API_KEY: ${{ inputs.api-key }}
+        PARAM_URL: ${{ inputs.url }}
+        PARAM_USER: ${{ inputs.user }}
+        PARAM_PROJECT: ${{ inputs.project }}
+        PARAM_PROJECT_ID: ${{ inputs.project-id }}
 
         # DataStage Compile parameters
-        PARAM_REPORT: ${{ inputs.report }}                  # Required (compile report path)
+        PARAM_REPORT: ${{ inputs.report }}
         PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
 
     - name: Apply overlays
       id: overlay
-      uses: mettleci/mcix/overlay/apply@latest
+      uses: mettleci/mcix/overlay/apply@v1
       with:
         assets: ${{ steps.prep.outputs.assets }}
         output: ${{ steps.prep.outputs.overlay_assets }}
-        overlay: ${{ inputs.overlay }}
-        properties: ${{ inputs.properties }}
+        overlay: ${{ steps.prep.outputs.overlay }}
+        properties: ${{ steps.prep.outputs.properties }}
 
     - name: Import assets
       id: import
-      uses: mettleci/mcix/datastage/import@latest
+      uses: mettleci/mcix/datastage/import@v1
       with:
-        api-key: ${{ inputs.api-key }}
-        url: ${{ inputs.url }}
-        user: ${{ inputs.user }}
+        api-key: ${{ steps.prep.outputs.api_key }}
+        url: ${{ steps.prep.outputs.url }}
+        user: ${{ steps.prep.outputs.user }}
+        project: ${{ steps.prep.outputs.project }}
+        project-id: ${{ steps.prep.outputs.project_id }}
         assets: ${{ steps.prep.outputs.overlay_assets }}
-        project: ${{ inputs.project }}
-        project-id: ${{ inputs.project-id }}
 
     - name: Compile project
       id: compile
-      uses: mettleci/mcix/datastage/compile@latest
+      uses: mettleci/mcix/datastage/compile@v1
       with:
-        api-key: ${{ inputs.api-key }}
-        url: ${{ inputs.url }}
-        user: ${{ inputs.user }}
-        report: ${{ inputs.report }}
-        project: ${{ inputs.project }}
-        project-id: ${{ inputs.project-id }}
-        include-asset-in-test-name: ${{ inputs.include-asset-in-test-name }}
+        api-key: ${{ steps.prep.outputs.api_key }}
+        url: ${{ steps.prep.outputs.url }}
+        user: ${{ steps.prep.outputs.user }}
+        report: ${{ steps.prep.outputs.report }}
+        project: ${{ steps.prep.outputs.project }}
+        project-id: ${{ steps.prep.outputs.project_id }}
+        include-asset-in-test-name: ${{ steps.prep.outputs.compile_include_asset_in_test_name }}

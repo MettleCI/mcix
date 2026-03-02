@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/env bash
 # Don't use -l here; we want to preserve the PATH and other env vars 
 # as set in the base image, and not have it overridden by a login shell
 
@@ -21,7 +21,7 @@
 #  \__,_|\___| .__/|_|\___/ \__, |
 #            |_|            |___/
 
-set -eu
+set -euo pipefail
 
 # NOTES
 # Composite actions don’t have a Docker 'entrypoint' the way other GitHub actions do. 
@@ -34,43 +34,29 @@ set -eu
 #    A normalized version of the overlay_output - the path to the processed 
 #    assets file created by the overlay/apply action.
 
+set -euo pipefail
+
 # -----
 # Setup
 # -----
 export MCIX_BIN_DIR="/usr/share/mcix/bin"
 export MCIX_LOG_DIR="/usr/share/mcix"
-# Make us immune to runner differences or potential base-image changes
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
 
-# Verify and store GitHub environment values
 : "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
 workspace="${GITHUB_WORKSPACE:-$PWD}"
 
 # -------------------
 # Functions
 # -------------------
+die() { echo "ERROR: $*" >&2; exit 1; }
 
-# Required arguments
-# Usage: 
-#   require PARAM_API_KEY "api-key"
+# Usage: require VAR_NAME "human label"
 require() {
-    # $1 = var name, $2 = human label (for error)
-    eval "v=\${$1-}"
-    if [ -z "$v" ]; then
-        die "Missing required input: $2"
-    fi
-}
-
-# If a path is relative, anchor it under the workspace
-anchor_path() {
-  local p="${1:-}"
-  if [[ -z "$p" ]]; then
-    echo ""
-  elif [[ "$p" = /* ]]; then
-    echo "$p"
-  else
-    echo "${workspace}/${p#./}"
-  fi
+  local var_name="$1"
+  local label="$2"
+  local v="${!var_name-}"
+  [[ -n "$v" ]] || die "Missing required input: ${label}"
 }
 
 # Resolve a path to an absolute path under the workspace, unless already absolute.
@@ -78,72 +64,85 @@ anchor_path() {
 # - "datastage"   -> /github/workspace/datastage
 # - "./datastage" -> /github/workspace/datastage
 # - "/tmp/x"      -> /tmp/x
-# Usage: 
-#   resolve_workspace_path <path>
+# Usage: resolve_workspace_path PATH
 resolve_workspace_path() {
-    p="${1:-}"
-    [ -z "$p" ] && { echo ""; return; }
-    
-    case "$p" in
-        /*) echo "$p" ;;
-        *)  base="${GITHUB_WORKSPACE:-/github/workspace}"
-        echo "${base}/${p#./}" ;;
-    esac
+  local p="${1:-}"
+  [[ -n "$p" ]] || { echo ""; return; }
+  case "$p" in
+    /*) echo "$p" ;;
+    *)  echo "${workspace}/${p#./}" ;;
+  esac
 }
 
 # -------------------
 # Validate parameters
 # -------------------
-
-# These are validated in the individual actions, but there's no harm in failing fast if
-# they're not set at all, or if the mutually exclusive project/project-id are both set.
 require PARAM_API_KEY "api-key"
 require PARAM_URL "url"
 require PARAM_USER "user"
 require PARAM_ASSETS "assets"
 require PARAM_OVERLAY "overlay"
 
-# Add some special "if-null" processing for this one 
-# require PARAM_REPORT "report"
+# Project selection must be exactly one of these
+PARAM_PROJECT="${PARAM_PROJECT-}"
+PARAM_PROJECT_ID="${PARAM_PROJECT_ID-}"
 
-# Ensure PARAM_REPORT will always be /github/workspace/...
-report_abs="$(resolve_workspace_path "$PARAM_REPORT")"
-mkdir -p "$(dirname "$report_abs")"
+if [[ -n "$PARAM_PROJECT" && -n "$PARAM_PROJECT_ID" ]]; then
+  die "Inputs 'project' and 'project-id' are mutually exclusive; set only one."
+fi
+if [[ -z "$PARAM_PROJECT" && -z "$PARAM_PROJECT_ID" ]]; then
+  die "One of 'project' or 'project-id' must be set."
+fi
 
-# Default overlay output if not provided
-if [[ -z "$PARAM_OVERLAY" ]]; then
+# Optional inputs
+PARAM_PROPERTIES="${PARAM_PROPERTIES-}"
+PARAM_OUTPUT="${PARAM_OUTPUT-}"
+PARAM_REPORT="${PARAM_REPORT-}"
+PARAM_INCLUDE_ASSET_IN_TEST_NAME="${PARAM_INCLUDE_ASSET_IN_TEST_NAME-}"
+
+# -------------------
+# Normalize paths
+# -------------------
+assets_abs="$(resolve_workspace_path "$PARAM_ASSETS")"
+overlay_abs="$(resolve_workspace_path "$PARAM_OVERLAY")"
+
+# If properties is intended to be a file path, normalize it too.
+# If you allow inline properties content, keep it as-is instead.
+properties_abs="$(resolve_workspace_path "$PARAM_PROPERTIES")"
+
+if [[ -n "$PARAM_OUTPUT" ]]; then
+  overlay_output_abs="$(resolve_workspace_path "$PARAM_OUTPUT")"
+else
   overlay_output_abs="${workspace}/assets-overlay.zip"
 fi
 
+report_abs="$(resolve_workspace_path "$PARAM_REPORT")"
+if [[ -n "$report_abs" ]]; then
+  mkdir -p "$(dirname "$report_abs")"
+fi
 
 # -------------------
 # Generate outputs
 # -------------------
-# Provide all inputs as outputs so that downstream steps can consume them as needed.
-# This centralizes any validation and normalization logic required of the composite action's 
-# downstream steps here in the entrypoint.
-# Note that we still rely on the logic and validation in the downstream steps, but this gives 
-# us a single source of truth for the composite action's parameters and any required normalization.
 {
   # Shared (import + compile)
-  echo "api_key=$PARAM_API_KEY"
-  echo "url=$PARAM_URL"
-  echo "user=$PARAM_USER"
+  printf 'api_key=%s\n' "$PARAM_API_KEY"
+  printf 'url=%s\n' "$PARAM_URL"
+  printf 'user=%s\n' "$PARAM_USER"
 
   # Target project selection (import + compile)
-  echo "project=$PARAM_PROJECT"
-  echo "project_id=$PARAM_PROJECT_ID"
+  printf 'project=%s\n' "$PARAM_PROJECT"
+  printf 'project_id=%s\n' "$PARAM_PROJECT_ID"
 
   # Assets + overlay
-  echo "assets=$overlay_output_abs"
-  echo "overlay=$PARAM_OVERLAY"
-  echo "properties=$PARAM_PROPERTIES"
+  printf 'assets=%s\n' "$assets_abs"
+  printf 'overlay=%s\n' "$overlay_abs"
+  printf 'properties=%s\n' "$properties_abs"
 
-  # Where to write overlaid assets (passed to overlay apply; then imported)
-  overlay-output:
-  echo "overlay_output=$PARAM_OVERLAY_OUTPUT"
- 
+  # Where to write overlaid assets (passed to overlay/apply; then imported)
+  printf 'overlay_assets=%s\n' "$overlay_output_abs"
+
   # Compile report options
-  echo "report=$report_abs"
-  echo "compile_include_asset_in_test_name=$PARAM_INCLUDE_ASSET_IN_TEST_NAME"
+  printf 'report=%s\n' "$report_abs"
+  printf 'compile_include_asset_in_test_name=%s\n' "$PARAM_INCLUDE_ASSET_IN_TEST_NAME"
 } >>"$GITHUB_OUTPUT"
