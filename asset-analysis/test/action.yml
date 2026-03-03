@@ -1,3 +1,24 @@
+# action.,yml
+
+# ███╗   ███╗███████╗████████╗████████╗██╗     ███████╗ ██████╗██╗
+# ████╗ ████║██╔════╝╚══██╔══╝╚══██╔══╝██║     ██╔════╝██╔════╝██║
+# ██╔████╔██║█████╗     ██║      ██║   ██║     █████╗  ██║     ██║
+# ██║╚██╔╝██║██╔══╝     ██║      ██║   ██║     ██╔══╝  ██║     ██║
+# ██║ ╚═╝ ██║███████╗   ██║      ██║   ███████╗███████╗╚██████╗██║
+# ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝ ╚═════╝╚═╝
+# MettleCI DevOps for DataStage       (C) 2025-2026 Data Migrators
+#                     _                          _           _
+#   __ _ ___ ___  ___| |_       __ _ _ __   __ _| |_   _ ___(_)___
+#  / _` / __/ __|/ _ \ __|____ / _` | '_ \ / _` | | | | / __| / __|
+# | (_| \__ \__ \  __/ ||_____| (_| | | | | (_| | | |_| \__ \ \__ \
+#  \__,_|___/___/\___|\__|     \__,_|_| |_|\__,_|_|\__, |___/_|___/
+#  _            _                                  |___/
+# | |_ ___  ___| |_
+# | __/ _ \/ __| __|
+# | ||  __/\__ \ |_
+#  \__\___||___/\__|
+# 
+
 name: 'MCIX asset-analysis test action'
 author: 'Data Migrators Pty Ltd'
 description: 'Runs mcix asset-analysis test'
@@ -25,32 +46,30 @@ inputs:
   report:
     description: 'Path to output the compile report'
     required: true
-    default: "./compile-report.xml"
 
   project:
     description: 'DataStage project name'
     required: false     # Required when -project-id not specified
-    default: ""
+    default: ''
 
   project-id:
     description: 'DataStage project id'
     required: false     # Required when -project not specified
-    default: ""
+    default: ''
 
   rules:
     description: 'Path to the compliance rules'
     required: true
-    default: ""
 
   included-tags:
     description: 'Comma-separated list of tags to include'
     required: false
-    default: ""
+    default: ''
   
   excluded-tags:
     description: 'Comma-separated list of tags to exclude'
     required: false
-    default: ""
+    default: ''
 
   test-suite:
     description: 'Test suite name'
@@ -60,13 +79,13 @@ inputs:
   include-asset-in-test-name:
     description: 'Include asset names in test names in the report? (true/false)'
     required: false
-    default: ""         # Optional boolean input; if not provided, defaults to false
+    default: 'false'
 
 
   ignore-test-failures:
     description: 'Ignore test failures (always return 0)? (true/false)'
     required: false
-    default: ""         # Optional boolean input; if not provided, defaults to false
+    default: 'false'
 
 outputs:
   return-code:

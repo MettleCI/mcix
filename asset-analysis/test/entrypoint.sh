@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Don't use -l here; we want to preserve the PATH and other env vars 
 # as set in the base image, and not have it overridden by a login shell
 
