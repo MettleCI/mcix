@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Don't use -l here; we want to preserve the PATH and other env vars 
 # as set in the base image, and not have it overridden by a login shell
 
@@ -21,7 +21,7 @@
 #  \___\___/|_| |_| |_| .__/|_|_|\___|
 #                     |_|
 
-set -eu
+set -euo pipefail
 
 # Import MettleCI GitHub Actions utility functions
 . "/usr/share/mcix/common.sh"
@@ -29,17 +29,19 @@ set -eu
 # -----
 # Setup
 # -----
+export MCIX_CMD_NAME="mcix datastage compile"
 export MCIX_BIN_DIR="/usr/share/mcix/bin"
-export MCIX_CMD="mcix" 
+export MCIX_LOG_DIR="/usr/share/mcix"
 export MCIX_JUNIT_CMD="/usr/share/mcix/mcix-junit-to-summary"
 export MCIX_JUNIT_CMD_OPTIONS="--annotations"
-# Make us immune to runner differences or potential base-image changes
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
+export PATH="$PATH:$MCIX_BIN_DIR"
 
 : "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
 
 # We'll store the real command status here so the trap can see it
 MCIX_STATUS=0
+# Populated if command output matches: "It has been logged (ID ...)"
+MCIX_LOGGED_ERROR_ID=""
 
 # -------------------
 # Validate parameters
@@ -52,15 +54,24 @@ require PARAM_REPORT "report"
 
 # Ensure PARAM_REPORT will always be /github/workspace/...
 PARAM_REPORT="$(resolve_workspace_path "$PARAM_REPORT")"
-mkdir -p "$(dirname "$PARAM_REPORT")"
-report_display="${PARAM_REPORT#${GITHUB_WORKSPACE:-/github/workspace}/}"
+
+# Fail if the report already exists which may be the case if this action is
+# invoked multiple times with the same report path but no. This is to prevent multiple 
+# test runs from overwriting each other's reports and causing confusion.
+if [ -e "$PARAM_REPORT" ]; then
+  die "JUnit report already exists: $PARAM_REPORT. Each invocation must use a unique report path."
+else
+  mkdir -p "$(dirname "${PARAM_REPORT}")"
+  report_display="${PARAM_REPORT#${GITHUB_WORKSPACE:-/github/workspace}/}"
+fi
+
 
 # ------------------------
 # Build command to execute
 # ------------------------
 
 # Start argv
-set -- "$MCIX_CMD" datastage compile
+set -- "$MCIX_CMD_NAME"
 
 # Core flags
 set -- "$@" -api-key "$PARAM_API_KEY"
@@ -86,6 +97,22 @@ fi
 # Step summary
 # ------------
 write_step_summary() {
+  # Surface "logged error ID" failures (if detected)
+  if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] && \
+     [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+    {
+      echo "**❌ Error:** There was an error logged while running the command."
+      if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
+        # Capture the log entry and include it in the summary for visibility. 
+        grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
+          || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
+      fi
+    } >>"$GITHUB_STEP_SUMMARY"
+    # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
+    # but it won't fail the action on its own (since some errors are "log and continue".)
+    gh_error "$MCIX_CMD_NAME" "There was an error logged during the execution of '$MCIX_CMD_NAME'"
+  fi
+
   # Do we have a variable pointing to a JUnit XML file?
   if [ -z "${PARAM_REPORT:-}" ] || [ ! -f "$PARAM_REPORT" ]; then
     gh_warn "JUnit XML file not found" "Path: ${PARAM_REPORT:-<unset>}"
@@ -98,17 +125,14 @@ write_step_summary() {
   elif [ -z "${GITHUB_STEP_SUMMARY:-}" ] || [ ! -w "$GITHUB_STEP_SUMMARY" ]; then
     gh_warn "GITHUB_STEP_SUMMARY not writable" "Skipping JUnit summary generation."
 
-  # Generate summary
   else
-    # Commenting out for now (too verbose.)
-    # gh_notice "Generating datastage compile step summary" "Running JUnit summarizer and appending to GITHUB_STEP_SUMMARY."
-
+    # Generate summary
     # mcix-junit-to-summary [--annotations] [--max-annotations N] <junit.xml> [title]
-    echo "Executing: $MCIX_JUNIT_CMD $MCIX_JUNIT_CMD_OPTIONS $PARAM_REPORT \"MCIX DataStage Compile\""
+    echo "Executing: $MCIX_JUNIT_CMD $MCIX_JUNIT_CMD_OPTIONS $PARAM_REPORT \"${MCIX_CMD_NAME}\""
     "$MCIX_JUNIT_CMD" \
       "$MCIX_JUNIT_CMD_OPTIONS" \
       "$PARAM_REPORT" \
-      "MCIX DataStage Compile"  >> "$GITHUB_STEP_SUMMARY" || \
+      "${MCIX_CMD_NAME}"  >> "$GITHUB_STEP_SUMMARY" || \
       gh_warn "JUnit summarizer failed" "Continuing without failing the action."
   fi
 }
@@ -127,6 +151,7 @@ write_return_code_and_summary() {
 
   write_step_summary
 }
+# Combine summary/output writing + temp cleanup in a single EXIT trap.
 trap write_return_code_and_summary EXIT
 
 # -------
@@ -137,11 +162,23 @@ if [ ! -e "/github/workspace/.git" ]; then
   die "Repo contents not found in /github/workspace. Did you forget to run actions/checkout before this action?"
 fi
 
+# Capture output so we can detect "It has been logged (ID ...)" failures.
+tmp_out="$(mktemp)"
+cleanup() { rm -f "$tmp_out"; }
+
 # Run the command, capture its output and status, but don't let `set -e` kill us.
 set +e
-"$@" 2>&1
+"$@" 2>&1 | tee "$tmp_out"
 MCIX_STATUS=$?
 set -e
+
+# If the known "logged error" signature occurred, stash details for the summary.
+MCIX_LOGGED_ERROR_ID=""
+if mcix_has_logged_error "$tmp_out"; then
+  MCIX_LOGGED_ERROR_ID="$(mcix_extract_logged_error_id "$tmp_out")"
+  # Treat logged errors as failures for the purpose of the step summary, even if the command itself didn't return a non-zero code.
+  MCIX_STATUS=1
+fi
 
 # Let the trap handle writing outputs & step summary
 exit "$MCIX_STATUS"
