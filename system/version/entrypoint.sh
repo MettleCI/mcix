@@ -129,7 +129,7 @@ trap 'write_return_code_and_summary; cleanup' EXIT
 # There are GOOD REASONS we don't use MCIX_CMD_NAME here.
 set -- mcix system version
 
-# Capture output so we can detect "It has been logged (ID ...)" failures.
+# Prepare a file to capture output so we can detect "It has been logged (ID ...)" failures.
 tmp_out="$(mktemp)"
 cleanup() { rm -f "$tmp_out"; }
 

@@ -150,7 +150,7 @@ write_step_summary() {
       "$MCIX_JUNIT_CMD_OPTIONS" \
       "$PARAM_REPORT" \
       "$MCIX_CMD_NAME"  >> "$GITHUB_STEP_SUMMARY" || \
-      gh_warn "JUnit summarizer failed" "Continuing without failing the action."
+      gh_warn "JUnit summarizer for '${MCIX_CMD_NAME}' failed" "Continuing without failing the action."
   fi
 }
 
