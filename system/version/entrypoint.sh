@@ -31,7 +31,7 @@ set -euo pipefail
 export MCIX_CMD_NAME="mcix system version"
 export MCIX_BIN_DIR="/usr/share/mcix/bin"
 export MCIX_LOG_DIR="/usr/share/mcix"
-export PATH="$PATH:$MCIX_BIN_DIR"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
 
 : "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
 
