@@ -70,8 +70,8 @@ fi
 # Build command to execute
 # ------------------------
 
-# Start argv
-set -- "$MCIX_CMD_NAME"
+# There are GOOD REASONS we don't use MCIX_CMD_NAME here.
+set -- mcix datastage compile
 
 # Core flags
 set -- "$@" -api-key "$PARAM_API_KEY"

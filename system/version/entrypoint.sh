@@ -63,7 +63,7 @@ EOF
     echo '| Plugin | Version |'
     echo '| ------ | ------- |'
 
-    printf '%s\n' "$CMD_OUTPUT" | awk '
+    awk '
       BEGIN { in_plugins = 0 }
 
       /^Loaded plugins:/ {
@@ -94,7 +94,7 @@ EOF
 
         printf("| %s | %s |\n", plugin, version)
       }
-    '
+    '  "$tmp_out"
     echo '</details>'
 
     echo '<details>'
@@ -121,12 +121,13 @@ write_return_code_and_summary() {
   write_step_summary "$rc"
 }
 # Combine summary/output writing + temp cleanup in a single EXIT trap.
-trap write_return_code_and_summary EXIT
+trap 'write_return_code_and_summary; cleanup' EXIT
 
 # -----------------
 # Build and execute
 # -----------------
-set -- "$MCIX_CMD_NAME"
+# There are GOOD REASONS we don't use MCIX_CMD_NAME here.
+set -- mcix system version
 
 # Capture output so we can detect "It has been logged (ID ...)" failures.
 tmp_out="$(mktemp)"
