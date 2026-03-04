@@ -5,7 +5,7 @@ Reports the MCIX toolset version available in the container.
 <!-- BEGIN MCIX-ACTION-DOCS -->
 # MCIX System Version Action
 
-Get version information about the MettleCI MCIX CLI and container providing CI/CD capabilities for IBM Software Hub (Cloud Pak)
+Retrieve version information on the container providing CI/CD capabilities for IBM Software Hub (Cloud Pak)
 
 > Namespace: `system`<br>
 > Action: `version`<br>
