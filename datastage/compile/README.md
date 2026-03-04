@@ -134,7 +134,7 @@ See https://nextgen.mettleci.io/mettleci-cli/datastage-namespace/#datastage-comp
 <!-- BEGIN MCIX-ACTION-DOCS -->
 # MCIX datastage compile action
 
-Runs mcix datastage compile
+Compile assets in an IBM DataStage project on IBM Software Hub (Cloud Pak) using the MettleCI MCIX CLI
 
 > Namespace: `datastage`<br>
 > Action: `compile`<br>

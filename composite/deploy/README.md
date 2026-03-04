@@ -179,7 +179,7 @@ See repository license.
 <!-- BEGIN MCIX-ACTION-DOCS -->
 # MCIX deploy (overlay, import, compile)
 
-Applies overlays to DataStage assets, then imports and compiles them
+Applies overlays to DataStage assets, then imports and compiles them in a DataStage project on IBM Software Hub (Cloud Pak) using the MettleCI MCIX CLI
 
 > Namespace: `composite`<br>
 > Action: `deploy`<br>
