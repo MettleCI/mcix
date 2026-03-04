@@ -120,6 +120,15 @@ push_split_to_repo() {
 
   local remote="https://x-access-token:${GH_TOKEN}@github.com/${full}.git"
 
+  # DIAGNOSTIC START
+  # Sanity check: confirm GH_TOKEN is set and can see the repo
+  [[ -n "${GH_TOKEN:-}" ]] || die "GH_TOKEN is empty (secret not passed?)"
+
+  echo "Checking remote access to ${full}..."
+  git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${full}.git" HEAD >/dev/null \
+    || die "Token cannot read ${full} (missing access / SSO / wrong token)"
+  # DIAGNOSTIC END
+
   # Force main to match the split output (idempotent)
   git push "$remote" "$split_branch:main" --force
 
