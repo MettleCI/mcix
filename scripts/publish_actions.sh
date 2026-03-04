@@ -46,6 +46,7 @@ die() { echo "ERROR: $*" >&2; exit 1; }
 
 # Validate required files exist in subtree
 validate_subtree_files() {
+  echo "Validating required files in $1..."
   local path="$1"
   [[ -f "$path/action.yml" ]] || die "Missing $path/action.yml"
   [[ -f "$path/Dockerfile" ]] || die "Missing $path/Dockerfile"
@@ -60,6 +61,7 @@ validate_subtree_files() {
 #   - allow: image: docker://<image>
 #   - disallow: local image reference containing '/' (e.g. ./datastage/compile/Dockerfile)
 validate_action_yml_docker_image_path() {
+  echo "Validating Docker image path in $1..."
   local action_yml="$1"
 
   if ! grep -Eq '^[[:space:]]*using:[[:space:]]*docker[[:space:]]*$' "$action_yml"; then
@@ -101,6 +103,7 @@ validate_action_yml_docker_image_path() {
 }
 
 create_repo_if_missing() {
+  echo "Ensuring repo exists: $1..."
   local full="$1"
   local desc="$2"
 
@@ -113,6 +116,7 @@ create_repo_if_missing() {
 }
 
 push_split_to_repo() {
+  echo "Pushing subtree $1 to repo $2 (tags: $TAG, $MAJOR)..."
   local path="$1"
   local full="$2"
   local repo="$3"
@@ -150,6 +154,7 @@ push_split_to_repo() {
 }
 
 create_release_if_missing() {
+  echo "Ensuring release exists for $1@$TAG..."
   local full="$1"
   local repo="$2"
 
@@ -172,6 +177,7 @@ create_release_if_missing() {
 # Main
 # -------------------
 main() {
+  echo "Starting action publishing process for tag $TAG (major: $MAJOR)..."
   git config user.name  "github-actions[bot]"
   git config user.email "github-actions[bot]@users.noreply.github.com"
 
