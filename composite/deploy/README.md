@@ -179,7 +179,7 @@ See repository license.
 <!-- BEGIN MCIX-ACTION-DOCS -->
 # MCIX Deploy Action
 
-Composite action which invokes the Overlay Apply, DataStage Import, and DataStage Compile actions for a DataStage project on IBM Software Hub (Cloud Pak)
+Invokes the Overlay, DataStageImport, and Compile actions for a DataStage project on IBM Software Hub (Cloud Pak)
 
 > Namespace: `composite`<br>
 > Action: `deploy`<br>
