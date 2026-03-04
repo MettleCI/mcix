@@ -132,7 +132,7 @@ jobs:
 See https://nextgen.mettleci.io/mettleci-cli/datastage-namespace/#datastage-compile
 
 <!-- BEGIN MCIX-ACTION-DOCS -->
-# MCIX datastage compile action
+# MCIX DataStage Compile Action
 
 Compile assets in an IBM DataStage project on IBM Software Hub (Cloud Pak) using the MettleCI MCIX CLI
 
@@ -157,7 +157,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Run MCIX datastage compile action
+      - name: Run MCIX DataStage Compile Action
         id: datastage-compile
         uses: ${{ github.repository }}/datastage/compile@v1
         with:

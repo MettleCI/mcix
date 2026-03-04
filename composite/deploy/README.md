@@ -177,9 +177,9 @@ environment: prod
 See repository license.
 
 <!-- BEGIN MCIX-ACTION-DOCS -->
-# MCIX deploy (overlay, import, compile)
+# MCIX Deploy Action
 
-Applies overlays to DataStage assets, then imports and compiles them in a DataStage project on IBM Software Hub (Cloud Pak) using the MettleCI MCIX CLI
+Composite action which invokes the Overlay Apply, DataStage Import, and DataStage Compile actions for a DataStage project on IBM Software Hub (Cloud Pak)
 
 > Namespace: `composite`<br>
 > Action: `deploy`<br>
@@ -202,7 +202,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Run MCIX deploy (overlay, import, compile)
+      - name: Run MCIX Deploy Action
         id: composite-deploy
         uses: ${{ github.repository }}/composite/deploy@v1
         with:
