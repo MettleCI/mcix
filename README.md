@@ -33,7 +33,7 @@ quality checks and deployment activities directly inside GitHub workflows.
 # 📦 Using These Actions in Your Workflow
 
 ```yaml
-name: Validate DataStage Project
+name: Asset Analysis
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Run MCIX static analysis
-        uses: DataMigrators/mcix@v1
+        uses: mettleci/mcix-asset-analysis-test@v1
         with:
           api-key: ${{ secrets.CP4DKEY }}
           url: "${{ vars.CP4DHOSTNAME }}" 

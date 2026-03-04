@@ -171,7 +171,7 @@ main() {
     validate_subtree_files "$path"
     validate_action_yml_docker_image_path "$path/action.yml"
 
-    create_repo_if_missing "$full" "GitHub Action published from monorepo path: ${path}"
+    # create_repo_if_missing "$full" "GitHub Action published from monorepo path: ${path}"
     push_split_to_repo "$path" "$full" "$repo"
 
     if [[ "$CREATE_RELEASES" == "true" ]]; then
