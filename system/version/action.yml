@@ -1,5 +1,24 @@
 # action.yml
-name: 'MCIX system version action'
+
+# ███╗   ███╗███████╗████████╗████████╗██╗     ███████╗ ██████╗██╗
+# ████╗ ████║██╔════╝╚══██╔══╝╚══██╔══╝██║     ██╔════╝██╔════╝██║
+# ██╔████╔██║█████╗     ██║      ██║   ██║     █████╗  ██║     ██║
+# ██║╚██╔╝██║██╔══╝     ██║      ██║   ██║     ██╔══╝  ██║     ██║
+# ██║ ╚═╝ ██║███████╗   ██║      ██║   ███████╗███████╗╚██████╗██║
+# ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝ ╚═════╝╚═╝
+# MettleCI DevOps for DataStage       (C) 2025-2026 Data Migrators
+#                _
+#  ___ _   _ ___| |_ ___ _ __ ___
+# / __| | | / __| __/ _ \ '_ ` _ \
+# \__ \ |_| \__ \ ||  __/ | | | | |
+# |___/\__, |___/\__\___|_| |_| |_|
+#      |___/          _
+# __   _____ _ __ ___(_) ___  _ __
+# \ \ / / _ \ '__/ __| |/ _ \| '_ \
+#  \ V /  __/ |  \__ \ | (_) | | | |
+#   \_/ \___|_|  |___/_|\___/|_| |_|
+
+name: 'MCIX System Version Action'
 author: 'Data Migrators Pty Ltd'
 description: 'Get version information about the MettleCI MCIX CLI and container providing CI/CD capabilities for IBM Software Hub (Cloud Pak)'
 branding:
