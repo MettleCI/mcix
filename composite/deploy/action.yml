@@ -20,7 +20,7 @@
 #            |_|            |___/
 
 name: "MCIX Deploy Action"
-description: "Composite action which invokes the Overlay Apply, DataStage Import, and DataStage Compile actions for a DataStage project on IBM Software Hub (Cloud Pak)"
+description: "Invokes the Overlay, DataStageImport, and Compile actions for a DataStage project on IBM Software Hub (Cloud Pak)"
 author: "Data Migrators Pty Ltd"
 branding:
   icon: "arrow-up-circle"
