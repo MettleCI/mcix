@@ -37,6 +37,8 @@ actions=(
   "unit-test/execute:mcix-unit-test-execute"
 )
 
+: "${GH_TOKEN:?GH_TOKEN is not set. Did you forget secrets.PUSH_MARKETPLACE_REPO_PAT?}"
+
 # -------------------
 # Functions
 # -------------------
@@ -127,6 +129,10 @@ push_split_to_repo() {
   echo "Checking remote access to ${full}..."
   git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${full}.git" HEAD >/dev/null \
     || die "Token cannot read ${full} (missing access / SSO / wrong token)"
+
+  git -c "http.extraHeader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" \
+    ls-remote "https://github.com/${full}.git" HEAD >/dev/null \
+    || die "PAT cannot access ${full} (wrong scopes, SSO not authorized, or no repo access)"
   # DIAGNOSTIC END
 
   # Force main to match the split output (idempotent)

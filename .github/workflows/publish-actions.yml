@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install GitHub CLI
         run: |
@@ -27,11 +28,11 @@ jobs:
           GH_TOKEN: ${{ secrets.PUSH_MARKETPLACE_REPO_PAT }}
         run: gh auth status
 
-      - name: Publish action repos
+      - name: Publish actions to marketplace repos
         env:
           OWNER: mettleci
           TAG: ${{ github.ref_name }}          # vX.Y.Z
           GH_TOKEN: ${{ secrets.PUSH_MARKETPLACE_REPO_PAT }}
-          CREATE_RELEASES: "true"              # set to "false" to disable
+          CREATE_RELEASES: 'true'              # set to "false" to disable
         run: |
-          ./scripts/publish_actions.sh
+          bash ./scripts/publish_actions.sh
