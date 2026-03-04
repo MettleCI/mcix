@@ -137,7 +137,7 @@ push_split_to_repo() {
   git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${full}.git" HEAD
 
   echo "Checking remote access to ${full}..."
-  git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${full}.git" HEAD >/dev/null \
+  git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${full}.git" HEAD \
     || die "Token cannot read ${full} (missing access / SSO / wrong token)"
 
   git -c "http.extraHeader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" \
@@ -198,7 +198,7 @@ main() {
     validate_subtree_files "$path"
     validate_action_yml_docker_image_path "$path/action.yml"
 
-    # create_repo_if_missing "$full" "GitHub Action published from monorepo path: ${path}"
+    create_repo_if_missing "$full" "GitHub Action published from monorepo path: ${path}"
     push_split_to_repo "$path" "$full" "$repo"
 
     if [[ "$CREATE_RELEASES" == "true" ]]; then
