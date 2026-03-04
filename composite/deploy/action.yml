@@ -20,10 +20,10 @@
 #            |_|            |___/
 
 name: "MCIX deploy (overlay, import, compile)"
-description: "Applies overlays to DataStage assets, then imports and compiles them"
+description: "Applies overlays to DataStage assets, then imports and compiles them in a DataStage project on IBM Software Hub (Cloud Pak) using the MettleCI MCIX CLI"
 author: "Data Migrators Pty Ltd"
 branding:
-  icon: "layers"
+  icon: "arrow-up-circle"
   color: "blue"
 
 inputs:

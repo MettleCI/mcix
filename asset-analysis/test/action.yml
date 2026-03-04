@@ -21,7 +21,7 @@
 
 name: 'MCIX asset-analysis test action'
 author: 'Data Migrators Pty Ltd'
-description: 'Runs mcix asset-analysis test'
+description: 'Run asset analysis tests on DataStage assets in an IBM Software Hub (Cloud Pak) project using the MettleCI MCIX CLI'
 branding:
   icon: 'search'
   color: 'blue'
@@ -44,7 +44,7 @@ inputs:
     required: true
 
   report:
-    description: 'Path to output the compile report'
+    description: 'Path to output the asset analysis report'
     required: true
 
   project:

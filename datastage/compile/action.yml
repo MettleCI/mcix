@@ -1,9 +1,9 @@
 # action.yml
 name: 'MCIX datastage compile action'
 author: 'Data Migrators Pty Ltd'
-description: 'Runs mcix datastage compile'
+description: 'Compile assets in an IBM DataStage project on IBM Software Hub (Cloud Pak) using the MettleCI MCIX CLI'
 branding:
-  icon: 'zap'
+  icon: 'refresh-cw'
   color: 'blue'
 
 # Note that true/false boolean inputs accept:

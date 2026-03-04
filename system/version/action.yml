@@ -1,7 +1,7 @@
 # action.yml
 name: 'MCIX system version action'
 author: 'Data Migrators Pty Ltd'
-description: 'Runs mcix system version'
+description: 'Get version information about the MettleCI MCIX CLI and container providing CI/CD capabilities for IBM Software Hub (Cloud Pak)'
 branding:
   icon: 'info'
   color: 'blue'
