@@ -130,6 +130,12 @@ push_split_to_repo() {
   # Sanity check: confirm GH_TOKEN is set and can see the repo
   [[ -n "${GH_TOKEN:-}" ]] || die "GH_TOKEN is empty (secret not passed?)"
 
+  echo "PAT identity:"
+  gh api user --jq '.login'
+
+  echo "Checking remote access to ${full}..."
+  git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${full}.git" HEAD
+
   echo "Checking remote access to ${full}..."
   git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${full}.git" HEAD >/dev/null \
     || die "Token cannot read ${full} (missing access / SSO / wrong token)"
