@@ -20,7 +20,7 @@
 
 name: 'MCIX System Version Action'
 author: 'Data Migrators Pty Ltd'
-description: 'Retrieve version information on the container providing CI/CD capabilities for IBM Software Hub (Cloud Pak)'
+description: 'Retrieve details on the MCIX container providing DataStage CI/CD capabilities for IBM Software Hub (Cloud Pak)'
 branding:
   icon: 'info'
   color: 'blue'
