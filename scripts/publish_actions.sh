@@ -27,7 +27,8 @@ CREATE_RELEASES="${CREATE_RELEASES:-true}"
 MAJOR="v${TAG#v}"
 MAJOR="${MAJOR%%.*}"
 
-HOMEPAGE="https://mcix.mettleci.com"
+# Redundant for now. We set per-repo homepages, but this might be useful in the future.
+HOMEPAGE="https://mcix.mettleci.com"    
 
 actions=(
   'asset-analysis/test:mcix-asset-analysis-test:["github-actions","mcix","asset-analysis"]'
@@ -283,6 +284,11 @@ derive_about_desc() {
   fi
 }
 
+repo_homepage() {
+  local repo="$1"  # e.g. mcix-datastage-compile
+  printf 'https://%s.mettleci.io' "$repo"
+}
+
 # -------------------
 # Main
 # -------------------
@@ -323,7 +329,8 @@ summary_append "## Published action repositories (${TAG})"
       "${full} successfully updated from '${path}' (tag ${TAG})"
     fi
 
-    set_repo_about "$full" "$about_desc" "$HOMEPAGE" "$topics_json"
+    homepage="$(repo_homepage "$repo")"
+    set_repo_about "$full" "$about_desc" "$homepage" "$topics_json"
 
     if ! push_split_to_repo "$path" "$full" "$repo"; then
       gh_error "Failed publishing repository" \
