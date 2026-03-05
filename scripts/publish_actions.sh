@@ -334,8 +334,8 @@ summary_append "## Published action repositories (${TAG})"
 
     if ! push_split_to_repo "$path" "$full" "$repo"; then
       gh_error "Failed publishing repository" \
-      "Failed to publish ${full}
-      Source path: ${path
+      "Failed to publish ${full}. 
+      Source path: ${path}
       Tag: ${TAG}
       Repository: ${repo_url}
       Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
