@@ -159,7 +159,7 @@ jobs:
 See  https://nextgen.mettleci.io/mettleci-cli/overlay-namespace/#overlay-apply
 
 <!-- BEGIN MCIX-ACTION-DOCS -->
-# MCIX DataStage Overlay Apply
+# MCIX Overlay Apply
 
 Apply overlay directories to exported IBM Software Hub (Cloud Pak) DataStage assets using the MettleCI MCIX CLI
 
@@ -184,7 +184,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Run MCIX DataStage Overlay Apply
+      - name: Run MCIX Overlay Apply
         id: overlay-apply
         uses: ${{ github.repository }}/overlay/apply@v1
         with:

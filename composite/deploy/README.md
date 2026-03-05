@@ -177,7 +177,7 @@ environment: prod
 See repository license.
 
 <!-- BEGIN MCIX-ACTION-DOCS -->
-# MCIX Deploy Action
+# MCIX DataStage Deploy
 
 Invokes the Overlay, DataStageImport, and Compile actions for a DataStage project on IBM Software Hub (Cloud Pak)
 
@@ -202,7 +202,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Run MCIX Deploy Action
+      - name: Run MCIX DataStage Deploy
         id: composite-deploy
         uses: ${{ github.repository }}/composite/deploy@v1
         with:
