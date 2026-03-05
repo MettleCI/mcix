@@ -18,7 +18,7 @@
 #  \ V /  __/ |  \__ \ | (_) | | | |
 #   \_/ \___|_|  |___/_|\___/|_| |_|
 
-name: 'MCIX System Version Action'
+name: 'MCIX System Version'
 author: 'Data Migrators Pty Ltd'
 description: 'Retrieve details on the MCIX container providing DataStage CI/CD capabilities for IBM Software Hub (Cloud Pak)'
 branding:

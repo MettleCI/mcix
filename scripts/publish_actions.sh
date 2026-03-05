@@ -25,16 +25,18 @@ CREATE_RELEASES="${CREATE_RELEASES:-true}"
 
 # Derive major tag (v1 from v1.2.3)
 MAJOR="v${TAG#v}"
-MAJOR="v${MAJOR%%.*}"
+MAJOR="${MAJOR%%.*}"
+
+HOMEPAGE="https://mcix.mettleci.com"
 
 actions=(
-  "asset-analysis/test:mcix-asset-analysis-test"
-  "composite/deploy:mcix-composite-deploy"
-  "datastage/compile:mcix-datastage-compile"
-  "datastage/import:mcix-datastage-import"
-  "overlay/apply:mcix-overlay-apply"
-  "system/version:mcix-system-version"
-  "unit-test/execute:mcix-unit-test-execute"
+  'asset-analysis/test:mcix-asset-analysis-test:["github-actions","mcix","asset-analysis"]'
+  'composite/deploy:mcix-composite-deploy:["github-actions","mcix","composite"]'
+  'datastage/compile:mcix-datastage-compile:["github-actions","mcix","datastage","compile"]'
+  'datastage/import:mcix-datastage-import:["github-actions","mcix","datastage","import"]'
+  'overlay/apply:mcix-overlay-apply:["github-actions","mcix","overlay"]'
+  'system/version:mcix-system-version:["github-actions","mcix","system"]'
+  'unit-test/execute:mcix-unit-test-execute:["github-actions","mcix","unit-test"]'
 )
 
 : "${GH_TOKEN:?GH_TOKEN is not set. Did you forget secrets.PUSH_MARKETPLACE_REPO_PAT?}"
@@ -110,9 +112,32 @@ create_repo_if_missing() {
   if gh repo view "$full" >/dev/null 2>&1; then
     echo "Repo exists: $full"
   else
-    gh repo create "$full" --public --description "$desc"
+    gh repo create "$full" --public
     echo "Created repo: $full"
   fi
+}
+
+set_repo_about() {
+  local full="$1"         # owner/repo
+  local desc="$2"         # repo description
+  local homepage="$3"     # website/homepage URL (can be empty)
+  local topics_json="$4"  # JSON array string, e.g. ["github-actions","mcix"]
+
+  echo "Setting About metadata for ${full}..."
+
+  # Description + Website (homepage)
+  gh api -X PATCH "repos/${full}" \
+    -H "Accept: application/vnd.github+json" \
+    -f description="$desc" \
+    -f homepage="$homepage" >/dev/null
+
+  # Topics (replaces the entire topic set)
+  # NOTE: This endpoint expects {"names":[...]}.
+  gh api -X PUT "repos/${full}/topics" \
+    -H "Accept: application/vnd.github+json" \
+  --input - <<EOF >/dev/null
+{"names": $topics_json}
+EOF
 }
 
 push_split_to_repo() {
@@ -135,10 +160,6 @@ push_split_to_repo() {
 
   echo "Checking remote access to ${full}..."
   git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${full}.git" HEAD
-
-  echo "Checking remote access to ${full}..."
-  git ls-remote "https://x-access-token:${GH_TOKEN}@github.com/${full}.git" HEAD \
-    || die "Token cannot read ${full} (missing access / SSO / wrong token)"
 
   git -c "http.extraHeader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" \
     ls-remote "https://github.com/${full}.git" HEAD >/dev/null \
@@ -188,9 +209,9 @@ main() {
   git config user.email "github-actions[bot]@users.noreply.github.com"
 
   for item in "${actions[@]}"; do
-    local path="${item%%:*}"
-    local repo="${item##*:}"
-    local full="${OWNER}/${repo}"
+    IFS=':' read -r path repo topics_json <<<"$item"
+
+    full="${OWNER}/${repo}"
 
     echo ""
     echo "==> Publishing ${full} from ${path}"
@@ -198,7 +219,11 @@ main() {
     validate_subtree_files "$path"
     validate_action_yml_docker_image_path "$path/action.yml"
 
-    create_repo_if_missing "$full" "GitHub Action published from monorepo path: ${path}"
+    about_desc="GitHub Action published from monorepo path: ${path}"
+
+    create_repo_if_missing "$full" "$about_desc"
+    set_repo_about "$full" "$about_desc" "$HOMEPAGE" "$topics_json"
+
     push_split_to_repo "$path" "$full" "$repo"
 
     if [[ "$CREATE_RELEASES" == "true" ]]; then

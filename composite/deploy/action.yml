@@ -19,7 +19,7 @@
 #  \__,_|\___| .__/|_|\___/ \__, |
 #            |_|            |___/
 
-name: "MCIX Deploy Action"
+name: "MCIX DataStage Deploy"
 description: "Invokes the Overlay, DataStageImport, and Compile actions for a DataStage project on IBM Software Hub (Cloud Pak)"
 author: "Data Migrators Pty Ltd"
 branding:

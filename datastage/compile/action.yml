@@ -19,7 +19,7 @@
 #  \__,_|\___| .__/|_|\___/ \__, |
 #            |_|            |___/
 
-name: 'MCIX DataStage Compile Action'
+name: 'MCIX DataStage Compile'
 author: 'Data Migrators Pty Ltd'
 description: 'Compile assets in an IBM DataStage project on IBM Software Hub (Cloud Pak) using the MettleCI MCIX CLI'
 branding:
