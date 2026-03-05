@@ -3,7 +3,7 @@
 Reports the MCIX toolset version available in the container.
 
 <!-- BEGIN MCIX-ACTION-DOCS -->
-# MCIX System Version Action
+# MCIX System Version
 
 Retrieve details on the MCIX container providing DataStage CI/CD capabilities for IBM Software Hub (Cloud Pak)
 
@@ -28,7 +28,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Run MCIX System Version Action
+      - name: Run MCIX System Version
         id: system-version
         uses: ${{ github.repository }}/system/version@v1
 ```
