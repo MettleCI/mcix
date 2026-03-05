@@ -58,8 +58,10 @@ require PARAM_RULES "rules"
 PARAM_REPORT="$(resolve_workspace_path "$PARAM_REPORT")"
 
 # Fail if the report already exists which may be the case if this action is
-# invoked multiple times with the same report path but no. This is to prevent multiple 
+# invoked multiple times with the same report path.  This is to prevent multiple 
 # test runs from overwriting each other's reports and causing confusion.
+# This shouldn't be possible in practice as the container is ephemeral but in case 
+# someone does a 'docker run' with the container we'll leave this safeguard in place.
 if [ -e "$PARAM_REPORT" ]; then
   die "JUnit report already exists: $PARAM_REPORT. Each invocation must use a unique report path."
 else

@@ -181,9 +181,6 @@ push_split_to_repo() {
   git push "$remote" ":refs/tags/$MAJOR" >/dev/null 2>&1 || true
   git push "$remote" "$split_branch:refs/tags/$MAJOR" --force
 
-  gh_notice "Repository published" \
-    "${full} updated from '${path}' (tag ${TAG})"
-
   git branch -D "$split_branch"
 }
 
@@ -310,10 +307,6 @@ summary_append "## Published action repositories (${TAG})"
 
     repo_url="https://github.com/${full}"
 
-    gh_notice "Publishing GitHub Marketplace repo" \
-      "${full}  ←  ${path}\n${repo_url}"
-    summary_repo_line "$full" "$path"
-
     validate_subtree_files "$path"
     validate_action_yml_docker_image_path "$path/action.yml"
 
@@ -325,8 +318,6 @@ summary_append "## Published action repositories (${TAG})"
       exit 1
     else
       echo "Repository ready: ${full}"
-      gh_notice "Published action repository" \
-      "${full} successfully updated from '${path}' (tag ${TAG})"
     fi
 
     homepage="$(repo_homepage "$repo")"
@@ -347,6 +338,11 @@ summary_append "## Published action repositories (${TAG})"
     else
       echo "CREATE_RELEASES=false; skipping release creation"
     fi
+
+    gh_notice "Published GitHub Marketplace repo ${path}" \
+      "${path} → ${full} (tag ${TAG}) - ${repo_url}"
+    summary_repo_line "$full" "$path"
+
   done
 }
 

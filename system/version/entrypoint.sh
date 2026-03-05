@@ -104,6 +104,8 @@ EOF
     env | sort
     echo '```'
     echo '</details>'
+
+    cat /github/workspace/compliance/scan-metadata.txt
   } >>"$GITHUB_STEP_SUMMARY"
 }
 
@@ -126,7 +128,8 @@ trap 'write_return_code_and_summary; cleanup' EXIT
 # -----------------
 # Build and execute
 # -----------------
-# There are GOOD REASONS we don't use MCIX_CMD_NAME here.
+# There are GOOD REASONS we don't use MCIX_CMD_NAME here, but the necessary lesson
+# in shell variable expansion is too long to go into here.  Just trust me - JMcK.
 set -- mcix system version
 
 # Prepare a file to capture output so we can detect "It has been logged (ID ...)" failures.
