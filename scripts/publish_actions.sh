@@ -107,13 +107,16 @@ validate_action_yml_docker_image_path() {
 create_repo_if_missing() {
   echo "Ensuring repo exists: $1..."
   local full="$1"
-  local desc="$2"
 
   if gh repo view "$full" >/dev/null 2>&1; then
     echo "Repo exists: $full"
-  else
-    gh repo create "$full" --public
+    return 0
+  fi
+
+  if gh repo create "$full" --public; then
     echo "Created repo: $full"
+  else
+    return 1
   fi
 }
 
@@ -177,6 +180,9 @@ push_split_to_repo() {
   git push "$remote" ":refs/tags/$MAJOR" >/dev/null 2>&1 || true
   git push "$remote" "$split_branch:refs/tags/$MAJOR" --force
 
+  gh_notice "Repository published" \
+    "${full} updated from '${path}' (tag ${TAG})"
+
   git branch -D "$split_branch"
 }
 
@@ -200,11 +206,91 @@ create_release_if_missing() {
   echo "Created release: $full@$TAG"
 }
 
+gh_notice() {
+  local title="$1"
+  local message="$2"
+
+  # Minimal escaping for workflow commands
+  message="${message//'%'/'%25'}"
+  message="${message//$'\r'/'%0D'}"
+  message="${message//$'\n'/'%0A'}"
+
+  echo "::notice title=${title}::${message}"
+}
+
+gh_error() {
+  local title="$1" message="$2"
+  message="${message//'%'/'%25'}"
+  message="${message//$'\r'/'%0D'}"
+  message="${message//$'\n'/'%0A'}"
+  echo "::error title=${title}::${message}"
+}
+summary_append() {
+  [ -n "${GITHUB_STEP_SUMMARY:-}" ] || return 0
+  printf '%s\n' "$*" >>"$GITHUB_STEP_SUMMARY"
+}
+
+summary_repo_line() {
+  local full="$1" path="$2"
+  local url="https://github.com/${full}"
+  summary_append "- **${full}** ← \`${path}\`  (${url})"
+}
+
+# Extract a single-line top-level YAML scalar (e.g. name: ..., description: ...)
+yaml_top_scalar() {
+  local key="$1"
+  local file="$2"
+
+  # Match "key: value" at column 0 (allow spaces). Ignore commented lines.
+  # Trim surrounding quotes (single or double) if present.
+  local line val
+  line="$(grep -E "^[[:space:]]*${key}:[[:space:]]*" "$file" \
+        | grep -Ev '^[[:space:]]*#' \
+        | head -n 1 || true)"
+  [ -n "$line" ] || return 1
+
+  val="${line#*:}"
+  val="${val#"${val%%[![:space:]]*}"}"   # ltrim
+  val="${val%"${val##*[![:space:]]}"}"   # rtrim
+
+  # Strip one layer of matching quotes
+  if [[ "$val" == \"*\" && "$val" == *\" ]]; then
+    val="${val#\"}"; val="${val%\"}"
+  elif [[ "$val" == \'*\' && "$val" == *\' ]]; then
+    val="${val#\'}"; val="${val%\'}"
+  fi
+
+  [ -n "$val" ] || return 1
+  printf '%s' "$val"
+}
+
+derive_about_desc() {
+  local path="$1"
+  local action_yml="${path}/action.yml"
+
+  local name desc
+  name="$(yaml_top_scalar name "$action_yml" 2>/dev/null || true)"
+  desc="$(yaml_top_scalar description "$action_yml" 2>/dev/null || true)"
+
+  if [ -n "$name" ] && [ -n "$desc" ]; then
+    printf '%s — %s' "$name" "$desc"
+  elif [ -n "$name" ]; then
+    printf '%s' "$name"
+  elif [ -n "$desc" ]; then
+    printf '%s' "$desc"
+  else
+    printf 'GitHub Action published from monorepo path: %s' "$path"
+  fi
+}
+
 # -------------------
 # Main
 # -------------------
 main() {
   echo "Starting action publishing process for tag $TAG (major: $MAJOR)..."
+summary_append "## Published action repositories (${TAG})"
+  summary_append ""
+
   git config user.name  "github-actions[bot]"
   git config user.email "github-actions[bot]@users.noreply.github.com"
 
@@ -216,15 +302,38 @@ main() {
     echo ""
     echo "==> Publishing ${full} from ${path}"
 
+    repo_url="https://github.com/${full}"
+
+    gh_notice "Publishing GitHub Marketplace repo" \
+      "${full}  ←  ${path}\n${repo_url}"
+    summary_repo_line "$full" "$path"
+
     validate_subtree_files "$path"
     validate_action_yml_docker_image_path "$path/action.yml"
 
-    about_desc="GitHub Action published from monorepo path: ${path}"
+    about_desc="$(derive_about_desc "$path") (from ${path})"
 
-    create_repo_if_missing "$full" "$about_desc"
+    if ! create_repo_if_missing "$full" "$about_desc"; then
+      gh_error "Failed ensuring repository exists" \
+        "Failed to publish ${full} from monorepo path '${path}'.\nRepository: ${repo_url}\nWorkflow run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+      exit 1
+    else
+      echo "Repository ready: ${full}"
+      gh_notice "Published action repository" \
+      "${full} successfully updated from '${path}' (tag ${TAG})"
+    fi
+
     set_repo_about "$full" "$about_desc" "$HOMEPAGE" "$topics_json"
 
-    push_split_to_repo "$path" "$full" "$repo"
+    if ! push_split_to_repo "$path" "$full" "$repo"; then
+      gh_error "Failed publishing repository" \
+      "Failed to publish ${full}
+      Source path: ${path
+      Tag: ${TAG}
+      Repository: ${repo_url}
+      Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+      exit 1
+    fi
 
     if [[ "$CREATE_RELEASES" == "true" ]]; then
       create_release_if_missing "$full" "$repo"
