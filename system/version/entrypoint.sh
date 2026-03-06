@@ -105,8 +105,7 @@ EOF
     echo '```'
     echo '</details>'
 
-    find . -name "scan-metadata.txt" -print
-    ls . "/usr/share/mcix/compliance/common.sh"
+    ls -r "/usr/share/"
   } >>"$GITHUB_STEP_SUMMARY"
 }
 
