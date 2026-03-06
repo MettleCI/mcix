@@ -105,7 +105,7 @@ EOF
     echo '```'
     echo '</details>'
 
-    cat /github/workspace/compliance/scan-metadata.txt
+    find . -name "scan-metadata.txt" -print
   } >>"$GITHUB_STEP_SUMMARY"
 }
 
