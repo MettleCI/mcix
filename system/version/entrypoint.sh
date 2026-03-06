@@ -67,10 +67,10 @@ EOF
     echo '```'
     cat "${MCIX_COMPLIANCE_DIR}/scan-metadata.txt"
     echo '```'
-    echo '</details>'
     echo
     echo 'You can inspect the image OCI and other compliance labels with:'
     echo "\`docker inspect <image-ref>:<version-tag> --format '{{ json .Config.Labels }}'\`"
+    echo '</details>'
     
     # Display the environment variables provided by GitHub to the execution environment. (collapsed by default)
     echo '<details>'
