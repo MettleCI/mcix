@@ -6,7 +6,7 @@
 # ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝ ╚═════╝╚═╝
 # MettleCI DevOps for DataStage       (C) 2021-2025 Data Migrators
 
-name: MettleCI Example DevOps Workflow
+name: MettleCI container diagnostics
 
 # This workflow runs a the mcix system version action to provide 
 # diagnostic information about the MCIX container environment within 
