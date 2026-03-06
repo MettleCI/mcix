@@ -1,0 +1,57 @@
+# ███╗   ███╗███████╗████████╗████████╗██╗     ███████╗ ██████╗██╗
+# ████╗ ████║██╔════╝╚══██╔══╝╚══██╔══╝██║     ██╔════╝██╔════╝██║
+# ██╔████╔██║█████╗     ██║      ██║   ██║     █████╗  ██║     ██║
+# ██║╚██╔╝██║██╔══╝     ██║      ██║   ██║     ██╔══╝  ██║     ██║
+# ██║ ╚═╝ ██║███████╗   ██║      ██║   ███████╗███████╗╚██████╗██║
+# ╚═╝     ╚═╝╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚══════╝ ╚═════╝╚═╝
+# MettleCI DevOps for DataStage       (C) 2021-2025 Data Migrators
+
+name: MettleCI Example DevOps Workflow
+
+# This workflow runs a the mcix system version action to provide 
+# diagnostic information about the MCIX container environment within 
+# which the workflow is executing. 
+
+# -----------------------------------------------------------
+# SETUP
+# -----------------------------------------------------------
+
+# Trigger this pipeline on a commit to the main branch
+# Refine these conditions to suit your needs
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+# Specify GitHub Token permissions (required)
+permissions:
+  contents: read
+  checks: write
+
+# This setting allows a subsequently queued workflow run to interrupt previous runs.
+# Useful if you forget to commit a dependent asset - just commit the new asset and
+# any pipelines in-progress will be stopped and a new pipeline initiated.
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+# Properties of the default GitHub runner within which workflow steps are executed.
+# Most jobs within this workflow will override this to by using MCIX actions that execute within the MCIX container.
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Dumps diagnostic information for debugging purposes and to provide visibility into the environment 
+  # within which the workflow is executing. This can be helpful for troubleshooting and ensuring that 
+  # the workflow is running within an environment with the expected resources and configuration.
+  Diagnostics:
+    name: Diagnostics
+    #runs-on: [self-hosted, Windows, dev-runner, MettleCI, CP4D]
+    runs-on: ubuntu-latest
+    steps:
+      # Call system version action
+      - name: mcix system version action
+        uses: mettleci/mcix/system/version@latest
+        id: mcix-system-version
