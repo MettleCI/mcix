@@ -61,15 +61,26 @@ EOF
 
     # Display the contents of the mcix image's scan-metadata.txt file. (collapsed by default)
     echo '<details>'
-    echo '<summary>Image compliance labels</summary>'
-    echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
-    echo 'You can inspect the image compliance labels yourself by pulling the image and running:'
-    echo "\`docker inspect \<image-ref\>:\<version-tag\> --format '{{ json .Config.Labels }}'\`"
+    echo '<summary>Image compliance information</summary>'
+    echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+    echo "${MCIX_COMPLIANCE_DIR}/scan-metadata.txt"
     echo '```'
     cat "${MCIX_COMPLIANCE_DIR}/scan-metadata.txt"
     echo '```'
     echo '</details>'
+    echo
+    echo 'You can inspect the image OCI and other compliance labels with:'
+    echo "\`docker inspect <image-ref>:<version-tag> --format '{{ json .Config.Labels }}'\`"
     
+    # Display the environment variables provided by GitHub to the execution environment. (collapsed by default)
+    echo '<details>'
+    echo '<summary>GitHub execution environment</summary>'
+    echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
+    echo '```'
+    env | sort
+    echo '```'
+    echo '</details>'
+
     # Display a tabulated form of the plugins reported by mcix system version output (collapsed by default)
     echo '<details>'
     echo '<summary>MCIX plugins loaded</summary>'
@@ -109,15 +120,6 @@ EOF
         printf("| %s | %s |\n", plugin, version)
       }
     '  "$tmp_out"
-    echo '</details>'
-
-    # Display the environment variables provided by GitHub to the execution environment. (collapsed by default)
-    echo '<details>'
-    echo '<summary>Execution environment</summary>'
-    echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
-    echo '```'
-    env | sort
-    echo '```'
     echo '</details>'
 
   } >>"$GITHUB_STEP_SUMMARY"
