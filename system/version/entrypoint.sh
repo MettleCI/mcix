@@ -51,14 +51,26 @@ write_step_summary() {
 ### MCIX System Version
 EOF
 
+    # Display the mcix system version header
     echo '```text'
     awk '
       /^[[:space:]]*$/ { exit }              # stop on first blank line
       { print }
     ' "$tmp_out"
     echo '```'
+
+    # Display the contents of the mcix image's scan-metadata.txt file. (collapsed by default)
     echo '<details>'
-    echo '<summary>Loaded plugins</summary>'
+    echo '<summary>Image compliance labels</summary>'
+    echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
+    echo '```'
+    cat "${MCIX_COMPLIANCE_DIR}/scan-metadata.txt"
+    echo '```'
+    echo '</details>'
+    
+    # Display a tabulated form of the plugins reported by mcix system version output (collapsed by default)
+    echo '<details>'
+    echo '<summary>MCIX plugins loaded</summary>'
     echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
     echo '| Plugin | Version |'
     echo '| ------ | ------- |'
@@ -97,6 +109,7 @@ EOF
     '  "$tmp_out"
     echo '</details>'
 
+    # Display the environment variables provided by GitHub to the execution environment. (collapsed by default)
     echo '<details>'
     echo '<summary>Execution environment</summary>'
     echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
@@ -105,14 +118,6 @@ EOF
     echo '```'
     echo '</details>'
 
-    echo '<details>'
-    echo '<summary>Image compliance labels</summary>'
-    echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
-    echo '```'
-    cat "${MCIX_COMPLIANCE_DIR}/scan-metadata.txt"
-    echo '```'
-    echo '</details>'
-    
   } >>"$GITHUB_STEP_SUMMARY"
 }
 
