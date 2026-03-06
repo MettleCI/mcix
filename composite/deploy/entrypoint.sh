@@ -93,7 +93,6 @@ PARAM_OUTPUT="${PARAM_OUTPUT-}"
 PARAM_REPORT="${PARAM_REPORT-}"
 PARAM_INCLUDE_ASSET_IN_TEST_NAME="${PARAM_INCLUDE_ASSET_IN_TEST_NAME-}"
 
-
 # -------------------
 # Normalize paths
 # -------------------
