@@ -105,7 +105,14 @@ EOF
     echo '```'
     echo '</details>'
 
-    ls -R "/usr/share/"
+    echo '<details>'
+    echo '<summary>Image compliance labels</summary>'
+    echo  # A blank line after the <summary> tag is required by GitHub to format the content correctly
+    echo '```'
+    cat "${MCIX_COMPLIANCE_DIR}/scan-metadata.txt"
+    echo '```'
+    echo '</details>'
+    
   } >>"$GITHUB_STEP_SUMMARY"
 }
 
