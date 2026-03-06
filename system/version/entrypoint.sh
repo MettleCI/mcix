@@ -63,7 +63,7 @@ EOF
     echo '<details>'
     echo '<summary>Image compliance information</summary>'
     echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-    echo "${MCIX_COMPLIANCE_DIR}/scan-metadata.txt"
+    echo "Available in \`${MCIX_COMPLIANCE_DIR}/scan-metadata.txt\`"
     echo '```'
     cat "${MCIX_COMPLIANCE_DIR}/scan-metadata.txt"
     echo '```'
