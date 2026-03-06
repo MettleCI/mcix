@@ -105,7 +105,7 @@ EOF
     echo '```'
     echo '</details>'
 
-    ls -r "/usr/share/"
+    ls -R "/usr/share/"
   } >>"$GITHUB_STEP_SUMMARY"
 }
 
