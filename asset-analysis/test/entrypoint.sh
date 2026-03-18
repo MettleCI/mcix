@@ -121,7 +121,7 @@ if [ -n "$ADDITIONAL_ARGS" ]; then
   done
 fi
 
-# ------------${MCIX_LOG_DIR}/*.log
+# ------------
 # Step summary
 # ------------
 write_step_summary() {
@@ -135,9 +135,8 @@ write_step_summary() {
         echo '<details>'
         echo '<summary>Command Log</summary>'
         echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-        echo "Available in \`${MCIX_COMPLIANCE_DIR}/scan-metadata.txt\`"
         echo '```'
-        cat "${MCIX_LOG_DIR}/stdout.log"
+        cat "${MCIX_LOG_DIR}/*.log"
         echo '```'
         echo '</details>'
       fi
