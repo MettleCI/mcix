@@ -131,9 +131,13 @@ write_step_summary() {
     {
       echo "**❌ Error:** There was an error logged while running the command."
       if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
-        # Display the contents of the mcix command's stdout.log file. (collapsed by default)
+        # Capture the log entry and include it in the summary for visibility. 
+        grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
+          || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
+
+        # Display the contents of the mcix command's log file. (collapsed by default)
         echo '<details>'
-        echo '<summary>Command Log</summary>'
+        echo '<summary>Complete Command Log</summary>'
         echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
         echo '```'
         cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
