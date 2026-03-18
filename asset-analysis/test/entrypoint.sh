@@ -136,7 +136,7 @@ write_step_summary() {
         echo '<summary>Command Log</summary>'
         echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
         echo '```'
-        cat "${MCIX_LOG_DIR}/*.log"
+        cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
         echo '```'
         echo '</details>'
       fi
