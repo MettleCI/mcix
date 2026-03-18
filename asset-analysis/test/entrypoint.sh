@@ -112,10 +112,9 @@ if [ "$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")" -eq 1 ]; then
   set -- "$@" -include-asset-in-test-name
 fi
 
+echo "Addtional args: ${PARAM_ADDITIONAL_ARGS:-}"
 ADDITIONAL_ARGS="${PARAM_ADDITIONAL_ARGS:-}"
 if [ -n "$ADDITIONAL_ARGS" ]; then
-  echo "Addtional args: $ADDITIONAL_ARGS"
-
   readarray -t args < <(printf "%s" "$ADDITIONAL_ARGS" | xargs -n 1)
 
   echo "Split args: #args[@]"
@@ -123,7 +122,7 @@ if [ -n "$ADDITIONAL_ARGS" ]; then
   for arg in "${args[@]}"; do
 
     echo "Adding additional arg: $arg"
-    
+
     set -- "$@" $arg
   done
 fi
