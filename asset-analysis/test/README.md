@@ -46,6 +46,7 @@ jobs:
           # test-suite: mcix tests
           # include-asset-in-test-name: false
           # ignore-test-failures: false
+          # additionalArgs: <optional>
 ```
 
 ---
@@ -73,6 +74,7 @@ jobs:
 | `test-suite` | ❌ | mcix tests | Test suite name |
 | `include-asset-in-test-name` | ❌ | false | Include asset names in test names in the report? (true/false) |
 | `ignore-test-failures` | ❌ | false | Ignore test failures (always return 0)? (true/false) |
+| `additionalArgs` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
 
