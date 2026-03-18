@@ -114,12 +114,21 @@ fi
 
 ADDITIONAL_ARGS="${PARAM_ADDITIONAL_ARGS:-}"
 if [ -n "$ADDITIONAL_ARGS" ]; then
+  echo "Addtional args: $ADDITIONAL_ARGS"
+
   readarray -t args < <(printf "%s" "$ADDITIONAL_ARGS" | xargs -n 1)
 
+  echo "Split args: #args[@]"
+
   for arg in "${args[@]}"; do
+
+    echo "Adding additional arg: $arg"
+    
     set -- "$@" $arg
   done
 fi
+
+echo "$@"
 
 # ------------
 # Step summary
