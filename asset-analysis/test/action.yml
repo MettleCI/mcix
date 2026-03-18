@@ -114,4 +114,4 @@ runs:
     PARAM_TEST_SUITE: ${{ inputs.test-suite }}
     PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
     PARAM_IGNORE_TEST_FAILURES: ${{ inputs.ignore-test-failures }}
-    PARAM_ADDITONAL_ARGS: ${{ inputs.additionalArgs }}
+    PARAM_ADDITIONAL_ARGS: ${{ inputs.additionalArgs }}
