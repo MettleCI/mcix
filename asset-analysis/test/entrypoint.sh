@@ -112,8 +112,9 @@ if [ "$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")" -eq 1 ]; then
   set -- "$@" -include-asset-in-test-name
 fi
 
-if [ -n $PARAM_ADDITIONAL_ARGS ]; then
-  readarray -t args < <(printf "%s" "$PARAM_ADDITIONAL_ARGS" | xargs -n 1)
+ADDITIONAL_ARGS="${PARAM_ADDITIONAL_ARGS:-}"
+if [ -n "$ADDITIONAL_ARGS" ]; then
+  readarray -t args < <(printf "%s" "$ADDITIONAL_ARGS" | xargs -n 1)
 
   for arg in "${args[@]}"; do
     set -- "$@" $arg
