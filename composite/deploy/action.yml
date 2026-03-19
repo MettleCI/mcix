@@ -84,6 +84,17 @@ inputs:
     required: false
     default: ""
 
+  # Additional arguments
+  overlayAdditionalArgs:
+    description: 'Additional raw arguments to append to the overlay apply command'
+    required: false
+  importAdditionalArgs:
+    description: 'Additional raw arguments to append to the datastage import command'
+    required: false
+  compileAdditionalArgs:
+    description: 'Additional raw arguments to append to the datastage compile command'
+    required: false
+
 outputs:
   # This is the normalized output path from the prep step, which was passed to overlay/apply and then imported by the import step.
   overlay_output:
@@ -125,6 +136,11 @@ runs:
         PARAM_REPORT: ${{ inputs.report }}
         PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
 
+        # Additional argument parameters
+        PARAM_OVERLAY_ADDITIONAL_ARGS: ${{ inputs.overlayAdditionalArgs }}
+        PARAM_IMPORT_ADDITIONAL_ARGS: ${{ inputs.importAdditionalArgs }}
+        PARAM_COMPILE_ADDITIONAL_ARGS: ${{ inputs.compileAdditionalArgs }}
+
     - name: Apply overlays
       id: overlay
       uses: mettleci/mcix/overlay/apply@latest
@@ -133,6 +149,7 @@ runs:
         overlays: ${{ steps.prep.outputs.overlays }}
         output: ${{ steps.prep.outputs.overlay_output }}
         properties: ${{ steps.prep.outputs.properties }}
+        additionalArgs: ${{ steps.prep.outputs.overlayAdditionalArgs }}
 
     - name: Import assets
       id: import
@@ -144,6 +161,7 @@ runs:
         project: ${{ steps.prep.outputs.project }}
         project-id: ${{ steps.prep.outputs.project_id }}
         assets: ${{ steps.prep.outputs.overlay_output }}  # output from overlay apply
+        additionalArgs: ${{ steps.prep.outputs.importAdditionalArgs }}
 
     - name: Compile project
       id: compile
@@ -156,3 +174,4 @@ runs:
         project: ${{ steps.prep.outputs.project }}
         project-id: ${{ steps.prep.outputs.project_id }}
         include-asset-in-test-name: ${{ steps.prep.outputs.compile_include_asset_in_test_name }}
+        additionalArgs: ${{ steps.prep.outputs.compileAdditionalArgs }}

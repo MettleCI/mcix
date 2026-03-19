@@ -81,6 +81,31 @@ EOF
     echo '```'
     echo '</details>'
 
+  # Surface "logged error ID" failures (if detected)
+  if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] && \
+     [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+    {
+      echo "**❌ Error:** There was an error logged while running the command."
+      if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
+        # Capture the log entry and include it in the summary for visibility. 
+        grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
+          || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
+
+        # Display the contents of the mcix command's log file. (collapsed by default)
+        echo '<details>'
+        echo '<summary>Complete Command Log</summary>'
+        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+        echo '```'
+        cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
+        echo '```'
+        echo '</details>'
+      fi
+    } >>"$GITHUB_STEP_SUMMARY"
+    # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
+    # but it won't fail the action on its own (since some errors are "log and continue".)
+    gh_error "MCIX System Version" "There was an error logged during the execution of 'mcix system version'"
+  fi
+
     # Display a tabulated form of the plugins reported by mcix system version output (collapsed by default)
     echo '<details>'
     echo '<summary>MCIX plugins loaded</summary>'
@@ -147,6 +172,16 @@ trap 'write_return_code_and_summary; cleanup' EXIT
 # There are GOOD REASONS we don't use MCIX_CMD_NAME here, but the necessary lesson
 # in shell variable expansion is too long to go into here.  Just trust me - JMcK.
 set -- mcix system version
+
+# Append any additional arguments
+ADDITIONAL_ARGS="${PARAM_ADDITIONAL_ARGS:-}"
+if [ -n "$ADDITIONAL_ARGS" ]; then
+  readarray -t args < <(printf "%s" "$ADDITIONAL_ARGS" | xargs -n 1)
+
+  for arg in "${args[@]}"; do
+    set -- "$@" $arg
+  done
+fi
 
 # Prepare a file to capture output so we can detect "It has been logged (ID ...)" failures.
 tmp_out="$(mktemp)"

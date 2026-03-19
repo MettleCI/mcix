@@ -63,6 +63,10 @@ inputs:
     required: false
     default: ""         # Optional boolean input; if not provided, defaults to false
 
+  additionalArgs:
+    description: 'Additional raw arguments to append to the mcix command'
+    required: false
+
 outputs:
   return-code:
     description: "The return code of the command"
@@ -80,3 +84,4 @@ runs:
     PARAM_PROJECT: ${{ inputs.project }}
     PARAM_PROJECT_ID: ${{ inputs.project-id }}
     PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
+    PARAM_ADDITIONAL_ARGS: ${{ inputs.additionalArgs }}

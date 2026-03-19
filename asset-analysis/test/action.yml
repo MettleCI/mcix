@@ -81,7 +81,6 @@ inputs:
     required: false
     default: 'false'
 
-
   ignore-test-failures:
     description: 'Ignore test failures (always return 0)? (true/false)'
     required: false
@@ -90,7 +89,6 @@ inputs:
   additionalArgs:
     description: 'Additional raw arguments to append to the mcix command'
     required: false
-
 
 outputs:
   return-code:

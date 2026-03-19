@@ -25,6 +25,11 @@ branding:
   icon: 'info'
   color: 'blue'
 
+inputs:
+  additionalArgs:
+    description: 'Additional raw arguments to append to the mcix command'
+    required: false
+
 outputs:
   return-code:
     description: 'The return code of the command'
@@ -34,3 +39,4 @@ runs:
   image: 'Dockerfile' # Refers to the Dockerfile in the current directory
   env:
     PARAM_ACTION_DETAILS: ${{ inputs.action-details }}
+    PARAM_ADDITIONAL_ARGS: ${{ inputs.additionalArgs }}

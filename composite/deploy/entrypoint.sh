@@ -93,6 +93,10 @@ PARAM_OUTPUT="${PARAM_OUTPUT-}"
 PARAM_REPORT="${PARAM_REPORT-}"
 PARAM_INCLUDE_ASSET_IN_TEST_NAME="${PARAM_INCLUDE_ASSET_IN_TEST_NAME-}"
 
+PARAM_OVERLAY_ADDITIONAL_ARGS="${PARAM_OVERLAY_ADDITIONAL_ARGS-}"
+PARAM_IMPORT_ADDITIONAL_ARGS="${PARAM_IMPORT_ADDITIONAL_ARGS-}"
+PARAM_COMPILE_ADDITIONAL_ARGS="${PARAM_COMPILE_ADDITIONAL_ARGS-}"
+
 # -------------------
 # Normalize paths
 # -------------------
@@ -139,4 +143,10 @@ fi
   # Compile report options
   printf 'report=%s\n' "$report_abs"
   printf 'compile_include_asset_in_test_name=%s\n' "$PARAM_INCLUDE_ASSET_IN_TEST_NAME"
+
+  # Additional arguments
+  printf 'overlayAdditionalArgs=%s\n' "$PARAM_OVERLAY_ADDITIONAL_ARGS"
+  printf 'importAdditionalArgs=%s\n' "$PARAM_IMPORT_ADDITIONAL_ARGS"
+  printf 'compileAdditionalArgs=%s\n' "$PARAM_COMPILE_ADDITIONAL_ARGS"
+
 } >>"$GITHUB_OUTPUT"
