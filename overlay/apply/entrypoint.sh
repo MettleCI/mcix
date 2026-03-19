@@ -92,6 +92,8 @@ if [ -n "$ADDITIONAL_ARGS" ]; then
   done
 fi
 
+echo "$@"
+
 # ------------
 # Step summary
 # ------------

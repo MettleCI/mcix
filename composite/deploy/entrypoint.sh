@@ -119,6 +119,8 @@ if [[ -n "$report_abs" ]]; then
   mkdir -p "$(dirname "$report_abs")"
 fi
 
+echo "$@"
+
 # -------------------
 # Generate outputs
 # -------------------
