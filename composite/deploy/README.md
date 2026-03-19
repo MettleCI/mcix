@@ -217,6 +217,9 @@ jobs:
           # output: <optional>
           # report: compile-report.xml
           # include-asset-in-test-name: false
+          # overlayAdditionalArgs: <optional>
+          # importAdditionalArgs: <optional>
+          # compileAdditionalArgs: <optional>
 ```
 
 ---
@@ -250,6 +253,9 @@ Example:
 | `output` | ❌ |  | Zip file or directory to write updated assets (default: derived) |
 | `report` | ❌ | compile-report.xml | Path to output the compile report |
 | `include-asset-in-test-name` | ❌ | false (if omitted) | Include asset names in test names in the report? (true/false) |
+| `overlayAdditionalArgs` | ❌ |  | Additional raw arguments to append to the overlay apply command |
+| `importAdditionalArgs` | ❌ |  | Additional raw arguments to append to the datastage import command |
+| `compileAdditionalArgs` | ❌ |  | Additional raw arguments to append to the datastage compile command |
 
 ---
 

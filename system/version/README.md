@@ -31,7 +31,17 @@ jobs:
       - name: Run MCIX System Version
         id: system-version
         uses: ${{ github.repository }}/system/version@v1
+        with:
+          # additionalArgs: <optional>
 ```
+
+---
+
+## 🔧 Inputs
+
+| Name | Required | Default | Description |
+| --- | --- | --- | --- |
+| `additionalArgs` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
 
