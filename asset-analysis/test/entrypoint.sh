@@ -129,8 +129,8 @@ write_step_summary() {
   ls -laR $MCIX_LOG_DIR
 
   echo "Searching for ${MCIX_LOG_DIR}/cli.$(date +%F).log"
-  
-  if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" && -s "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
+
+  if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
     {
       echo '<details>'
       echo '<summary>Complete Command Log</summary>'
@@ -144,7 +144,7 @@ write_step_summary() {
     gh_warn "MCIX command log not found."
   fi
 
-  if [[ -f "${MCIX_LOG_DIR}/exception.$(date +%F).log" && -s "${MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
+  if [[ -f "${MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
     {
       echo '<details>'
       echo '<summary>Exception Log</summary>'
