@@ -126,6 +126,8 @@ fi
 # ------------
 write_step_summary() {
   # 
+  ls -laR $MCIX_LOG_DIR
+
   if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" && -s "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
     {
       echo '<details>'
