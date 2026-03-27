@@ -136,7 +136,7 @@ write_step_summary() {
       echo '```'
       echo '</details>'
     } >>"$GITHUB_STEP_SUMMARY"
-  elif
+  else
     gh_warn "MCIX command log not found."
   fi
 
