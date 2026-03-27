@@ -125,37 +125,20 @@ fi
 # Step summary
 # ------------
 write_step_summary() {
-  # 
-  ls -laR $MCIX_LOG_DIR
 
-  echo "Searching for ${MCIX_LOG_DIR}/cli.$(date +%F).log"
+  if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] && \
+     [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+    {
+      echo "**❌ Error:** There was an error logged while running the command."
+      if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
+        # Capture the log entry and include it in the summary for visibility. 
+        grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
+          || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
+    } >>"$GITHUB_STEP_SUMMARY"
 
-  if [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
-    if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
-      {
-        echo '<details>'
-        echo '<summary>Complete Command Log</summary>'
-        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-        echo '```'
-        cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
-        echo '```'
-        echo '</details>'
-      } >>"$GITHUB_STEP_SUMMARY"
-    else
-      gh_warn "MCIX command log not found."
-    fi
-
-    if [[ -f "{$MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
-      {
-        echo '<details>'
-        echo '<summary>Exception Log</summary>'
-        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-        echo '```'
-        cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
-        echo '```'
-        echo '</details>'
-      } >>"$GITHUB_STEP_SUMMARY"
-    fi
+    # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
+    # but it won't fail the action on its own (since some errors are "log and continue".)
+    gh_error "$MCIX_CMD_NAME" "There was an error logged during the execution of '$MCIX_CMD_NAME'"
   fi
 
   # Do we have a variable pointing to a JUnit XML file?
@@ -180,6 +163,34 @@ write_step_summary() {
       "$PARAM_REPORT" \
       "$MCIX_CMD_NAME"  >> "$GITHUB_STEP_SUMMARY" || \
       gh_warn "JUnit summarizer for '${MCIX_CMD_NAME}' failed" "Continuing without failing the action."
+  fi
+
+  if [ -z "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+    if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
+      {
+        echo '<details>'
+        echo '<summary>Complete Command Log - cli.$(date +%F).log</summary>'
+        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+        echo '```'
+        cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
+        echo '```'
+        echo '</details>'
+      } >>"$GITHUB_STEP_SUMMARY"
+    else
+      gh_warn "MCIX command log not found."
+    fi
+
+    if [[ -f "{$MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
+      {
+        echo '<details>'
+        echo '<summary>Exception Log - exception.$(date +%F).log</summary>'
+        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+        echo '```'
+        cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
+        echo '```'
+        echo '</details>'
+      } >>"$GITHUB_STEP_SUMMARY"
+    fi
   fi
 }
 
