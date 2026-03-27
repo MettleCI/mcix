@@ -132,8 +132,9 @@ write_step_summary() {
       echo "**❌ Error:** There was an error logged while running the command."
       if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
         # Capture the log entry and include it in the summary for visibility. 
-        grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
+        grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/cli.$(date +%F).log | sed -n 's/.*(ID [^)]*): //p' \
           || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
+      fi
     } >>"$GITHUB_STEP_SUMMARY"
 
     # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
