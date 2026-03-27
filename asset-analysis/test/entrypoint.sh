@@ -130,30 +130,32 @@ write_step_summary() {
 
   echo "Searching for ${MCIX_LOG_DIR}/cli.$(date +%F).log"
 
-  if [[ -f "$MCIX_LOG_DIR/cli.$(date +%F).log" ]]; then
-    {
-      echo '<details>'
-      echo '<summary>Complete Command Log</summary>'
-      echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-      echo '```'
-      cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
-      echo '```'
-      echo '</details>'
-    } >>"$GITHUB_STEP_SUMMARY"
-  else
-    gh_warn "MCIX command log not found."
-  fi
+  if [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+    if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
+      {
+        echo '<details>'
+        echo '<summary>Complete Command Log</summary>'
+        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+        echo '```'
+        cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
+        echo '```'
+        echo '</details>'
+      } >>"$GITHUB_STEP_SUMMARY"
+    else
+      gh_warn "MCIX command log not found."
+    fi
 
-  if [[ -f "$MCIX_LOG_DIR/exception.$(date +%F).log" ]]; then
-    {
-      echo '<details>'
-      echo '<summary>Exception Log</summary>'
-      echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-      echo '```'
-      cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
-      echo '```'
-      echo '</details>'
-    } >>"$GITHUB_STEP_SUMMARY"
+    if [[ -f "{$MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
+      {
+        echo '<details>'
+        echo '<summary>Exception Log</summary>'
+        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+        echo '```'
+        cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
+        echo '```'
+        echo '</details>'
+      } >>"$GITHUB_STEP_SUMMARY"
+    fi
   fi
 
   # Do we have a variable pointing to a JUnit XML file?
