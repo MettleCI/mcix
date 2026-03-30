@@ -126,30 +126,33 @@ fi
 # ------------
 write_step_summary() {
   exception_msg=""
-  junit_summary=""
+  junit=""
   logs=""
 
+  # Surface "logged error ID" failures (if detected)
   if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
     {
       echo "**❌ Error:** There was an error logged while running the command."
       if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
         # Capture the log entry and include it in the summary for visibility. 
-        grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/cli.$(date +%F).log | sed -n 's/.*(ID [^)]*): //p' \
+        grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
           || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
       fi
-    } >"$exception_msg"
-
+    } >>"$exception_msg"
     # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
     # but it won't fail the action on its own (since some errors are "log and continue".)
-    gh_error "$MCIX_CMD_NAME" "There was an error logged during the execution of '$MCIX_CMD_NAME'"  
+    gh_error "$MCIX_CMD_NAME" "There was an error logged during the execution of '$MCIX_CMD_NAME'"
   fi
 
   # Do we have a variable pointing to a JUnit XML file?
   if [ -z "${PARAM_REPORT:-}" ] || [ ! -f "$PARAM_REPORT" ]; then
     gh_warn "JUnit XML file not found" "Path: ${PARAM_REPORT:-<unset>}"
+
   # Do we have a mcix-junit-to-summary command available?
   elif [ -z "${MCIX_JUNIT_CMD:-}" ] || [ ! -x "$MCIX_JUNIT_CMD" ]; then
     gh_warn "JUnit summarizer not executable" "Command: ${MCIX_JUNIT_CMD:-<unset>}"
+
+  # Did GitHub provide a writable summary file?
   else
     # Generate summary
     # mcix-junit-to-summary [--annotations] [--max-annotations N] <junit.xml> [title]
@@ -158,37 +161,37 @@ write_step_summary() {
     "$MCIX_JUNIT_CMD" \
       "$MCIX_JUNIT_CMD_OPTIONS" \
       "$PARAM_REPORT" \
-      "$MCIX_CMD_NAME"  >"$junit_summary" || \
+      "$MCIX_CMD_NAME"  >> "$junit" || \
       gh_warn "JUnit summarizer for '${MCIX_CMD_NAME}' failed" "Continuing without failing the action."
   fi
 
-  if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
-    {
-      echo '<details>'
-      echo '<summary>Complete Command Log - cli.$(date +%F).log</summary>'
-      echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-      echo '```'
-      cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
-      echo '```'
-      echo '</details>'
-    } >"$logs"
-  else
-    gh_warn "MCIX command log not found."
-  fi
+    if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
+      {
+        echo '<details>'
+        echo '<summary>Complete Command Log</summary>'
+        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+        echo '```'
+        cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
+        echo '```'
+        echo '</details>'
+      } >>"$logs"
+    else
+      gh_warn "MCIX command log not found."
+    fi
 
-  if [[ -f "{$MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
-    {
-      echo '<details>'
-      echo '<summary>Exception Log - exception.$(date +%F).log</summary>'
-      echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-      echo '```'
-      cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
-      echo '```'
-      echo '</details>'
-    } >>"$logs"
-  fi
+    if [[ -f "{$MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
+      {
+        echo '<details>'
+        echo '<summary>Exception Log</summary>'
+        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+        echo '```'
+        cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
+        echo '```'
+        echo '</details>'
+      } >>"$logs"
+    fi
 
-  if [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ ! -w "$GITHUB_STEP_SUMMARY" ]; then
+  if [ -z "${GITHUB_STEP_SUMMARY:-}" ] || [ ! -w "$GITHUB_STEP_SUMMARY" ]; then
     gh_warn "GITHUB_STEP_SUMMARY not writable" "Skipping JUnit summary generation."
   else
     {
