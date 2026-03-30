@@ -153,19 +153,14 @@ write_step_summary() {
   if [ -z "${PARAM_REPORT:-}" ] || [ ! -f "$PARAM_REPORT" ]; then
     warn_msg1="JUnit XML file not found"
     warn_msg2="Path: ${PARAM_REPORT:-<unset>}"
-  fi
-
   # Do we have a mcix-junit-to-summary command available?
   elif [ -z "${MCIX_JUNIT_CMD:-}" ] || [ ! -x "$MCIX_JUNIT_CMD" ]; then
     warn_msg1="JUnit summarizer not executable" 
     warn_msg2="Command: ${MCIX_JUNIT_CMD:-<unset>}"
-  fi
-
   # Did GitHub provide a writable summary file?
   elif [ -z "${GITHUB_STEP_SUMMARY:-}" ] || [ ! -w "$GITHUB_STEP_SUMMARY" ]; then
     warn_msg1="GITHUB_STEP_SUMMARY not writable"
     warn_msg2="Skipping JUnit summary generation."
-
   else
     # Generate summary
     # mcix-junit-to-summary [--annotations] [--max-annotations N] <junit.xml> [title]
