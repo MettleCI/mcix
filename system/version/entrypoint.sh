@@ -84,7 +84,6 @@ EOF
   # Surface "logged error ID" failures (if detected)
   if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] && \
      [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
-    {
       echo "**❌ Error:** There was an error logged while running the command."
       if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
         # Capture the log entry and include it in the summary for visibility. 
@@ -100,7 +99,6 @@ EOF
         echo '```'
         echo '</details>'
       fi
-    } >>"$GITHUB_STEP_SUMMARY"
     # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
     # but it won't fail the action on its own (since some errors are "log and continue".)
     gh_error "MCIX System Version" "There was an error logged during the execution of 'mcix system version'"
