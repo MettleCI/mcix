@@ -194,11 +194,11 @@ write_step_summary() {
   if [ -z "${GITHUB_STEP_SUMMARY:-}" ] || [ ! -w "$GITHUB_STEP_SUMMARY" ]; then
     gh_warn "GITHUB_STEP_SUMMARY not writable" "Skipping JUnit summary generation."
   else
-    {
-      echo $exception_msg
-      echo $junit_summary
-      echo $logs
-    } >>"$GITHUB_STEP_SUMMARY"
+    # {
+    #   echo $exception_msg
+    #   echo $junit_summary
+    #   echo $logs
+    # } >>"$GITHUB_STEP_SUMMARY"
   fi
 }
 
