@@ -98,31 +98,33 @@ echo "$@"
 # Step summary
 # ------------
 write_step_summary() {
-  {
-    # Surface "logged error ID" failures (if detected)
-    if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] && \
-      [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
-        echo "**❌ Error:** There was an error logged while running command '$MCIX_CMD_NAME'."
-        if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
-          # Capture the log entry and include it in the summary for visibility. 
-          grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
-            || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
-        fi
-      # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
-      # but it won't fail the action on its own (since some errors are "log and continue".)
-      gh_error "$MCIX_CMD_NAME" "There was an error logged during the execution of '$MCIX_CMD_NAME'"
-    fi
+  # Surface "logged error ID" failures (if detected)
+  if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+    {
+      echo "**❌ Error:** There was an error logged while running command '$MCIX_CMD_NAME'."
+      if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
+        # Capture the log entry and include it in the summary for visibility. 
+        grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
+          || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
+      fi
+    } >>"$GITHUB_STEP_SUMMARY"
 
-    # Did GitHub provide a writable summary file?
-    if [ -z "${GITHUB_STEP_SUMMARY:-}" ] || [ ! -w "$GITHUB_STEP_SUMMARY" ]; then
-      gh_warn "GITHUB_STEP_SUMMARY not writable" "Skipping JUnit summary generation."
+    # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
+    # but it won't fail the action on its own (since some errors are "log and continue".)
+    gh_error "$MCIX_CMD_NAME" "There was an error logged during the execution of '$MCIX_CMD_NAME'"
+  fi
 
-    else
-      # Generate summary
-      gh_notice "$MCIX_CMD_NAME" "$MCIX_CMD_NAME applied overlays: ${PARAM_OVERLAYS}"
-    fi
+  # Did GitHub provide a writable summary file?
+  if [ -z "${GITHUB_STEP_SUMMARY:-}" ] || [ ! -w "$GITHUB_STEP_SUMMARY" ]; then
+    gh_warn "GITHUB_STEP_SUMMARY not writable" "Skipping JUnit summary generation."
 
-    if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
+  else
+    # Generate summary
+    gh_notice "$MCIX_CMD_NAME" "$MCIX_CMD_NAME applied overlays: ${PARAM_OVERLAYS}"
+  fi
+
+  if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
+    {
       # Display the contents of the mcix command's log file. (collapsed by default)
       echo '<details>'
       echo "<summary>Complete Command Log - ${MCIX_LOG_DIR}/cli.$(date +%F).log</summary>"
@@ -131,9 +133,11 @@ write_step_summary() {
       cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
       echo '```'
       echo '</details>'
-    fi
+    } >>"$GITHUB_STEP_SUMMARY"
+  fi
 
-    if [[ -f "${MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
+  if [[ -f "${MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
+    {
       # Display the contents of the mcix command's log file. (collapsed by default)
       echo '<details>'
       echo "<summary>Exception Log - ${MCIX_LOG_DIR}/exception.$(date +%F).log</summary>"
@@ -142,8 +146,8 @@ write_step_summary() {
       cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
       echo '```'
       echo '</details>'
-    fi
-  } >> "$GITHUB_STEP_SUMMARY"
+    } >>"$GITHUB_STEP_SUMMARY"
+  fi
 }
 
 # ---------
