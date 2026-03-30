@@ -125,13 +125,6 @@ fi
 # Step summary
 # ------------
 write_step_summary() {
-
-  warn_msg1=""
-  warn_msg2=""
-
-  error_msg1=""
-  error_msg2=""
-
   exception_msg=""
   junit_summary=""
   logs=""
