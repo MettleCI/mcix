@@ -205,9 +205,11 @@ write_step_summary() {
 
   if [[ -z "$warn_msg1" ]]; then
     gh_warn $warn_msg1 $warn_msg2
+  fi
 
   if [[ -z "$error_msg1" ]]; then
     gh_error $error_msg1 $error_msg2
+  fi
 }
 
 # ---------
