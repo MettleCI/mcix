@@ -126,6 +126,12 @@ fi
 # ------------
 write_step_summary() {
 
+  warn_msg1=""
+  warn_msg2=""
+
+  error_msg1=""
+  error_msg2=""
+
   if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] && \
      [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
     {
@@ -139,20 +145,26 @@ write_step_summary() {
 
     # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
     # but it won't fail the action on its own (since some errors are "log and continue".)
-    gh_error "$MCIX_CMD_NAME" "There was an error logged during the execution of '$MCIX_CMD_NAME'"
+    error_msg1="$MCIX_CMD_NAME" 
+    error_msg2="There was an error logged during the execution of '$MCIX_CMD_NAME'"
   fi
 
   # Do we have a variable pointing to a JUnit XML file?
   if [ -z "${PARAM_REPORT:-}" ] || [ ! -f "$PARAM_REPORT" ]; then
-    gh_warn "JUnit XML file not found" "Path: ${PARAM_REPORT:-<unset>}"
+    warn_msg1="JUnit XML file not found"
+    warn_msg2="Path: ${PARAM_REPORT:-<unset>}"
+  fi
 
   # Do we have a mcix-junit-to-summary command available?
   elif [ -z "${MCIX_JUNIT_CMD:-}" ] || [ ! -x "$MCIX_JUNIT_CMD" ]; then
-    gh_warn "JUnit summarizer not executable" "Command: ${MCIX_JUNIT_CMD:-<unset>}"
+    warn_msg1="JUnit summarizer not executable" 
+    warn_msg2="Command: ${MCIX_JUNIT_CMD:-<unset>}"
+  fi
 
   # Did GitHub provide a writable summary file?
   elif [ -z "${GITHUB_STEP_SUMMARY:-}" ] || [ ! -w "$GITHUB_STEP_SUMMARY" ]; then
-    gh_warn "GITHUB_STEP_SUMMARY not writable" "Skipping JUnit summary generation."
+    warn_msg1="GITHUB_STEP_SUMMARY not writable"
+    warn_msg2="Skipping JUnit summary generation."
 
   else
     # Generate summary
@@ -163,7 +175,8 @@ write_step_summary() {
       "$MCIX_JUNIT_CMD_OPTIONS" \
       "$PARAM_REPORT" \
       "$MCIX_CMD_NAME"  >> "$GITHUB_STEP_SUMMARY" || \
-      gh_warn "JUnit summarizer for '${MCIX_CMD_NAME}' failed" "Continuing without failing the action."
+      warn_msg1="JUnit summarizer for '${MCIX_CMD_NAME}' failed"
+      warn_msg2="Continuing without failing the action."
   fi
 
   if [ -z "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
@@ -178,7 +191,8 @@ write_step_summary() {
         echo '</details>'
       } >>"$GITHUB_STEP_SUMMARY"
     else
-      gh_warn "MCIX command log not found."
+      warn_msg1="$MCIX_CMD_NAME"
+      warn_msg2="MCIX command log not found."
     fi
 
     if [[ -f "{$MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
@@ -192,6 +206,12 @@ write_step_summary() {
         echo '</details>'
       } >>"$GITHUB_STEP_SUMMARY"
     fi
+
+    if [[ -z "$warn_msg1" ]]; then
+      gh_warn $warn_msg1 $warn_msg2
+
+    if [[ -z "$error_msg1" ]]; then
+      gh_error $error_msg1 $error_msg2
   fi
 }
 
