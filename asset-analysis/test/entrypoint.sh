@@ -169,8 +169,9 @@ write_step_summary() {
     "$MCIX_JUNIT_CMD" \
       "$MCIX_JUNIT_CMD_OPTIONS" \
       "$PARAM_REPORT" \
-      "$MCIX_CMD_NAME"  >> "$GITHUB_STEP_SUMMARY" || \
-      warn_msg1="JUnit summarizer for '${MCIX_CMD_NAME}' failed";warn_msg2="Continuing without failing the action."
+      "$MCIX_CMD_NAME"  >>"$GITHUB_STEP_SUMMARY" 
+#      || \
+#      warn_msg1="JUnit summarizer for '${MCIX_CMD_NAME}' failed";warn_msg2="Continuing without failing the action."
   fi
 
   if [ -z "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
