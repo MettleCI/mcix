@@ -134,7 +134,7 @@ write_step_summary() {
         grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
           || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
       fi
-    } >> "$GITHUB_STEP_SUMMARY"
+    } >>"$GITHUB_STEP_SUMMARY"
 
     # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
     # but it won't fail the action on its own (since some errors are "log and continue".)
@@ -175,18 +175,21 @@ write_step_summary() {
     } >>"$GITHUB_STEP_SUMMARY"
   fi
 
-  if [[ -f "${MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
+  ls -ls $MCIX_LOG_DIR/exception.*.log
+
+  for file in "${MCIX_LOG_DIR}/exception.*.log"; do
+    echo " - $file"
     {
       # Display the contents of the mcix command's log file. (collapsed by default)
       echo '<details>'
-      echo "<summary>Exception Log - ${MCIX_LOG_DIR}/exception.$(date +%F).log</summary>"
+      echo "<summary>Exception Log - $file</summary>"
       echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
       echo '```'
-      cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
+      cat $file
       echo '```'
       echo '</details>'
     } >>"$GITHUB_STEP_SUMMARY"
-  fi
+  done
 }
 
 # ---------
