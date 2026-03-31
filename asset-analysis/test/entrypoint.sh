@@ -162,6 +162,8 @@ write_step_summary() {
 
   find / -name "cli.*.log" -ls
 
+  echo "looking for ${MCIX_LOG_DIR}/cli.$(date +%F).log"
+
   if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
     {
       # Display the contents of the mcix command's log file. (collapsed by default)
@@ -177,18 +179,19 @@ write_step_summary() {
       gh_warn "Log file for '${MCIX_CMD_NAME}' not found" "Continuing without failing the action."
   fi
 
-  for file in $MCIX_LOG_DIR/exception.*.log; do
-    echo " - $file"
-    {
-      # Display the contents of the mcix command's log file. (collapsed by default)
-      echo '<details>'
-      echo "<summary>Exception Log - $file</summary>"
-      echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-      echo '```'
-      cat $file
-      echo '```'
-      echo '</details>'
-    } >>"$GITHUB_STEP_SUMMARY"
+  for file in "$MCIX_LOG_DIR/exception.*.log"; do
+    if [ -f "$file" ]; then
+      {
+        # Display the contents of the mcix command's log file. (collapsed by default)
+        echo '<details>'
+        echo "<summary>Exception Log - $file</summary>"
+        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+        echo '```'
+        cat $file
+        echo '```'
+        echo '</details>'
+      } >>"$GITHUB_STEP_SUMMARY"
+    fi
   done
 }
 
