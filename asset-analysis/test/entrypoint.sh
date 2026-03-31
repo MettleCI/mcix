@@ -179,6 +179,8 @@ write_step_summary() {
       gh_warn "Log file for '${MCIX_CMD_NAME}' not found" "Continuing without failing the action."
   fi
 
+  find / -name "exception.*.log" -ls
+
   for file in "$MCIX_LOG_DIR/exception.*.log"; do
     echo "- $file"
     if [ -f "$file" ]; then
