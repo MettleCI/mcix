@@ -181,10 +181,8 @@ write_step_summary() {
 
   find / -name "exception.*.log" -ls
 
-  for file in "$MCIX_LOG_DIR/exception.*.log"; do
-    echo "- $file"
+  for file in $MCIX_LOG_DIR/exception.*.log; do
     if [ -f "$file" ]; then
-      echo "   - valid"
       {
         # Display the contents of the mcix command's log file. (collapsed by default)
         echo '<details>'
@@ -196,7 +194,7 @@ write_step_summary() {
         echo '</details>'
       } >>"$GITHUB_STEP_SUMMARY"
     fi
-  done
+  done 2>/dev/null
 }
 
 # ---------

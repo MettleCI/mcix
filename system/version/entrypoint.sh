@@ -30,7 +30,7 @@ set -euo pipefail
 # -----
 export MCIX_CMD_NAME="mcix system version"
 export MCIX_BIN_DIR="/usr/share/mcix/bin"
-export MCIX_LOG_DIR="/usr/share/mcix"
+export MCIX_LOG_DIR="/usr/share/mcix/logs"
 export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$MCIX_BIN_DIR"
 
 : "${GITHUB_OUTPUT:?GITHUB_OUTPUT must be set}"
@@ -157,7 +157,7 @@ EOF
       gh_warn "Log file for '${MCIX_CMD_NAME}' not found" "Continuing without failing the action."
   fi
 
-  for file in "$MCIX_LOG_DIR/exception.*.log"; do
+  for file in $MCIX_LOG_DIR/exception.*.log; do
     if [ -f "$file" ]; then
       {
         # Display the contents of the mcix command's log file. (collapsed by default)
@@ -170,7 +170,7 @@ EOF
         echo '</details>'
       } >>"$GITHUB_STEP_SUMMARY"
     fi
-  done
+  done 2>/dev/null
 }
 
 # ---------
