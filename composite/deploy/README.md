@@ -18,9 +18,9 @@ Assets → [Overlay Apply] → [DataStage Import] → [DataStage Compile] → JU
 
 Internally, this action calls the following MCIX commands/actions in sequence:
 
-- `overlay/apply` [link](../../overlay/apply/)
-- `datastage/import` [link](../../datastage/import/)
-- `datastage/compile` [link](../../datastage/compile/)
+- `overlay/apply` [link](https://github.com/mettleci/mcix-overlay-apply)
+- `datastage/import` [link](https://github.com/mettleci/mcix-datastage-import)
+- `datastage/compile` [link](https://github.com/mettleci/mcix-datastage-compile)
 
 ---
 
@@ -36,7 +36,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Deploy DataStage assets
         uses: your-org/your-repo/composite/deploy@v1
         with:
