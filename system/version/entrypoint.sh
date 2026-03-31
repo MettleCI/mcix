@@ -140,8 +140,6 @@ EOF
     echo '</details>'
   } >>"$GITHUB_STEP_SUMMARY"
 
-  find / -name "cli.*.log" -ls
-
   if [ -f "$MCIX_LOG_DIR/cli.$(date +%F).log" ]; then
     {
       # Display the contents of the mcix command's log file. (collapsed by default)
