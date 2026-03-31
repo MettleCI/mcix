@@ -123,6 +123,8 @@ write_step_summary() {
     gh_notice "$MCIX_CMD_NAME" "$MCIX_CMD_NAME applied overlays: ${PARAM_OVERLAYS}"
   fi
 
+  find / -name "cli.*.log" -ls
+
   if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
     {
       # Display the contents of the mcix command's log file. (collapsed by default)
@@ -134,20 +136,23 @@ write_step_summary() {
       echo '```'
       echo '</details>'
     } >>"$GITHUB_STEP_SUMMARY"
+  else
+      gh_warn "Log file for '${MCIX_CMD_NAME}' not found" "Continuing without failing the action."
   fi
 
-  if [[ -f "${MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
+  for file in $MCIX_LOG_DIR/exception.*.log; do
+    echo " - $file"
     {
       # Display the contents of the mcix command's log file. (collapsed by default)
       echo '<details>'
-      echo "<summary>Exception Log - ${MCIX_LOG_DIR}/exception.$(date +%F).log</summary>"
+      echo "<summary>Exception Log - $file</summary>"
       echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
       echo '```'
-      cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
+      cat $file
       echo '```'
       echo '</details>'
     } >>"$GITHUB_STEP_SUMMARY"
-  fi
+  done
 }
 
 # ---------
