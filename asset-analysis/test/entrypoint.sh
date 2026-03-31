@@ -177,7 +177,7 @@ write_step_summary() {
 
   ls -ls $MCIX_LOG_DIR/exception.*.log
 
-  for file in "${MCIX_LOG_DIR}/exception.*.log"; do
+  for file in $MCIX_LOG_DIR/exception.*.log; do
     echo " - $file"
     {
       # Display the contents of the mcix command's log file. (collapsed by default)
