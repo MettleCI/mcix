@@ -115,10 +115,7 @@ This ensures CI/CD pipelines fail fast and enforce DataStage quality.
 
 # 📚 Documentation
 
-Full documentation lives at:
-
-👉 [https://docs.mettleci.io](https://docs.mettleci.io)
-👉 [https://www.mettleci.com](https://www.mettleci.com)
+Full documentation lives at [https://docs.mettleci.io](https://docs.mettleci.io).
 
 Topics include:
 
@@ -127,25 +124,28 @@ Topics include:
 * Writing DataStage unit tests
 * CI/CD integration patterns
 * Server configuration and security
-* Example pipelines (GitHub & Jenkins)
+* Example pipelines (GitHub, Azure DevOps, and Jenkins)
 
 ---
 
 # 🧪 Local Testing
 
-To test MCIX locally:
-
-The `mcix` command is made available in the following modes:
+The `mcix` command is made available in two ways: as a Docker image or as a standalone CLI tool compatible with Linux or macOS.
+Both options provide the same functionality, so you can choose the one that best fits your needs and environment.
 
 ## Docker
 
-As a Docker image, enabling you to test it without needing to install anything. The image is hosted on a variety of container registries:
+The Docker image enables you to explore the capabilities of `mcix` without needing to install anything. The image is hosted on a selection of popular container registries:
   * IBM Container Registry: `docker pull us.icr.io/mettleci/mcix:latest`
   * Azure Container Registry: `docker pull mettleci.azurecr.io/mcix:latest`
   * GitHub Container Registry: `docker pull ghcr.io/mettleci/mcix:latest`
   * Docker Hub: `docker pull mettleci/mcix:latest`
 
+The Docker image also underpins the various GitHub Actions in this repository, so using it locally allows you to closely mirror the execution environment of the actions.
+
 ### Running the command within the container
+
+This repository is the home of the GitHub Actions that wrap the various MCIX commands, so for testing and exploration purposes you can run the same Docker image used by your GitHub-hosted pipelines.
 
 Use 'docker run' to execute MCIX commands inside the container. This takes the form:
 
