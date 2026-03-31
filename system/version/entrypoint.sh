@@ -80,25 +80,16 @@ EOF
     env | sort
     echo '```'
     echo '</details>'
+  } >>"$GITHUB_STEP_SUMMARY"
 
   # Surface "logged error ID" failures (if detected)
-  if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] && \
-     [ -n "${GITHUB_STEP_SUMMARY:-}" ] && [ -w "$GITHUB_STEP_SUMMARY" ]; then
+  if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ] [ -w "$GITHUB_STEP_SUMMARY" ]; then
     {
       echo "**❌ Error:** There was an error logged while running the command."
       if [ -n "${MCIX_LOGGED_ERROR_ID:-}" ]; then
         # Capture the log entry and include it in the summary for visibility. 
         grep "(ID ${MCIX_LOGGED_ERROR_ID}" ${MCIX_LOG_DIR}/*.log | sed -n 's/.*(ID [^)]*): //p' \
           || echo "(Failed to extract log details for ID ${MCIX_LOGGED_ERROR_ID})"
-
-        # Display the contents of the mcix command's log file. (collapsed by default)
-        echo '<details>'
-        echo '<summary>Complete Command Log</summary>'
-        echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
-        echo '```'
-        cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
-        echo '```'
-        echo '</details>'
       fi
     } >>"$GITHUB_STEP_SUMMARY"
     # Set a workflow error annotation for visibility. This will show up in the 'Annotations' tab 
@@ -106,6 +97,7 @@ EOF
     gh_error "MCIX System Version" "There was an error logged during the execution of 'mcix system version'"
   fi
 
+  {
     # Display a tabulated form of the plugins reported by mcix system version output (collapsed by default)
     echo '<details>'
     echo '<summary>MCIX plugins loaded</summary>'
@@ -146,8 +138,34 @@ EOF
       }
     '  "$tmp_out"
     echo '</details>'
-
   } >>"$GITHUB_STEP_SUMMARY"
+
+  if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
+    {
+      # Display the contents of the mcix command's log file. (collapsed by default)
+      echo '<details>'
+      echo "<summary>Complete Command Log - ${MCIX_LOG_DIR}/cli.$(date +%F).log</summary>"
+      echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+      echo '```'
+      cat "${MCIX_LOG_DIR}/cli.$(date +%F).log"
+      echo '```'
+      echo '</details>'
+    } >>"$GITHUB_STEP_SUMMARY"
+  fi
+
+  if [[ -f "${MCIX_LOG_DIR}/exception.$(date +%F).log" ]]; then
+    {
+      # Display the contents of the mcix command's log file. (collapsed by default)
+      echo '<details>'
+      echo "<summary>Exception Log - ${MCIX_LOG_DIR}/exception.$(date +%F).log</summary>"
+      echo # A blank line after the <summary> tag is required by GitHub to format the content correctly
+      echo '```'
+      cat "${MCIX_LOG_DIR}/exception.$(date +%F).log"
+      echo '```'
+      echo '</details>'
+    } >>"$GITHUB_STEP_SUMMARY"
+  fi
+
 }
 
 # ---------
