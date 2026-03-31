@@ -160,6 +160,8 @@ write_step_summary() {
       gh_warn "JUnit summarizer for '${MCIX_CMD_NAME}' failed" "Continuing without failing the action."
   fi
 
+  find / -name "exception.*.log" -ls
+
   if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
     {
       # Display the contents of the mcix command's log file. (collapsed by default)
