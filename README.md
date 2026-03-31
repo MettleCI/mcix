@@ -135,7 +135,31 @@ Topics include:
 
 To test MCIX locally:
 
-```<TBC>```
+The `mcix` command is made available in the following modes:
+
+## Docker
+
+As a Docker image, enabling you to test it without needing to install anything. The image is hosted on a variety of container registries:
+  * IBM Container Registry: `docker pull us.icr.io/mettleci/mcix:latest
+  * Azure Container Registry: `docker pull mettleci.azurecr.io/mcix:latest
+  * GitHub Container Registry: `docker pull ghcr.io/mettleci/mcix:latest`
+  * Docker Hub: `docker pull mettleci/mcix:latest`
+
+## Command Line
+
+`mcix` is available as a CLI tool that you can install directly on your local or self-hosted environment.  The CLI tool is available for two platforms:
+
+### Linux
+
+The Linux variant is intended for production use cases. It canb be installed using the following command:
+
+```curl -L https://mettleci.io/install.sh | sh```
+
+### macOS
+
+The macOS variant is intended for educational and development use cases. It can be installed using the Homebrew package manager with the following command:
+
+```brew install mettleci/mcix/mcix```
 
 ---
 
