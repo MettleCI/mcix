@@ -140,10 +140,38 @@ The `mcix` command is made available in the following modes:
 ## Docker
 
 As a Docker image, enabling you to test it without needing to install anything. The image is hosted on a variety of container registries:
-  * IBM Container Registry: `docker pull us.icr.io/mettleci/mcix:latest
-  * Azure Container Registry: `docker pull mettleci.azurecr.io/mcix:latest
+  * IBM Container Registry: `docker pull us.icr.io/mettleci/mcix:latest`
+  * Azure Container Registry: `docker pull mettleci.azurecr.io/mcix:latest`
   * GitHub Container Registry: `docker pull ghcr.io/mettleci/mcix:latest`
   * Docker Hub: `docker pull mettleci/mcix:latest`
+
+### Running the command within the container
+
+Use 'docker run' to execute MCIX commands inside the container. This takes the form:
+
+```bash
+docker run --rm \
+  -v "$PWD:/work" \
+  -w /work \
+  <image> \
+  mcix <command> [args...]
+```
+
+For example:
+
+```shell
+  docker run --rm \
+    -v "$PWD:/work" \
+    -w /work \
+    ghcr.io/mettleci/mcix:latest \
+    mcix asset-analysis test \
+      --url "$CP4D_URL" \
+      --user "$CP4D_USER" \
+      --apikey "$CP4D_APIKEY" \
+      --project "MyProject" \
+      --rules "/work/rules" \
+      --report "/work/report.xml"
+```
 
 ## Command Line
 
@@ -160,7 +188,7 @@ The Linux variant is intended for production use cases. It canb be installed usi
 The macOS variant is intended for educational and development use cases. It can be installed using the Homebrew package manager with the following command:
 
 ```brew install mettleci/mcix/mcix```
-
+  
 ---
 
 # 🤝 Support
