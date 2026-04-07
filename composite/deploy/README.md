@@ -214,7 +214,8 @@ jobs:
           # project-id: <optional>
           # properties: <optional>
           # output: <optional>
-          # report: compile-report.xml
+          # import-report: import-report.xml
+          # compile-report: compile-report.xml
           # include-asset-in-test-name: false
           # overlayAdditionalArgs: <optional>
           # importAdditionalArgs: <optional>
@@ -250,7 +251,8 @@ Example:
     overlays/customer |
 | `properties` | ❌ |  | Optional properties file with replacement values |
 | `output` | ❌ |  | Zip file or directory to write updated assets (default: derived) |
-| `report` | ❌ | compile-report.xml | Path to output the compile report |
+| `import-report` | ❌ | import-report.xml | Path to output the import report |
+| `compile-report` | ❌ | compile-report.xml | Path to output the compile report |
 | `include-asset-in-test-name` | ❌ | false (if omitted) | Include asset names in test names in the report? (true/false) |
 | `overlayAdditionalArgs` | ❌ |  | Additional raw arguments to append to the overlay apply command |
 | `importAdditionalArgs` | ❌ |  | Additional raw arguments to append to the datastage import command |
