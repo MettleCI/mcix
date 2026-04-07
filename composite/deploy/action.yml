@@ -74,8 +74,14 @@ inputs:
     required: false
     default: ""
 
+  # Import report options
+  import-report:
+    description: "Path to output the import report"
+    required: false
+    default: "import-report.xml"
+
   # Compile report options
-  report:
+  compile-report:
     description: "Path to output the compile report"
     required: false
     default: "compile-report.xml"
@@ -131,9 +137,10 @@ runs:
         PARAM_USER: ${{ inputs.user }}
         PARAM_PROJECT: ${{ inputs.project }}
         PARAM_PROJECT_ID: ${{ inputs.project-id }}
+        PARAM_IMPORT_REPORT: ${{ inputs.import-report }}
 
         # DataStage Compile parameters
-        PARAM_REPORT: ${{ inputs.report }}
+        PARAM_COMPILE_REPORT: ${{ inputs.compile-report }}
         PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
 
         # Additional argument parameters
@@ -158,6 +165,7 @@ runs:
         api-key: ${{ steps.prep.outputs.api_key }}
         url: ${{ steps.prep.outputs.url }}
         user: ${{ steps.prep.outputs.user }}
+        report: ${{ steps.prep.outputs.import_report }}
         project: ${{ steps.prep.outputs.project }}
         project-id: ${{ steps.prep.outputs.project_id }}
         assets: ${{ steps.prep.outputs.overlay_output }}  # output from overlay apply
@@ -170,7 +178,7 @@ runs:
         api-key: ${{ steps.prep.outputs.api_key }}
         url: ${{ steps.prep.outputs.url }}
         user: ${{ steps.prep.outputs.user }}
-        report: ${{ steps.prep.outputs.report }}
+        report: ${{ steps.prep.outputs.compile_report }}
         project: ${{ steps.prep.outputs.project }}
         project-id: ${{ steps.prep.outputs.project_id }}
         include-asset-in-test-name: ${{ steps.prep.outputs.compile_include_asset_in_test_name }}

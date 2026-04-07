@@ -90,7 +90,8 @@ fi
 # Optional inputs
 PARAM_PROPERTIES="${PARAM_PROPERTIES-}"
 PARAM_OUTPUT="${PARAM_OUTPUT-}"
-PARAM_REPORT="${PARAM_REPORT-}"
+PARAM_IMPORT_REPORT="${PARAM_IMPORT_REPORT-}"
+PARAM_COMPILE_REPORT="${PARAM_COMPILE_REPORT-}"
 PARAM_INCLUDE_ASSET_IN_TEST_NAME="${PARAM_INCLUDE_ASSET_IN_TEST_NAME-}"
 
 PARAM_OVERLAY_ADDITIONAL_ARGS="${PARAM_OVERLAY_ADDITIONAL_ARGS-}"
@@ -114,9 +115,14 @@ else
   overlay_output_abs="${workspace}/assets-overlay.zip"
 fi
 
-report_abs="$(resolve_workspace_path "$PARAM_REPORT")"
-if [[ -n "$report_abs" ]]; then
-  mkdir -p "$(dirname "$report_abs")"
+import_report_abs="$(resolve_workspace_path "$PARAM_IMPORT_REPORT")"
+if [[ -n "$import_report_abs" ]]; then
+  mkdir -p "$(dirname "$import_report_abs")"
+fi
+
+compile_report_abs="$(resolve_workspace_path "$PARAM_COMPILE_REPORT")"
+if [[ -n "$compile_report_abs" ]]; then
+  mkdir -p "$(dirname "$compile_report_abs")"
 fi
 
 echo "$@"
@@ -142,8 +148,11 @@ echo "$@"
   # Where to write overlaid assets (passed to overlay/apply; then imported)
   printf 'overlay_output=%s\n' "$overlay_output_abs"
 
+  # Import report options
+  printf 'import_report=%s\n' "$import_report_abs"
+
   # Compile report options
-  printf 'report=%s\n' "$report_abs"
+  printf 'compile_report=%s\n' "$compile_report_abs"
   printf 'compile_include_asset_in_test_name=%s\n' "$PARAM_INCLUDE_ASSET_IN_TEST_NAME"
 
   # Additional arguments
