@@ -1,6 +1,8 @@
 ```mermaid
   flowchart TD
 
+  %%{init: { "htmlLabels": true, "flowchart": { "curve": "linear" } } }%%
+
   %% =========================
   %% Styles
   %% =========================
