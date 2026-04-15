@@ -58,6 +58,8 @@
   MCIX <--> P4
   MCIX <--> P5
 
+  CPD["CLoud Pak<br/>DataStage NextGen"]
+
   %% =========================
   %% Azure DevOps environment
   %% =========================
@@ -78,5 +80,9 @@
   %% ADO Tooling references 
   ADOPIPE <--> ADOT
   ADOT <--> ADOCONT
+  MCIXCONT <--> CPD
+
+  GHCONT <--> CPD
+  ADOONT <--> CPD
 
 ```
