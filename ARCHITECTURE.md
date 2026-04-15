@@ -80,9 +80,9 @@
   %% ADO Tooling references 
   ADOPIPE <--> ADOT
   ADOT <--> ADOCONT
-  MCIXCONT <--> CPD
 
+  %% Action/Task links to CPD
   GHCONT <--> CPD
-  ADOONT <--> CPD
+  ADOCONT <--> CPD
 
 ```
