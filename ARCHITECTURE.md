@@ -24,7 +24,7 @@
   end
   class GHA tooling
   class GHMCIX command
-  class GHP1,GHP2,GHP3,GHP4 plugin
+  class GHP1 plugin
   class GHCONT runtime
 
   %% =========================
@@ -41,11 +41,12 @@
               P1["import"]
               P2["compile"]
               P3["overlay"]
-              P4["deploy / test / other commands"]
+              P4["asset analysis"]
+              P5["unit test"]
           end
       end
       class MCIX command
-      class P1,P2,P3,P4 plugin
+      class P1,P2,P3,P4,P5 plugin
       class IMG image
 
   end
@@ -56,6 +57,7 @@
   MCIX --> P2
   MCIX --> P3
   MCIX --> P4
+  MCIX --> P5
 
   %% =========================
   %% Azure DevOps environment
@@ -84,13 +86,7 @@
   %% =========================
   GHA --> GHMCIX
   GHMCIX --> GHP1
-  GHMCIX --> GHP2
-  GHMCIX --> GHP3
-  GHMCIX --> GHP4
 
   ADOT --> ADOMCIX
   ADOMCIX --> ADOP1
-  ADOMCIX --> ADOP2
-  ADOMCIX --> ADOP3
-  ADOMCIX --> ADOP4
 ```
