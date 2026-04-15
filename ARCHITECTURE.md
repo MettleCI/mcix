@@ -49,7 +49,9 @@
   ICR -.-> IMG
   MCIX <--> PLUGINS
 
-  CPD["IBM Software Hub<br/>DataStage NextGen"]
+  subgraph CPD["IBM Software HubΩ"]
+    DATASTAGE["DataStage NextGen"]
+  end
 
   %% =========================
   %% Azure DevOps environment
