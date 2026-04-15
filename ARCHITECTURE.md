@@ -1,8 +1,4 @@
 ```mermaid
-  ---
-  config:
-    layout: elk
-  ---
   flowchart TD
 
   %% =========================
