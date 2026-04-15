@@ -1,7 +1,9 @@
 ```mermaid
+  ---
+  config:
+    layout: elk
+  ---
   flowchart TD
-
-  %%{init: { "htmlLabels": true, "flowchart": { "curve": "linear" } } }%%
 
   %% =========================
   %% Styles
