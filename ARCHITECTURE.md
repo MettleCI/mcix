@@ -16,17 +16,10 @@
   %% =========================
   subgraph GH["GitHub Environment"]
       GHA["GitHub Actions"]
-
       GHPIPE["GitHub Actions<br/>CI/CD Pipeline"]
-
-      subgraph GHCONT["MCIX container instance"]
-          GHMCIX["mcix command"]
-          GHP1["plugins"]
-      end
+      GHCONT["MCIX container instance"]
   end
   class GHA tooling
-  class GHMCIX command
-  class GHP1 plugin
   class GHCONT runtime
 
   %% =========================
@@ -66,17 +59,10 @@
   %% =========================
   subgraph ADO["Azure DevOps Environment"]
       ADOT["Azure DevOps Tasks"]
-
       ADOPIPE["Azure DevOps<br/>CI/CD Pipeline"]
-
-      subgraph ADOCONT["MCIX container instance"]
-          ADOMCIX["mcix command"]
-          ADOP1["plugins"]
-      end
+      ADOCONT["MCIX container instance"]
   end
   class ADOT tooling
-  class ADOMCIX command
-  class ADOP1,ADOP2,ADOP3,ADOP4 plugin
   class ADOCONT runtime
 
   %% =========================
