@@ -15,16 +15,16 @@
   %% GitHub environment
   %% =========================
   subgraph GH["GitHub Environment"]
+      GHCONT["MCIX container instance"]
       GHA["GitHub Actions"]
       GHPIPE["GitHub Actions<br/>CI/CD Pipeline"]
-      GHCONT["MCIX container instance"]
   end
   class GHA tooling
   class GHCONT runtime
 
   %% GH Tooling references 
   GHPIPE <--> GHA
-
+  GHCONT <-->GHPIPE
 
   %% =========================
   %% Registry
@@ -77,5 +77,6 @@
 
   %% ADO Tooling references 
   ADOPIPE <--> ADOT
+  ADOCONT <--> ADOPIPE
 
 ```
