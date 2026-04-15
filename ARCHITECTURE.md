@@ -22,6 +22,10 @@
   class GHA tooling
   class GHCONT runtime
 
+  %% GH Tooling references 
+  GHPIPE <--> GHA
+
+
   %% =========================
   %% Registry
   %% =========================
@@ -48,11 +52,11 @@
   class ICR registry
 
   ICR -.-> IMG
-  MCIX --> P1
-  MCIX --> P2
-  MCIX --> P3
-  MCIX --> P4
-  MCIX --> P5
+  MCIX <--> P1
+  MCIX <--> P2
+  MCIX <--> P3
+  MCIX <--> P4
+  MCIX <--> P5
 
   %% =========================
   %% Azure DevOps environment
@@ -68,18 +72,10 @@
   %% =========================
   %% Distribution from registry
   %% =========================
-  ICR -.-> GHA
-  ICR -.-> ADOT
+  ICR -.-> GHCONT
+  ICR -.-> ADOCONT
 
-  %% =========================
-  %% Tooling references into runtime
-  %% =========================
-  GHPIPE <--> GHA
-  
-  GHA --> GHMCIX
-  GHMCIX --> GHP1
-
+  %% ADO Tooling references 
   ADOPIPE <--> ADOT
-  ADOT --> ADOMCIX
-  ADOMCIX --> ADOP1
+
 ```
