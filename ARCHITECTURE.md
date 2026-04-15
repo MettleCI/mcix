@@ -1,5 +1,5 @@
 ```mermaid
-  flowchart LR
+  flowchart TD
 
   %% =========================
   %% Styles
@@ -16,6 +16,8 @@
   %% =========================
   subgraph GH["GitHub Environment"]
       GHA["GitHub Actions"]
+
+      GHPIPE["GitHub Actions<br/>CI/CD Pipeline"]
 
       subgraph GHCONT["MCIX container instance"]
           GHMCIX["mcix command"]
@@ -65,6 +67,8 @@
   subgraph ADO["Azure DevOps Environment"]
       ADOT["Azure DevOps Tasks"]
 
+      ADOPIPE["Azure DevOps<br/>CI/CD Pipeline"]
+
       subgraph ADOCONT["MCIX container instance"]
           ADOMCIX["mcix command"]
           ADOP1["plugins"]
@@ -84,9 +88,12 @@
   %% =========================
   %% Tooling references into runtime
   %% =========================
+  GHPIPE <--> GHA
+  
   GHA --> GHMCIX
   GHMCIX --> GHP1
 
+  ADOPIPE <--> ADOT
   ADOT --> ADOMCIX
   ADOMCIX --> ADOP1
 ```
