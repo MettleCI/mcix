@@ -42,6 +42,7 @@
               P3["overlay"]
               P4["asset analysis"]
               P5["unit test"]
+              PLUGINS@{ shape: procs, label: "MCIX Plugins"}
           end
       end
       class MCIX command
@@ -58,7 +59,7 @@
   MCIX <--> P4
   MCIX <--> P5
 
-  CPD["CLoud Pak<br/>DataStage NextGen"]
+  CPD["IBM Software Hub<br/>DataStage NextGen"]
 
   %% =========================
   %% Azure DevOps environment
