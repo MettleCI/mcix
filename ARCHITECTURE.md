@@ -24,7 +24,7 @@
   class GHA tooling
   class GHCONT runtime
 
-  click GHA "https://www.github.com](https://github.com/marketplace?query=mcix)" "GitHub Marketplace" _blank
+  click GHA href "https://www.github.com](https://github.com/marketplace?query=mcix)" "GitHub Marketplace" _blank
 
   %% GH Tooling references 
   GHPIPE <--> GHA
