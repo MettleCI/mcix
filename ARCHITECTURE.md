@@ -49,7 +49,7 @@
   ICR -.-> IMG
   MCIX <--> PLUGINS
 
-  subgraph CPD["IBM Software HubΩ"]
+  subgraph CPD["IBM Software Hub"]
     DATASTAGE["DataStage NextGen"]
   end
 
