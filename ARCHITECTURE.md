@@ -24,7 +24,7 @@
 
   %% GH Tooling references 
   GHPIPE <--> GHA
-  GHCONT <-->GHPIPE
+  GHA <--> GHCONT
 
   %% =========================
   %% Registry
@@ -77,6 +77,6 @@
 
   %% ADO Tooling references 
   ADOPIPE <--> ADOT
-  ADOCONT <--> ADOPIPE
+  ADOT <--> ADOCONT
 
 ```
