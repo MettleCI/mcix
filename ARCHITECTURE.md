@@ -35,29 +35,17 @@
       %% Image internals
       subgraph IMG["MCIX Container Image"]
           MCIX["mcix command"]
-
-          subgraph PLUGINS["MCIX command plugins"]
-              P1["import"]
-              P2["compile"]
-              P3["overlay"]
-              P4["asset analysis"]
-              P5["unit test"]
-              MCIXPLUGINS@{ shape: procs, label: "MCIX Plugins"}
-          end
+          PLUGINS@{ shape: procs, label: "MCIX Plugins"}
       end
       class MCIX command
-      class P1,P2,P3,P4,P5 plugin
+      class PLUGINS plugin
       class IMG image
 
   end
   class ICR registry
 
   ICR -.-> IMG
-  MCIX <--> P1
-  MCIX <--> P2
-  MCIX <--> P3
-  MCIX <--> P4
-  MCIX <--> P5
+  MCIX <--> PLUGINS
 
   CPD["IBM Software Hub<br/>DataStage NextGen"]
 
