@@ -32,7 +32,7 @@
   %% Registry
   %% =========================
   subgraph REG["IBM Container Registry"]
-      ICR["icr.io/cp.mcix<br/>MCIX Container Image"]
+      ICR["MCIX Container Image"]
 
       %% Image internals
       subgraph IMG["MCIX Container Image"]
