@@ -19,11 +19,7 @@
 
       subgraph GHCONT["MCIX container instance"]
           GHMCIX["mcix command"]
-          GHP1["import"]
-          GHP2["compile"]
-          GHP3["overlay"]
-          GHP4["static analysis"]
-          GHP4["static analysis"]
+          GHP1["plugins"]
       end
   end
   class GHA tooling
@@ -55,7 +51,7 @@
   end
   class ICR registry
 
-  ICR -.-> MCIX
+  ICR -.-> IMG
   MCIX --> P1
   MCIX --> P2
   MCIX --> P3
@@ -69,10 +65,7 @@
 
       subgraph ADOCONT["MCIX container instance"]
           ADOMCIX["mcix command"]
-          ADOP1["import"]
-          ADOP2["compile"]
-          ADOP3["overlay"]
-          ADOP4["other plugins"]
+          ADOP1["plugins"]
       end
   end
   class ADOT tooling
