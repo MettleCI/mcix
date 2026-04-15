@@ -33,6 +33,8 @@
   %% =========================
   subgraph REG["IBM Container Registry"]
       ICR["MCIX Container Image"]
+      GOV["Container Governance Artefacts"]
+      UTILS["Utility Scripts"]
 
       %% Image internals
       subgraph IMG["MCIX Container Image"]
