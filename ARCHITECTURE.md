@@ -15,7 +15,7 @@
   %% GitHub environment
   %% =========================
   subgraph GH["GitHub Environment"]
-      subgraph GHREPO["Repository"]
+      subgraph GHREPO["Git Repository"]
         GHPIPE["GitHub Actions<br/>CI/CD Pipeline"]
       end
       GHCONT["MCIX container instance"]
@@ -55,8 +55,10 @@
   %% Azure DevOps environment
   %% =========================
   subgraph ADO["Azure DevOps Environment"]
+      subgraph ADOREPO["Git Repository"]
+        ADOPIPE["Azure DevOps<br/>CI/CD Pipeline"]
+      end
       ADOT["Azure DevOps Tasks"]
-      ADOPIPE["Azure DevOps<br/>CI/CD Pipeline"]
       ADOCONT["MCIX container instance"]
   end
   class ADOT tooling
