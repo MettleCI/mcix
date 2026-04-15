@@ -15,7 +15,7 @@
   %% GitHub environment
   %% =========================
   subgraph GH["GitHub Environment"]
-      subgraph GHREPO@{ shape: cyl, label: "Repository" }
+      subgraph GHREPO["Repository"]
         GHPIPE["GitHub Actions<br/>CI/CD Pipeline"]
       end
       GHCONT["MCIX container instance"]
