@@ -201,6 +201,6 @@ The macOS variant is intended for educational and development use cases. It can 
 
 # 📝 License
 
-This project is licensed under the **DataMigrators License Agreement**.
-See the license file in the repository for details.
+This project is licensed under the **Data Migrators License Agreement**.
+See the [license file](LICENSE) in the repository for details.
 
