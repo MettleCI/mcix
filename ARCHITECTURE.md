@@ -4,7 +4,7 @@
   %% =========================
   %% Styles
   %% =========================
-  classDef registry fill:#e8f1ff,stroke:#3b82f6,stroke-width:2px,color:#111;
+  classDef registry fill:#e8f133,stroke:#3b82f6,stroke-width:2px,color:#111;
   classDef image fill:#eefbf3,stroke:#22c55e,stroke-width:2px,color:#111;
   classDef runtime fill:#fff7e6,stroke:#f59e0b,stroke-width:2px,color:#111;
   classDef tooling fill:#f5ecff,stroke:#8b5cf6,stroke-width:2px,color:#111;
