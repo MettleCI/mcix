@@ -38,7 +38,7 @@
       subgraph IMG["MCIX Container Image"]
           MCIX["mcix command"]
           PLUGINS@{ shape: procs, label: "MCIX Plugins"}
-          GOV["Container Governance Artefacts"]
+          %% GOV["Container Governance Artefacts"]
       end
       class MCIX command
       class PLUGINS plugin
