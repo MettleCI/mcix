@@ -33,22 +33,20 @@
   %% =========================
   subgraph REG["IBM Container Registry"]
       direction TB
-      ICR["MCIX Container Image"]
-      GOV["Container Governance Artefacts"]
 
       %% Image internals
       subgraph IMG["MCIX Container Image"]
           MCIX["mcix command"]
           PLUGINS@{ shape: procs, label: "MCIX Plugins"}
+          GOV["Container Governance Artefacts"]
       end
       class MCIX command
       class PLUGINS plugin
       class IMG image
 
   end
-  class ICR registry
+  class REG registry
 
-  ICR -.-> IMG
   MCIX <--> PLUGINS
 
   subgraph CPD["IBM Software Hub"]
@@ -71,8 +69,8 @@
   %% =========================
   %% Distribution from registry
   %% =========================
-  ICR -. Pull .-> GHCONT
-  ICR -. Pull .-> ADOCONT
+  IMG -. Pull .-> GHCONT
+  IMG -. Pull .-> ADOCONT
 
   %% ADO Tooling references 
   ADOPIPE <--> ADOT
