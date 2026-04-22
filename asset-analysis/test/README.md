@@ -7,6 +7,9 @@ This action wraps the `mcix asset-analysis test` command, letting you run MCIX c
 <!-- BEGIN MCIX-ACTION-DOCS -->
 # MCIX Asset-Analysis Test
 
+> [!CAUTION]
+> This action is provided as a **technology preview** which may change, break, or disappear at any point and without warning.
+
 Run asset analysis tests on DataStage assets in an IBM Software Hub (Cloud Pak) project using the MettleCI MCIX CLI
 
 > Namespace: `asset-analysis`<br>

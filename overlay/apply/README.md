@@ -161,6 +161,9 @@ See  https://nextgen.mettleci.io/mettleci-cli/overlay-namespace/#overlay-apply
 <!-- BEGIN MCIX-ACTION-DOCS -->
 # MCIX Overlay Apply
 
+> [!CAUTION]
+> This action is provided as a **technology preview** which may change, break, or disappear at any point and without warning.
+
 Apply overlay directories to exported IBM Software Hub (Cloud Pak) DataStage assets using the MettleCI MCIX CLI
 
 > Namespace: `overlay`<br>

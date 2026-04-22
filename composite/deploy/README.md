@@ -178,6 +178,9 @@ See repository license.
 <!-- BEGIN MCIX-ACTION-DOCS -->
 # MCIX DataStage Deploy
 
+> [!CAUTION]
+> This action is provided as a **technology preview** which may change, break, or disappear at any point and without warning.
+
 Invokes the Overlay, DataStageImport, and Compile actions for a DataStage project on IBM Software Hub (Cloud Pak)
 
 > Namespace: `composite`<br>

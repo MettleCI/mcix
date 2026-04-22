@@ -5,6 +5,9 @@ Reports the MCIX toolset version available in the container.
 <!-- BEGIN MCIX-ACTION-DOCS -->
 # MCIX System Version
 
+> [!CAUTION]
+> This action is provided as a **technology preview** which may change, break, or disappear at any point and without warning.
+
 Retrieve details on the MCIX container providing DataStage CI/CD capabilities for IBM Software Hub (Cloud Pak)
 
 > Namespace: `system`<br>
