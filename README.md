@@ -14,6 +14,9 @@ It provides:
 This repository exposes MCIX as a set of **GitHub Actions** so DataStage teams can run automated 
 quality checks and deployment activities directly inside GitHub workflows.
 
+> [!CAUTION]
+> This is a provided as a **technology preview** which may change, break, or disappear at any point and without warning.
+
 ---
 
 ## 🔧 Features
