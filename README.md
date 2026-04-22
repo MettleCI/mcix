@@ -15,7 +15,7 @@ This repository exposes MCIX as a set of **GitHub Actions** so DataStage teams c
 quality checks and deployment activities directly inside GitHub workflows.
 
 > [!CAUTION]
-> This is a provided as a **technology preview** which may change, break, or disappear at any point and without warning.
+> This repository is provided as a **technology preview** which may change, break, or disappear at any point and without warning.
 
 ---
 
