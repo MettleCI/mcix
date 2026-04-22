@@ -45,7 +45,7 @@
       class IMG image
 
   end
-  class REG registry
+  %% class REG registry
 
   MCIX <--> PLUGINS
 
