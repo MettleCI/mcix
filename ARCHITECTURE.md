@@ -71,8 +71,8 @@
   %% =========================
   %% Distribution from registry
   %% =========================
-  ICR -- "Pull" --> GHCONT
-  ICR -- "Pull" --> ADOCONT
+  ICR -- "Pull" -.-> GHCONT
+  ICR -- "Pull" -.-> ADOCONT
 
   %% ADO Tooling references 
   ADOPIPE <--> ADOT
