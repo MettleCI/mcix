@@ -62,7 +62,10 @@
   %% =========================
   subgraph ADO["Azure DevOps Environment"]
       subgraph ADOREPO["Git Repository"]
-        ADOPIPE["Azure DevOps<br/>CI/CD Pipeline"]
+        ADOPIPE["Azure DevOps CI/CD<br/>Pipeline Definition"]
+      end
+      subgraph ADORUN["Azure DevOps Runner"]
+        ADOPIPERUN["Azure DevOps<br/>Pipeline"]
       end
       ADOT["Azure DevOps Tasks"]
       ADOCONT["MCIX container instance"]
