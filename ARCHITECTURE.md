@@ -16,8 +16,12 @@
   %% =========================
   subgraph GH["GitHub Environment"]
       subgraph GHREPO["Git Repository"]
-        GHPIPE["GitHub Actions<br/>CI/CD Pipeline"]
+        GHPIPE["CI/CD Pipeline<br/>Definition"]
       end
+      subgraph GHRUN["GitHub Actions Runner"]
+        GHACT["GitHub Actions<br/>Pipeline"]
+      end
+
       GHCONT["MCIX container instance"]
       GHA["GitHub Actions"]
   end
@@ -25,8 +29,8 @@
   class GHCONT runtime
 
   %% GH Tooling references 
-  GHPIPE <--> GHA
-  GHA <--> GHCONT
+  GHPIPE <--> GHACT
+  GHACT <--> GHCONT
 
   %% =========================
   %% Registry
