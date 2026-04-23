@@ -29,8 +29,9 @@
   class GHCONT runtime
 
   %% GH Tooling references 
-  GHPIPE <--> GHACT
-  GHACT <--> GHCONT
+  GHPIPE --> GHACT
+  GHACT <--> GHA
+  GHA <--> GHCONT
 
   %% =========================
   %% Registry
