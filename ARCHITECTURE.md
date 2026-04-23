@@ -20,10 +20,9 @@
       end
       subgraph GHRUN["GitHub Actions Runner"]
         GHACT["GitHub Actions<br/>Pipeline"]
+        GHCONT["MCIX container instance"]
+        GHA["GitHub Actions"]
       end
-
-      GHCONT["MCIX container instance"]
-      GHA["GitHub Actions"]
   end
   class GHA tooling
   class GHCONT runtime
