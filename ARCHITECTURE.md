@@ -62,13 +62,13 @@
   %% =========================
   subgraph ADO["Azure DevOps Environment"]
       subgraph ADOREPO["Git Repository"]
-        ADOPIPE["Azure DevOps CI/CD<br/>Pipeline Definition"]
+        ADOPIPEDEF["Azure DevOps CI/CD<br/>Pipeline Definition"]
       end
       subgraph ADORUN["Azure DevOps Runner"]
         ADOPIPERUN["Azure DevOps<br/>Pipeline"]
+        ADOT["Azure DevOps Tasks"]
+        ADOCONT["MCIX container instance"]
       end
-      ADOT["Azure DevOps Tasks"]
-      ADOCONT["MCIX container instance"]
   end
   class ADOT tooling
   class ADOCONT runtime
@@ -80,7 +80,8 @@
   IMG -. Pull .-> ADOCONT
 
   %% ADO Tooling references 
-  ADOPIPE <--> ADOT
+  ADOPIPEDEF --> ADOPIPERUN
+  ADOPIPERUN <--> ADOT
   ADOT <--> ADOCONT
 
   %% Action/Task links to CPD
