@@ -1,5 +1,5 @@
 ```mermaid
-  flowchart TD
+  flowchart LR
 
   %% =========================
   %% Styles
