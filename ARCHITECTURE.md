@@ -60,7 +60,7 @@
   %% =========================
   subgraph ADO["Azure DevOps Environment"]
       subgraph ADOREPO["Git Repository"]
-        ADOPIPEDEF["Azure DevOps CI/CD<br/>Pipeline Definition"]
+        ADOPIPEDEF["CI/CD Pipeline<br/>Definition"]
       end
       subgraph ADORUN["Azure DevOps Runner"]
         ADOPIPERUN["Azure DevOps<br/>Pipeline"]
