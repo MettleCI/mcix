@@ -36,7 +36,7 @@
   %% Registry
   %% =========================
   subgraph REG["IBM Container Registry"]
-      direction TB
+      direction LR
 
       %% Image internals
       subgraph IMG["MCIX Container Image"]
