@@ -55,8 +55,8 @@ jobs:
           project: ${{ env.DatastageProject }}         
           report: "${{ github.workspace }}/somefile.xml"
           rules: "${{ github.workspace }}/analysis-rules"
-          included-tags: ${{ inputs.IncludeTags }}
-          excluded-tags: ${{ inputs.ExcludeTags }}
+          include-tags: ${{ inputs.IncludeTags }}
+          exclude-tags: ${{ inputs.ExcludeTags }}
           ignore-test-failures: true
           include-asset-in-test-name: true
           test-suite: "${{ inputs.AnalysisSuite }}"

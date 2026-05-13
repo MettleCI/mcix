@@ -168,7 +168,7 @@ jobs:
           # project: <optional>
           # project-id: <optional>
           # include-asset-in-test-name: false
-          # additionalArgs: <optional>
+          # additional-args: <optional>
 ```
 
 ---
@@ -191,7 +191,7 @@ jobs:
 | `project` | ❌ |  | DataStage project name |
 | `project-id` | ❌ |  | DataStage project id |
 | `include-asset-in-test-name` | ❌ | false (if omitted) | Include asset names in test names in the report? (true/false) |
-| `additionalArgs` | ❌ |  | Additional raw arguments to append to the mcix command |
+| `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
 

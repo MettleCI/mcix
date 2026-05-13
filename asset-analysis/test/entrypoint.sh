@@ -91,12 +91,12 @@ validate_project
 [ -n "$PROJECT_ID" ] && set -- "$@" -project-id "$PROJECT_ID"
 
 # Optional flags
-if [ -n "${PARAM_INCLUDED_TAGS:-}" ]; then
-  set -- "$@" -include-tags "$PARAM_INCLUDED_TAGS"
+if [ -n "${PARAM_INCLUDE_TAGS:-}" ]; then
+  set -- "$@" -include-tags "$PARAM_INCLUDE_TAGS"
 fi
 
-if [ -n "${PARAM_EXCLUDED_TAGS:-}" ]; then 
-  set -- "$@" -exclude-tags "$PARAM_EXCLUDED_TAGS"
+if [ -n "${PARAM_EXCLUDE_TAGS:-}" ]; then 
+  set -- "$@" -exclude-tags "$PARAM_EXCLUDE_TAGS"
 fi
 
 if [ -n "${PARAM_TEST_SUITE:-}" ]; then 

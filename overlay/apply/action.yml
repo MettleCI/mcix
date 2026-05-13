@@ -48,7 +48,7 @@ inputs:
     description: "Optional properties file with replacement values."
     required: false
     default: ""
-  additionalArgs:
+  additional-args:
     description: 'Additional raw arguments to append to the mcix command'
     required: false
 
@@ -65,4 +65,4 @@ runs:
     PARAM_OUTPUT: ${{ inputs.output }}
     PARAM_OVERLAYS: ${{ inputs.overlays }}
     PARAM_PROPERTIES: ${{ inputs.properties }}
-    PARAM_ADDITIONAL_ARGS: ${{ inputs.additionalArgs }}
+    PARAM_ADDITIONAL_ARGS: ${{ inputs.additional-args }}

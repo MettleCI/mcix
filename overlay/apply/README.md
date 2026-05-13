@@ -192,7 +192,7 @@ jobs:
           output: <required>
           overlays: <required>
           # properties: <optional>
-          # additionalArgs: <optional>
+          # additional-args: <optional>
 ```
 
 ---
@@ -212,7 +212,7 @@ Example:
     overlays/base
     overlays/customer |
 | `properties` | ❌ |  | Optional properties file with replacement values. |
-| `additionalArgs` | ❌ |  | Additional raw arguments to append to the mcix command |
+| `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
 

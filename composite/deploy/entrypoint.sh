@@ -156,8 +156,8 @@ echo "$@"
   printf 'compile_include_asset_in_test_name=%s\n' "$PARAM_INCLUDE_ASSET_IN_TEST_NAME"
 
   # Additional arguments
-  printf 'overlayAdditionalArgs=%s\n' "$PARAM_OVERLAY_ADDITIONAL_ARGS"
-  printf 'importAdditionalArgs=%s\n' "$PARAM_IMPORT_ADDITIONAL_ARGS"
-  printf 'compileAdditionalArgs=%s\n' "$PARAM_COMPILE_ADDITIONAL_ARGS"
+  printf 'overlay-additional-args=%s\n' "$PARAM_OVERLAY_ADDITIONAL_ARGS"
+  printf 'import-additional-args=%s\n' "$PARAM_IMPORT_ADDITIONAL_ARGS"
+  printf 'compile-additional-args=%s\n' "$PARAM_COMPILE_ADDITIONAL_ARGS"
 
 } >>"$GITHUB_OUTPUT"

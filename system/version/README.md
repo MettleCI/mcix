@@ -32,7 +32,7 @@ jobs:
         id: system-version
         uses: ${{ github.repository }}/system/version@v1
         with:
-          # additionalArgs: <optional>
+          # additional-args: <optional>
 ```
 
 ---
@@ -41,7 +41,7 @@ jobs:
 
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
-| `additionalArgs` | ❌ |  | Additional raw arguments to append to the mcix command |
+| `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
 

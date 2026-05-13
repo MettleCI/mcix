@@ -41,12 +41,12 @@ jobs:
           rules: <required>
           # project: <optional>
           # project-id: <optional>
-          # included-tags: <optional>
-          # excluded-tags: <optional>
+          # include-tags: <optional>
+          # exclude-tags: <optional>
           # test-suite: mcix tests
           # include-asset-in-test-name: false
           # ignore-test-failures: false
-          # additionalArgs: <optional>
+          # additional-args: <optional>
 ```
 
 ---
@@ -69,12 +69,12 @@ jobs:
 | `project` | ❌ |  | DataStage project name |
 | `project-id` | ❌ |  | DataStage project id |
 | `rules` | ✅ |  | Path to the compliance rules |
-| `included-tags` | ❌ |  | Comma-separated list of tags to include |
-| `excluded-tags` | ❌ |  | Comma-separated list of tags to exclude |
+| `include-tags` | ❌ |  | Comma-separated list of tags to include |
+| `exclude-tags` | ❌ |  | Comma-separated list of tags to exclude |
 | `test-suite` | ❌ | mcix tests | Test suite name |
 | `include-asset-in-test-name` | ❌ | false | Include asset names in test names in the report? (true/false) |
 | `ignore-test-failures` | ❌ | false | Ignore test failures (always return 0)? (true/false) |
-| `additionalArgs` | ❌ |  | Additional raw arguments to append to the mcix command |
+| `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
 
