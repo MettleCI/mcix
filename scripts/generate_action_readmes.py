@@ -126,6 +126,9 @@ def build_generated_block(action_dir: Path, meta: Dict[str, Any]) -> str:
     out = []
     out.append(f"# {name}")
     out.append("")
+    out.append("> [!CAUTION]")
+    out.append("> This action is provided as a **technology preview** which may change, break, or disappear at any point and without warning.")
+    out.append("")  
     if description:
         out.append(description)
         out.append("")

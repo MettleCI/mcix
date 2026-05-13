@@ -14,6 +14,9 @@ It provides:
 This repository exposes MCIX as a set of **GitHub Actions** so DataStage teams can run automated 
 quality checks and deployment activities directly inside GitHub workflows.
 
+> [!CAUTION]
+> This repository is provided as a **technology preview** which may change, break, or disappear at any point and without warning.
+
 ---
 
 ## 🔧 Features
@@ -201,6 +204,6 @@ The macOS variant is intended for educational and development use cases. It can 
 
 # 📝 License
 
-This project is licensed under the **DataMigrators License Agreement**.
-See the license file in the repository for details.
+This project is licensed under the **Data Migrators License Agreement**.
+See the [license file](LICENSE) in the repository for details.
 
