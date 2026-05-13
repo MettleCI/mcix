@@ -44,7 +44,7 @@ jobs:
           rules: <required>
           # project: <optional>
           # project-id: <optional>
-          # include-tags: <optional>
+          # include-tags: false
           # exclude-tags: <optional>
           # test-suite: mcix tests
           # include-asset-in-test-name: false
@@ -72,7 +72,7 @@ jobs:
 | `project` | ❌ |  | DataStage project name |
 | `project-id` | ❌ |  | DataStage project id |
 | `rules` | ✅ |  | Path to the compliance rules |
-| `include-tags` | ❌ |  | Comma-separated list of tags to include |
+| `include-tags` | ❌ | false (if omitted) | Comma-separated list of tags to include |
 | `exclude-tags` | ❌ |  | Comma-separated list of tags to exclude |
 | `test-suite` | ❌ | mcix tests | Test suite name |
 | `include-asset-in-test-name` | ❌ | false | Include asset names in test names in the report? (true/false) |
