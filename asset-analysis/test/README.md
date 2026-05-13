@@ -47,7 +47,6 @@ jobs:
           # include-tags: false
           # exclude-tags: <optional>
           # test-suite: mcix tests
-          # include-asset-in-test-name: false
           # ignore-test-failures: false
           # additional-args: <optional>
 ```
@@ -75,7 +74,6 @@ jobs:
 | `include-tags` | ❌ | false (if omitted) | Comma-separated list of tags to include |
 | `exclude-tags` | ❌ |  | Comma-separated list of tags to exclude |
 | `test-suite` | ❌ | mcix tests | Test suite name |
-| `include-asset-in-test-name` | ❌ | false | Include asset names in test names in the report? (true/false) |
 | `ignore-test-failures` | ❌ | false | Ignore test failures (always return 0)? (true/false) |
 | `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 

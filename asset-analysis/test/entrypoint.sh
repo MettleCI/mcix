@@ -103,13 +103,11 @@ if [ -n "${PARAM_TEST_SUITE:-}" ]; then
   set -- "$@" -test-suite "$PARAM_TEST_SUITE"
 fi
 
+set -- "$@" -include-asset-in-test-name
+
 # Optional boolean flags
 if [ "$(normalise_bool "${PARAM_IGNORE_TEST_FAILURES:-0}")" -eq 1 ]; then
   set -- "$@" -ignore-test-failures
-fi
-
-if [ "$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")" -eq 1 ]; then
-  set -- "$@" -include-asset-in-test-name
 fi
 
 ADDITIONAL_ARGS="${PARAM_ADDITIONAL_ARGS:-}"

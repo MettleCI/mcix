@@ -88,7 +88,6 @@ Exactly **one** of the following must be provided:
 | Input                        | Required | Default              | Description                             |
 | ---------------------------- | -------- | -------------------- | --------------------------------------- |
 | `report`                     | ❌        | `compile-report.xml` | Path to write the JUnit compile report  |
-| `include-asset-in-test-name` | ❌        | empty                | Include asset names in JUnit test names |
 
 ---
 
@@ -219,7 +218,6 @@ jobs:
           # output: <optional>
           # import-report: import-report.xml
           # compile-report: compile-report.xml
-          # include-asset-in-test-name: false
           # overlay-additional-args: <optional>
           # import-additional-args: <optional>
           # compile-additional-args: <optional>
@@ -256,7 +254,6 @@ Example:
 | `output` | ❌ |  | Zip file or directory to write updated assets (default: derived) |
 | `import-report` | ❌ | import-report.xml | Path to output the import report |
 | `compile-report` | ❌ | compile-report.xml | Path to output the compile report |
-| `include-asset-in-test-name` | ❌ | false (if omitted) | Include asset names in test names in the report? (true/false) |
 | `overlay-additional-args` | ❌ |  | Additional raw arguments to append to the overlay apply command |
 | `import-additional-args` | ❌ |  | Additional raw arguments to append to the datastage import command |
 | `compile-additional-args` | ❌ |  | Additional raw arguments to append to the datastage compile command |

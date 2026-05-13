@@ -61,7 +61,6 @@ jobs:
           include-tags: ${{ inputs.IncludeTags }}
           exclude-tags: ${{ inputs.ExcludeTags }}
           ignore-test-failures: true
-          include-asset-in-test-name: true
           test-suite: "${{ inputs.AnalysisSuite }}"
 ```
 

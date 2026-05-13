@@ -92,7 +92,6 @@ PARAM_PROPERTIES="${PARAM_PROPERTIES-}"
 PARAM_OUTPUT="${PARAM_OUTPUT-}"
 PARAM_IMPORT_REPORT="${PARAM_IMPORT_REPORT-}"
 PARAM_COMPILE_REPORT="${PARAM_COMPILE_REPORT-}"
-PARAM_INCLUDE_ASSET_IN_TEST_NAME="${PARAM_INCLUDE_ASSET_IN_TEST_NAME-}"
 
 PARAM_OVERLAY_ADDITIONAL_ARGS="${PARAM_OVERLAY_ADDITIONAL_ARGS-}"
 PARAM_IMPORT_ADDITIONAL_ARGS="${PARAM_IMPORT_ADDITIONAL_ARGS-}"
@@ -153,7 +152,6 @@ echo "$@"
 
   # Compile report options
   printf 'compile_report=%s\n' "$compile_report_abs"
-  printf 'compile_include_asset_in_test_name=%s\n' "$PARAM_INCLUDE_ASSET_IN_TEST_NAME"
 
   # Additional arguments
   printf 'overlay-additional-args=%s\n' "$PARAM_OVERLAY_ADDITIONAL_ARGS"

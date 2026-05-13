@@ -56,7 +56,6 @@ These map to the `mcix datastage compile` entrypoint:
 | `project`                    | ⚠️       | DataStage project name – required if `project-id` is not provided        |
 | `project-id`                 | ⚠️       | DataStage project ID/UUID – required if `project` is not provided        |
 | `report`                     | ❌        | Optional report/profile name (e.g. `compile`), if your CLI supports it   |
-| `include-asset-in-test-name` | ❌        | Optional boolean flag; when `true`, passes `-include-asset-in-test-name` |
 
 **Project selection rules**
 
@@ -170,7 +169,6 @@ jobs:
           # report: compile-report.xml
           # project: <optional>
           # project-id: <optional>
-          # include-asset-in-test-name: false
           # additional-args: <optional>
 ```
 
@@ -193,7 +191,6 @@ jobs:
 | `report` | ❌ | compile-report.xml | Path to output the compile report |
 | `project` | ❌ |  | DataStage project name |
 | `project-id` | ❌ |  | DataStage project id |
-| `include-asset-in-test-name` | ❌ | false (if omitted) | Include asset names in test names in the report? (true/false) |
 | `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---

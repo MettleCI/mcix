@@ -58,11 +58,6 @@ inputs:
     required: false     # Required when -project not specified
     default: ""
 
-  include-asset-in-test-name:
-    description: 'Include asset names in test names in the report? (true/false)'
-    required: false
-    default: ""         # Optional boolean input; if not provided, defaults to false
-
   additional-args:
     description: 'Additional raw arguments to append to the mcix command'
     required: false
@@ -83,5 +78,4 @@ runs:
     PARAM_REPORT: ${{ inputs.report }}
     PARAM_PROJECT: ${{ inputs.project }}
     PARAM_PROJECT_ID: ${{ inputs.project-id }}
-    PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
     PARAM_ADDITIONAL_ARGS: ${{ inputs.additional-args }}

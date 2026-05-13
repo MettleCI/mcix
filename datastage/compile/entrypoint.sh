@@ -86,20 +86,12 @@ validate_project
 [ -n "$PROJECT" ]    && set -- "$@" -project "$PROJECT"
 [ -n "$PROJECT_ID" ] && set -- "$@" -project-id "$PROJECT_ID"
 
+set -- "$@" -include-asset-in-test-name
+
 # Optional flags
-
-# -include-asset-in-test-name (PARAM_INCLUDE_ASSET_IN_TEST_NAME)
-if [ "$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")" -eq 1 ]; then
-  set -- "$@" -include-asset-in-test-name
-fi
-
 # Optional boolean flags
 if [ "$(normalise_bool "${PARAM_IGNORE_TEST_FAILURES:-0}")" -eq 1 ]; then
   set -- "$@" -ignore-test-failures
-fi
-
-if [ "$(normalise_bool "${PARAM_INCLUDE_ASSET_IN_TEST_NAME:-0}")" -eq 1 ]; then
-  set -- "$@" -include-asset-in-test-name
 fi
 
 ADDITIONAL_ARGS="${PARAM_ADDITIONAL_ARGS:-}"

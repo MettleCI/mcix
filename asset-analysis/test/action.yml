@@ -76,11 +76,6 @@ inputs:
     required: false
     default: 'mcix tests'
 
-  include-asset-in-test-name:
-    description: 'Include asset names in test names in the report? (true/false)'
-    required: false
-    default: 'false'
-
   ignore-test-failures:
     description: 'Ignore test failures (always return 0)? (true/false)'
     required: false
@@ -110,6 +105,5 @@ runs:
     PARAM_INCLUDE_TAGS: ${{ inputs.include-tags }}
     PARAM_EXCLUDE_TAGS: ${{ inputs.exclude-tags }}
     PARAM_TEST_SUITE: ${{ inputs.test-suite }}
-    PARAM_INCLUDE_ASSET_IN_TEST_NAME: ${{ inputs.include-asset-in-test-name }}
     PARAM_IGNORE_TEST_FAILURES: ${{ inputs.ignore-test-failures }}
     PARAM_ADDITIONAL_ARGS: ${{ inputs.additional-args }}
