@@ -57,6 +57,10 @@ inputs:
     required: false     # Required when -project not specified
     default: ''
 
+  path:
+    description: 'Path to the DataStage assets. Mutually exclusive with url/user/api-key.'
+    required: true
+
   rules:
     description: 'Path to the compliance rules'
     required: true
@@ -101,6 +105,7 @@ runs:
     PARAM_REPORT: ${{ inputs.report }}
     PARAM_PROJECT: ${{ inputs.project }}
     PARAM_PROJECT_ID: ${{ inputs.project-id }}
+    PARAM_PATH: ${{ inputs.path }}
     PARAM_RULES: ${{ inputs.rules }}
     PARAM_INCLUDE_TAGS: ${{ inputs.include-tags }}
     PARAM_EXCLUDE_TAGS: ${{ inputs.exclude-tags }}

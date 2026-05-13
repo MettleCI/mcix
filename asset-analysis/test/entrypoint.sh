@@ -48,9 +48,6 @@ MCIX_LOGGED_ERROR_ID=""
 # -------------------
 
 # Validate required vars
-require PARAM_API_KEY "api-key"
-require PARAM_URL "url"
-require PARAM_USER "user"
 require PARAM_REPORT "report"
 require PARAM_RULES "rules"
 
@@ -76,12 +73,29 @@ fi
 # There are GOOD REASONS we don't use MCIX_CMD_NAME here.
 set -- mcix asset-analysis test
 
-# Core flags
-set -- "$@" -api-key "$PARAM_API_KEY"
-set -- "$@" -url "$PARAM_URL"
-set -- "$@" -user "$PARAM_USER"
-set -- "$@" -report "$PARAM_REPORT"
-set -- "$@" -rules "$PARAM_RULES"
+# Assets are sourced from either the filesystem (path), or NextGen (url/user/project)
+PATH="${PARAM_PATH:-}"
+URL="${PARAM_URL:-}"
+if [ -z "$PATH" ] && [ -z "$URL" ]; then
+  gh_error "$MCIX_CMD_NAME" "One of 'path' or 'url' is required"
+elif [ -n "$PATH" ] && [ -n "$URL" ]; then
+  gh_error "$MCIX_CMD_NAME" "Only one of 'path' or 'url' is allowed"
+fi
+
+USER="${PARAM_USER:-}"
+API_KEY="{PARAM_API_KEY:-}"
+if [ -n "$URL" ]; then
+  [ -z "$USER" ]  && gh_error "$MCIX_CMD_NAME" "'user' is required with 'url'"
+  [ -z "$API_KEY" ]  && gh_error "$MCIX_CMD_NAME" "'api-key' is required with 'url'"
+fi
+
+if [ -n "$PATH" ]; then
+  set -- "$@" -path "$PATH"
+else 
+  set -- "$@" -url "$URL"
+  set -- "$@" -user "$USER"
+  set -- "$@" -api-key "$API_KEY"
+fi
 
 # Mutually exclusive project / project-id handling (safe with set -u)
 PROJECT="${PARAM_PROJECT:-}"
@@ -89,6 +103,10 @@ PROJECT_ID="${PARAM_PROJECT_ID:-}"
 validate_project
 [ -n "$PROJECT" ]    && set -- "$@" -project "$PROJECT"
 [ -n "$PROJECT_ID" ] && set -- "$@" -project-id "$PROJECT_ID"
+
+# Core flags
+set -- "$@" -report "$PARAM_REPORT"
+set -- "$@" -rules "$PARAM_RULES"
 
 # Optional flags
 if [ -n "${PARAM_INCLUDE_TAGS:-}" ]; then
@@ -118,6 +136,8 @@ if [ -n "$ADDITIONAL_ARGS" ]; then
     set -- "$@" $arg
   done
 fi
+
+echo "$@"
 
 # ------------
 # Step summary
