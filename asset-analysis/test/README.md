@@ -41,6 +41,7 @@ jobs:
           url: <required>
           user: <required>
           report: <required>
+          path: <required>
           rules: <required>
           # project: <optional>
           # project-id: <optional>
@@ -70,6 +71,7 @@ jobs:
 | `report` | ✅ |  | Path to output the asset analysis report |
 | `project` | ❌ |  | DataStage project name |
 | `project-id` | ❌ |  | DataStage project id |
+| `path` | ✅ |  | Path to the DataStage assets. Mutually exclusive with url/user/api-key. |
 | `rules` | ✅ |  | Path to the compliance rules |
 | `include-tags` | ❌ | false (if omitted) | Comma-separated list of tags to include |
 | `exclude-tags` | ❌ |  | Comma-separated list of tags to exclude |
