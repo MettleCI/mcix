@@ -83,7 +83,7 @@ elif [ -n "$PATH" ] && [ -n "$URL" ]; then
 fi
 
 USER="${PARAM_USER:-}"
-API_KEY="{PARAM_API_KEY:-}"
+API_KEY="${PARAM_API_KEY:-}"
 if [ -n "$URL" ]; then
   [ -z "$USER" ]  && gh_error "$MCIX_CMD_NAME" "'user' is required with 'url'"
   [ -z "$API_KEY" ]  && gh_error "$MCIX_CMD_NAME" "'api-key' is required with 'url'"
