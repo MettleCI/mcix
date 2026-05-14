@@ -74,11 +74,11 @@ fi
 set -- mcix asset-analysis test
 
 # Assets are sourced from either the filesystem (path), or NextGen (url/user/project)
-PATH="${PARAM_PATH:-}"
+ASSETPATH="${PARAM_PATH:-}"
 URL="${PARAM_URL:-}"
-if [ -z "$PATH" ] && [ -z "$URL" ]; then
+if [ -z "$ASSETPATH" ] && [ -z "$URL" ]; then
   gh_error "$MCIX_CMD_NAME" "One of 'path' or 'url' is required"
-elif [ -n "$PATH" ] && [ -n "$URL" ]; then
+elif [ -n "$ASSETPATH" ] && [ -n "$URL" ]; then
   gh_error "$MCIX_CMD_NAME" "Only one of 'path' or 'url' is allowed"
 fi
 
@@ -89,8 +89,8 @@ if [ -n "$URL" ]; then
   [ -z "$API_KEY" ]  && gh_error "$MCIX_CMD_NAME" "'api-key' is required with 'url'"
 fi
 
-if [ -n "$PATH" ]; then
-  set -- "$@" -path "$PATH"
+if [ -n "$ASSETPATH" ]; then
+  set -- "$@" -path "$ASSETPATH"
 else 
   set -- "$@" -url "$URL"
   set -- "$@" -user "$USER"
