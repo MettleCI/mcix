@@ -40,9 +40,9 @@ jobs:
           api-key: <required>
           url: <required>
           user: <required>
-          report: <required>
           path: <required>
           rules: <required>
+          # report: reports/asset-analysis-report.xml
           # project: <optional>
           # project-id: <optional>
           # include-tags: false
@@ -68,7 +68,7 @@ jobs:
 | `api-key` | ✅ |  | API key for authentication |
 | `url` | ✅ |  | URL of the DataStage server |
 | `user` | ✅ |  | Username for authentication |
-| `report` | ✅ |  | Path to output the asset analysis report |
+| `report` | ❌ | reports/asset-analysis-report.xml | Path to output the asset analysis report |
 | `project` | ❌ |  | DataStage project name |
 | `project-id` | ❌ |  | DataStage project id |
 | `path` | ✅ |  | Path to the DataStage assets. Mutually exclusive with url/user/api-key. |

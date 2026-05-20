@@ -166,7 +166,7 @@ jobs:
           api-key: <required>
           url: <required>
           user: <required>
-          # report: compile-report.xml
+          # report: reports/compile-report.xml
           # project: <optional>
           # project-id: <optional>
           # additional-args: <optional>
@@ -188,7 +188,7 @@ jobs:
 | `api-key` | ✅ |  | API key for authentication |
 | `url` | ✅ |  | URL of the DataStage server |
 | `user` | ✅ |  | Username for authentication |
-| `report` | ❌ | compile-report.xml | Path to output the compile report |
+| `report` | ❌ | reports/compile-report.xml | Path to output the compile report |
 | `project` | ❌ |  | DataStage project name |
 | `project-id` | ❌ |  | DataStage project id |
 | `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |

@@ -215,9 +215,9 @@ jobs:
           # project: <optional>
           # project-id: <optional>
           # properties: <optional>
-          # output: <optional>
-          # import-report: import-report.xml
-          # compile-report: compile-report.xml
+          # output: build/release.zip
+          # import-report: reports/import-report.xml
+          # compile-report: reports/compile-report.xml
           # overlay-additional-args: <optional>
           # import-additional-args: <optional>
           # compile-additional-args: <optional>
@@ -251,9 +251,9 @@ Example:
     overlays/base
     overlays/customer |
 | `properties` | ❌ |  | Optional properties file with replacement values |
-| `output` | ❌ |  | Zip file or directory to write updated assets (default: derived) |
-| `import-report` | ❌ | import-report.xml | Path to output the import report |
-| `compile-report` | ❌ | compile-report.xml | Path to output the compile report |
+| `output` | ❌ | build/release.zip | Zip file or directory to write updated assets (default: derived) |
+| `import-report` | ❌ | reports/import-report.xml | Path to output the import report |
+| `compile-report` | ❌ | reports/compile-report.xml | Path to output the compile report |
 | `overlay-additional-args` | ❌ |  | Additional raw arguments to append to the overlay apply command |
 | `import-additional-args` | ❌ |  | Additional raw arguments to append to the datastage import command |
 | `compile-additional-args` | ❌ |  | Additional raw arguments to append to the datastage compile command |
