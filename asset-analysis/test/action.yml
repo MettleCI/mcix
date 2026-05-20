@@ -45,7 +45,8 @@ inputs:
 
   report:
     description: 'Path to output the asset analysis report'
-    required: true
+    required: false
+    default: 'reports/asset-analysis-report.xml'
 
   project:
     description: 'DataStage project name'

@@ -72,19 +72,19 @@ inputs:
   output:
     description: "Zip file or directory to write updated assets (default: derived)"
     required: false
-    default: ""
+    default: "build/release.zip"
 
   # Import report options
   import-report:
     description: "Path to output the import report"
     required: false
-    default: "import-report.xml"
+    default: "reports/import-report.xml"
 
   # Compile report options
   compile-report:
     description: "Path to output the compile report"
     required: false
-    default: "compile-report.xml"
+    default: "reports/compile-report.xml"
 
   # Additional arguments
   overlay-additional-args:
