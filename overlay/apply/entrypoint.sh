@@ -65,7 +65,7 @@ set -- "$@" -output "$PARAM_OUTPUT"
 
 # Handle multiple overlays by splitting the newline-separated list and adding multiple -overlay flags.
 # We'll support both comma- and newline-separated lists for flexibility, but we'll normalize to newlines for processing.
-OVERLAYS_NL="${PARAM_OVERLAYS//,/\\n}"
+OVERLAYS_NL="${PARAM_OVERLAYS//,/$'\n'}"
 # Process values split by newlines, ignore empty/whitespace-only lines and add a -overlay flag for each non-empty line. 
 while IFS= read -r line; do
   trimmed="$(printf '%s' "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
