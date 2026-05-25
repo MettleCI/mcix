@@ -69,8 +69,9 @@ OVERLAYS_NL="${PARAM_OVERLAYS//,/$'\n'}"
 # Process values split by newlines, ignore empty/whitespace-only lines and add a -overlay flag for each non-empty line. 
 while IFS= read -r line; do
   trimmed="$(printf '%s' "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+  resolved="$(resolve_workspace_path "$trimmed")"
   [ -z "$trimmed" ] && continue
-  set -- "$@" -overlay "$trimmed"
+  set -- "$@" -overlay "$resolved"
 done <<EOF
 ${OVERLAYS_NL}
 EOF
@@ -120,7 +121,7 @@ write_step_summary() {
 
   else
     # Generate summary
-    gh_notice "$MCIX_CMD_NAME" "$MCIX_CMD_NAME applied overlays: ${PARAM_OVERLAYS}"
+    gh_notice "$MCIX_CMD_NAME" "$MCIX_CMD_NAME applied overlays: ${aw}"
   fi
 
   if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
