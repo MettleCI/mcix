@@ -121,7 +121,7 @@ write_step_summary() {
 
   else
     # Generate summary
-    gh_notice "$MCIX_CMD_NAME" "$MCIX_CMD_NAME applied overlays: ${aw}"
+    gh_notice "$MCIX_CMD_NAME" "$MCIX_CMD_NAME applied overlays: ${PARAM_OVERLAYS}"
   fi
 
   if [[ -f "${MCIX_LOG_DIR}/cli.$(date +%F).log" ]]; then
