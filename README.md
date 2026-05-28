@@ -1,4 +1,19 @@
-# 🚀 MCIX for IBM DataStage
+<div align="center">
+
+<img src="assets/img/mci_logo.svg" alt="Git Switch" width="96" height="96" />
+
+# MCIX Custom GitHub Actions 
+
+A fast, native client that provides all your CI/CD requirements for IBM DataStage NextGen.
+
+[![Apache2.0](https://img.shields.io/badge/License-Apache2.0-yellow.svg)](LICENSE)
+[![Publish actions to per-action repos](https://github.com/MettleCI/mcix/actions/workflows/publish-actions.yml/badge.svg)](https://github.com/MettleCI/mcix/actions/workflows/publish-actions.yml)
+
+</div>
+
+---
+
+# MCIX for IBM DataStage
 
 **Static Code Analysis • Automated Unit Testing • CI/CD for IBM DataStage**
 
@@ -19,7 +34,7 @@ quality checks and deployment activities directly inside GitHub workflows.
 
 ---
 
-## 🔧 Features
+## Features
 
 ✔️ Introduce DataStage teams to modern CI/CD practices<br>
 ✔️ Run MCIX tests as part of continuous integration <br>
@@ -33,7 +48,7 @@ quality checks and deployment activities directly inside GitHub workflows.
 
 ---
 
-# 📦 Using These Actions in Your Workflow
+# Using These Actions in Your Workflow
 
 ```yaml
 name: Asset Analysis
@@ -68,7 +83,7 @@ This runs MCIX against your DataStage project every time someone pushes or opens
 
 ---
 
-# ⚙️ Inputs
+# Inputs
 
 | Name         | Required | Description                                                                  |
 | ------------ | -------- | ---------------------------------------------------------------------------- |
@@ -83,7 +98,7 @@ This runs MCIX against your DataStage project every time someone pushes or opens
 
 ---
 
-# 📤 Outputs
+# Outputs
 
 The action exposes the following outputs:
 
@@ -101,7 +116,7 @@ Use them in your workflow like:
 
 ---
 
-# 🚨 Failure Conditions
+# Failure Conditions
 
 The action will exit non-zero if:
 
@@ -115,7 +130,7 @@ This ensures CI/CD pipelines fail fast and enforce DataStage quality.
 
 ---
 
-# 📚 Documentation
+# Documentation
 
 Full documentation lives at [https://docs.mettleci.io](https://docs.mettleci.io).
 
@@ -130,7 +145,7 @@ Topics include:
 
 ---
 
-# 🧪 Local Testing
+# Local Testing
 
 The `mcix` command is made available in two ways: as a Docker image or as a standalone CLI tool compatible with Linux or macOS.
 Both options provide the same functionality, so you can choose the one that best fits your needs and environment.
@@ -193,7 +208,7 @@ The macOS variant is intended for educational and development use cases. It can 
   
 ---
 
-# 🤝 Support
+# Support
 
 * Issues: [https://github.com/DataMigrators/mcix/issues](https://github.com/DataMigrators/mcix/issues)
 * MettleCI Product Support: [https://support.mettleci.io](https://support.mettleci.io)
@@ -201,8 +216,6 @@ The macOS variant is intended for educational and development use cases. It can 
 
 ---
 
-# 📝 License
+## License
 
-This project is licensed under the **Data Migrators License Agreement**.
-See the [license file](LICENSE) in the repository for details.
-
+This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
