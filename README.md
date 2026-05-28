@@ -17,6 +17,9 @@ A fast, native client that provides all your CI/CD requirements for IBM DataStag
 
 **Static Code Analysis • Automated Unit Testing • CI/CD for IBM DataStage**
 
+> [!CAUTION]
+> This repository is provided as a **technology preview** which may change, break, or disappear at any point and without warning.
+
 MCIX is a command-line toolkit that brings **modern engineering practices** to IBM DataStage NextGen.
 It provides:
 
@@ -28,9 +31,6 @@ It provides:
 
 This repository exposes MCIX as a set of **GitHub Actions** so DataStage teams can run automated 
 quality checks and deployment activities directly inside GitHub workflows.
-
-> [!CAUTION]
-> This repository is provided as a **technology preview** which may change, break, or disappear at any point and without warning.
 
 ---
 
