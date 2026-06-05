@@ -26,6 +26,19 @@ branding:
   color: 'blue'
 
 inputs:
+  container-registry:
+    description: 'The path of the container registry, eg "ghcr.io"'
+    required: false
+    default: 'ghcr.io'
+  image-name:
+    description: 'The namespace and name of the MCIX container image providing this task'
+    required: false
+    default: 'mettleci/mcix'
+  image-tag:
+    description: 'The tag of the MCIX container image providing this task'
+    required: false
+    default: 'latest'
+
   additional-args:
     description: 'Additional raw arguments to append to the mcix command'
     required: false
@@ -38,5 +51,8 @@ runs:
   using: 'docker'
   image: 'Dockerfile' # Refers to the Dockerfile in the current directory
   env:
+    # PARAM_CONTAINER_REGISTRY: ${{ inputs.container-registry }}
+    # PARAM_IMAGE_NAME: ${{ inputs.image-name }}
+    # PARAM_IMAGE_TAG: ${{ inputs.image-tag }}
     PARAM_ACTION_DETAILS: ${{ inputs.action-details }}
     PARAM_ADDITIONAL_ARGS: ${{ inputs.additional-args }}
