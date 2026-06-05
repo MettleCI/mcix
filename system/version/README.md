@@ -35,6 +35,9 @@ jobs:
         id: system-version
         uses: ${{ github.repository }}/system/version@v1
         with:
+          # container-registry: ghcr.io
+          # image-name: mettleci/mcix
+          # image-tag: latest
           # additional-args: <optional>
 ```
 
@@ -44,6 +47,9 @@ jobs:
 
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
+| `container-registry` | ❌ | ghcr.io | The path of the container registry, eg "ghcr.io" |
+| `image-name` | ❌ | mettleci/mcix | The namespace and name of the MCIX container image providing this task |
+| `image-tag` | ❌ | latest | The tag of the MCIX container image providing this task |
 | `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
