@@ -69,6 +69,8 @@ runs:
           -w /github/workspace \
           -e PARAM_ACTION_DETAILS="${{ inputs.action-details }}"" \
           -e PARAM_ADDITIONAL_ARGS="${{ inputs.additional-args }}"" \
+          -v "$GITHUB_OUTPUT:$GITHUB_OUTPUT" \
+          -e GITHUB_OUTPUT="$GITHUB_OUTPUT" \
           --entrypoint /bin/bash \
           ${{ inputs.container-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }} \
           /entrypoint.sh
