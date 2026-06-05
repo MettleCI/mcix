@@ -64,8 +64,7 @@ jobs:
 
 ## 🧱 Implementation details
 
-- `runs.using`: `docker`
-- `runs.image`: `Dockerfile`
+- `runs.using`: `composite`
 
 ---
 
