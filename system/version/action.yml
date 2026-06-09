@@ -29,7 +29,7 @@ inputs:
   container-registry:
     description: 'The path of the container registry, eg "icr.io"'
     required: false
-    default: 'icr.io'
+    default: 'ghcr.io'
   image-name:
     description: 'The namespace and name of the MCIX container image providing this task'
     required: false
