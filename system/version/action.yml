@@ -83,8 +83,8 @@ runs:
           -w /github/workspace \
           -v "$GITHUB_OUTPUT:$GITHUB_OUTPUT" \
           -e GITHUB_OUTPUT="$GITHUB_OUTPUT" \
-          -v "$GITHUB_STEP_SUMMARY:$GITHUB_STEP_SUMMARY" \
           -e GITHUB_STEP_SUMMARY=$GITHUB_STEP_SUMMARY \
+          -v "$GITHUB_STEP_SUMMARY:$GITHUB_STEP_SUMMARY" \
           -e PARAM_ACTION_DETAILS="${{ inputs.action-details }}" \
           -e PARAM_ADDITIONAL_ARGS="${{ inputs.additional-args }}" \
           --entrypoint /bin/bash \
