@@ -27,9 +27,9 @@ branding:
 
 inputs:
   container-registry:
-    description: 'The path of the container registry, eg "ghcr.io"'
+    description: 'The path of the container registry, eg "icr.io"'
     required: false
-    default: 'ghcr.io'
+    default: 'icr.io'
   image-name:
     description: 'The namespace and name of the MCIX container image providing this task'
     required: false
@@ -50,11 +50,25 @@ outputs:
 runs:
   using: 'composite'
   steps:
+# Image name prioritises in order
+#   1 - Environment variables (if IMAGE_REGISTRY defined and not empty):
+#       - IMAGE_REGISTRY
+#       - IMAGE_NAME (default 'mettleci/mcix')
+#       - IMAGE_TAG (default 'latest')
+#   2 - Custom action inputs: 
+#       - container-registry (default 'icr.io')
+#       - image-name (default 'mettleci/mcix')
+#       - image-tag (default 'latest')
     - name: Assemble full image name
       id: image
       shell: bash
       run: |
-        echo full_path="$REGISTRY_URL/$IMAGE_NAME:$IMAGE_TAG">> $GITHUB_OUTPUT
+        if [[ -n $IMAGE_REGISTRY ]]; then
+          echo "Found environment variable IMAGE_REGISTRY: using IMAGE_REGISTRY/IMAGE_NAME(default 'mettleci/mcix'):IMAGE_TAG(default 'latest')"
+          echo full_path="$IMAGE_REGISTRY/${IMAGE_NAME:-mettleci/mcix}:${IMAGE_TAG:-latest}">> $GITHUB_OUTPUT
+        else
+          echo full_path="${{ inputs.container-registry }}/${{ inputs.image_name }}:${{ inputs.image_tag }}">> $GITHUB_OUTPUT
+        fi
 
     - name: Run Entrypoint in Variable Base Image
       shell: bash
