@@ -81,8 +81,8 @@ runs:
           -v ${{ github.workspace }}:/github/workspace \
           -v ${{ github.action_path }}/entrypoint.sh:/entrypoint.sh \
           -w /github/workspace \
-          -v "$GITHUB_OUTPUT:$GITHUB_OUTPUT" \
           -e GITHUB_OUTPUT="$GITHUB_OUTPUT" \
+          -v "$GITHUB_OUTPUT:$GITHUB_OUTPUT" \
           -e GITHUB_STEP_SUMMARY=$GITHUB_STEP_SUMMARY \
           -v "$GITHUB_STEP_SUMMARY:$GITHUB_STEP_SUMMARY" \
           -e PARAM_ACTION_DETAILS="${{ inputs.action-details }}" \
