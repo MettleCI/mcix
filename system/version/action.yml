@@ -67,7 +67,7 @@ runs:
           echo "Found environment variable IMAGE_REGISTRY: using IMAGE_REGISTRY/IMAGE_NAME(default 'mettleci/mcix'):IMAGE_TAG(default 'latest')"
           echo full_path="$IMAGE_REGISTRY/${IMAGE_NAME:-mettleci/mcix}:${IMAGE_TAG:-latest}">> $GITHUB_OUTPUT
         else
-          echo full_path="${{ inputs.container-registry }}/${{ inputs.image_name }}:${{ inputs.image_tag }}">> $GITHUB_OUTPUT
+          echo full_path="${{ inputs.container-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}">> $GITHUB_OUTPUT
         fi
 
     - name: Run Entrypoint in Variable Base Image
