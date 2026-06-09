@@ -67,11 +67,11 @@ runs:
           -v ${{ github.workspace }}:/github/workspace \
           -v ${{ github.action_path }}/entrypoint.sh:/entrypoint.sh \
           -w /github/workspace \
-          -e PARAM_ADDITIONAL_ARGS="${{ inputs.additional-args }}"" \
+          -e PARAM_ACTION_DETAILS="${{ inputs.action-details }}" \
+          -e PARAM_ADDITIONAL_ARGS="${{ inputs.additional-args }}" \
           -v "$GITHUB_OUTPUT:$GITHUB_OUTPUT" \
           -e GITHUB_OUTPUT="$GITHUB_OUTPUT" \
           --entrypoint /bin/bash \
           ${{ steps.image.outputs.full_path }} \
           /entrypoint.sh
 
-          # -e PARAM_ACTION_DETAILS="${{ inputs.action-details }}"" \
