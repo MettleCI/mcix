@@ -99,9 +99,7 @@ runs:
       run: |
         #1. If credentials have been specified, the assumption is that the container registry is private and authentication is required
         if [[ "${{ steps.private_registry.outputs.username }}" != "" && "${{ steps.private_registry.outputs.apikey }}" != "" ]]; then
-          docker login ${{ steps.image.outputs.registry }} \
-            -u ${{ steps.private_registry.outputs.username }} \
-            -p ${{ steps.private_registry.outputs.apikey }}
+          echo "${{ steps.private_registry.outputs.apikey }}" | docker login --username "${{ steps.private_registry.outputs.username }}" --password-stdin
         fi
 
         # 2. Pull the specified variable image
