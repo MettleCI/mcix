@@ -38,6 +38,15 @@ inputs:
     description: 'The tag of the MCIX container image providing this task'
     required: false
     default: 'latest'
+  registry-user:
+    description: 'Username for sourcing the image from a private container registry'
+    required: false
+    default: ''
+  registry-api-key:
+    description: 'API Key for sourcing the image from a private container registry'
+    required: false
+    default: ''
+
 
   additional-args:
     description: 'Additional raw arguments to append to the mcix command'
@@ -65,18 +74,36 @@ runs:
       run: |
         if [[ -n $IMAGE_REGISTRY ]]; then
           echo "Found environment variable IMAGE_REGISTRY: using IMAGE_REGISTRY/IMAGE_NAME(default 'mettleci/mcix'):IMAGE_TAG(default 'latest')"
+          echo registry="$IMAGE_REGISTRY">> $GITHUB_OUTPUT
           echo full_path="$IMAGE_REGISTRY/${IMAGE_NAME:-mettleci/mcix}:${IMAGE_TAG:-latest}">> $GITHUB_OUTPUT
         else
+          echo registry="${{ inputs.container-registry }}">> $GITHUB_OUTPUT
           echo full_path="${{ inputs.container-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}">> $GITHUB_OUTPUT
+        fi
+
+    - name: Determine private container registry credentials
+      id: private_registry
+      shell: bash
+      run: |
+        if [[ -n $REGISTRY_USER ]]; then
+          echo "Found environment variable REGISTRY_USER: using REGISTRY_USER/REGISTRY_API_KEY"
+          echo username="$REGISTRY_USER">> $GITHUB_OUTPUT
+          echo apikey="$REGISTRY_API_KEY">> $GITHUB_OUTPUT
+        else
+          echo username="$REGISTRY_USER">> $GITHUB_OUTPUT
+          echo apikey="$REGISTRY_API_KEY">> $GITHUB_OUTPUT
         fi
 
     - name: Run Entrypoint in Variable Base Image
       shell: bash
       run: |
-        # 1. Pull the specified variable image
+        #1. If credentials have been specified, the assumption is that the container registry is private and authentication is required
+        docker login ${{ steps.image.outputs.registry }} -u ${{ steps.private_registry.outputs.username }} -p ${{ steps.private_registry.outputs.apikey }}
+
+        # 2. Pull the specified variable image
         docker pull ${{ steps.image.outputs.full_path }}
         
-        # 2. Run the image, mounting the entrypoint and passing inputs as env vars
+        # 3. Run the image, mounting the entrypoint and passing inputs as env vars
         docker run --rm \
           -v ${{ github.workspace }}:/github/workspace \
           -v ${{ github.action_path }}/entrypoint.sh:/entrypoint.sh \
