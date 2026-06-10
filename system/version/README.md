@@ -38,6 +38,8 @@ jobs:
           # container-registry: ghcr.io
           # image-name: mettleci/mcix
           # image-tag: latest
+          # registry-user: <optional>
+          # registry-api-key: <optional>
           # additional-args: <optional>
 ```
 
@@ -50,6 +52,8 @@ jobs:
 | `container-registry` | ❌ | ghcr.io | The path of the container registry, eg "icr.io" |
 | `image-name` | ❌ | mettleci/mcix | The namespace and name of the MCIX container image providing this task |
 | `image-tag` | ❌ | latest | The tag of the MCIX container image providing this task |
+| `registry-user` | ❌ |  | Username for sourcing the image from a private container registry |
+| `registry-api-key` | ❌ |  | API Key for sourcing the image from a private container registry |
 | `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
