@@ -90,16 +90,19 @@ runs:
           echo username="$REGISTRY_USER">> $GITHUB_OUTPUT
           echo apikey="$REGISTRY_API_KEY">> $GITHUB_OUTPUT
         else
-          echo username="$REGISTRY_USER">> $GITHUB_OUTPUT
-          echo apikey="$REGISTRY_API_KEY">> $GITHUB_OUTPUT
+          echo username="${{ inputs.registry-user }}">> $GITHUB_OUTPUT
+          echo apikey="${{ inputs.registry-api-key }}">> $GITHUB_OUTPUT
         fi
 
     - name: Run Entrypoint in Variable Base Image
       shell: bash
+      env: 
+        REG_USR: ${{ steps.private_registry.outputs.username }}
+        REG_APIKEY: ${{ steps.private_registry.outputs.apikey }}
       run: |
         #1. If credentials have been specified, the assumption is that the container registry is private and authentication is required
-        if [[ "${{ steps.private_registry.outputs.username }}" != "" && "${{ steps.private_registry.outputs.apikey }}" != "" ]]; then
-          echo "${{ steps.private_registry.outputs.apikey }}" | docker login --username "${{ steps.private_registry.outputs.username }}" --password-stdin
+        if [[ "$REG_USR" != "" && "$REG_APIKEY" != "" ]]; then
+          echo "$REG_APIKEY" | docker login --username "REG_USR" --password-stdin
         fi
 
         # 2. Pull the specified variable image
