@@ -122,10 +122,6 @@ runs:
         REG_USR: ${{ steps.private_registry.outputs.username }}
         REG_APIKEY: ${{ steps.private_registry.outputs.apikey }}
       run: |
-        if [[ "$REG_USR" != "" && "$REG_APIKEY" != "" ]]; then
-          echo "$REG_APIKEY" | docker --log-level debug login $REG --username "$REG_USR" --password-stdin
-        fi
-
         #1. If credentials have been specified, the assumption is that the container registry is private and authentication is required
         if [[ "$REG_USR" != "" && "$REG_APIKEY" != "" ]]; then
           echo "$REG_APIKEY" | docker --log-level debug login $REG --username "$REG_USR" --password-stdin
