@@ -29,15 +29,15 @@ inputs:
   container-registry:
     description: 'The path of the container registry, eg "icr.io"'
     required: false
-    default: 'ghcr.io'
+    default: ''
   image-name:
     description: 'The namespace and name of the MCIX container image providing this task'
     required: false
-    default: 'mettleci/mcix'
+    default: ''
   image-tag:
     description: 'The tag of the MCIX container image providing this task'
     required: false
-    default: 'latest'
+    default: ''
   registry-user:
     description: 'Username for sourcing the image from a private container registry'
     required: false
@@ -59,50 +59,76 @@ outputs:
 runs:
   using: 'composite'
   steps:
-# Image name prioritises in order
-#   1 - Environment variables (if IMAGE_REGISTRY defined and not empty):
-#       - IMAGE_REGISTRY
+# Image name prioritises in order (can mix and match between inputs and environment variables)
+#   1 - Custom action inputs: 
+#       - container-registry 
+#       - image-name
+#       - image-tag
+#   2 - Environment variables:
+#       - IMAGE_REGISTRY (default 'icr.io')
 #       - IMAGE_NAME (default 'mettleci/mcix')
 #       - IMAGE_TAG (default 'latest')
-#   2 - Custom action inputs: 
-#       - container-registry (default 'icr.io')
-#       - image-name (default 'mettleci/mcix')
-#       - image-tag (default 'latest')
     - name: Assemble full image name
       id: image
       shell: bash
       run: |
-        if [[ -n $IMAGE_REGISTRY ]]; then
-          echo "Found environment variable IMAGE_REGISTRY: using IMAGE_REGISTRY/IMAGE_NAME(default 'mettleci/mcix'):IMAGE_TAG(default 'latest')"
-          echo registry="$IMAGE_REGISTRY">> $GITHUB_OUTPUT
-          echo full_path="$IMAGE_REGISTRY/${IMAGE_NAME:-mettleci/mcix}:${IMAGE_TAG:-latest}">> $GITHUB_OUTPUT
-        else
-          echo registry="${{ inputs.container-registry }}">> $GITHUB_OUTPUT
-          echo full_path="${{ inputs.container-registry }}/${{ inputs.image-name }}:${{ inputs.image-tag }}">> $GITHUB_OUTPUT
+        REG=""
+        IMG=""
+        TAG=""
+
+        if [[ "${{ inputs.container-registry }}" != "" ]]; then
+          REG="${{ inputs.container-registry }}"
+        else 
+          REG="${CONTAINER_REGISTRY:-icr.io}"
         fi
 
+        if [[ "${{ inputs.image-name }}" != "" ]]; then
+          IMG="${{ inputs.image-name }}"
+        else 
+          IMG="${IMAGE_NAME:-mettleci/mcix}"
+        fi
+
+        if [[ "${{ inputs.image-tag }}" != "" ]]; then
+          TAG="${{ inputs.image-tag }}"
+        else 
+          TAG="${IMAGE_TAG:-latest}"
+        fi
+
+        echo registry="$REG">> $GITHUB_OUTPUT
+        echo full_path="$REG/$IMG:$TAG">> $GITHUB_OUTPUT
+
+# Registry credentials prioritise explicit inputs or environment variables. 
+# There are no defaults if neither are supplied: the the container registry is assumed to be public,
+# so no docker login will be attempted before trying to pull the image.
     - name: Determine private container registry credentials
       id: private_registry
       shell: bash
       run: |
-        if [[ -n $REGISTRY_USER ]]; then
-          echo "Found environment variable REGISTRY_USER: using REGISTRY_USER/REGISTRY_API_KEY"
-          echo username="$REGISTRY_USER">> $GITHUB_OUTPUT
-          echo apikey="$REGISTRY_API_KEY">> $GITHUB_OUTPUT
-        else
+        if [[ "${{ inputs.registry-user }}" != "" ]]; then
           echo username="${{ inputs.registry-user }}">> $GITHUB_OUTPUT
           echo apikey="${{ inputs.registry-api-key }}">> $GITHUB_OUTPUT
+        else
+          echo "Found default environment variable REGISTRY_USER: using REGISTRY_USER/REGISTRY_API_KEY"
+          echo username="$REGISTRY_USER">> $GITHUB_OUTPUT
+          echo apikey="$REGISTRY_API_KEY">> $GITHUB_OUTPUT
         fi
 
+# NOTE: If no image or credentials are specified as either imputs or environment variables,
+# this step will attempt to pull the image 'icr.io/mettleci/mcix:latest' without credentials, which is guaranteed to fail authentication.
     - name: Run Entrypoint in Variable Base Image
       shell: bash
       env: 
+        REG: ${{ steps.image.outputs.registry }}
         REG_USR: ${{ steps.private_registry.outputs.username }}
         REG_APIKEY: ${{ steps.private_registry.outputs.apikey }}
       run: |
+        if [[ "$REG_USR" != "" && "$REG_APIKEY" != "" ]]; then
+          echo "$REG_APIKEY" | docker --log-level debug login $REG --username "$REG_USR" --password-stdin
+        fi
+
         #1. If credentials have been specified, the assumption is that the container registry is private and authentication is required
         if [[ "$REG_USR" != "" && "$REG_APIKEY" != "" ]]; then
-          echo "$REG_APIKEY" | docker --log-level debug login ${{ steps.image.outputs.registry }} --username "$REG_USR" --password-stdin
+          echo "$REG_APIKEY" | docker --log-level debug login $REG --username "$REG_USR" --password-stdin
         fi
 
         # 2. Pull the specified variable image
