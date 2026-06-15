@@ -166,6 +166,11 @@ jobs:
           api-key: <required>
           url: <required>
           user: <required>
+          # container-registry: <optional>
+          # image-name: <optional>
+          # image-tag: <optional>
+          # registry-user: <optional>
+          # registry-api-key: <optional>
           # report: reports/compile-report.xml
           # project: <optional>
           # project-id: <optional>
@@ -185,6 +190,11 @@ jobs:
 
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
+| `container-registry` | ❌ |  | The path of the container registry, eg "icr.io" |
+| `image-name` | ❌ |  | The namespace and name of the MCIX container image providing this task |
+| `image-tag` | ❌ |  | The tag of the MCIX container image providing this task |
+| `registry-user` | ❌ |  | Username for sourcing the image from a private container registry |
+| `registry-api-key` | ❌ |  | API Key for sourcing the image from a private container registry |
 | `api-key` | ✅ |  | API key for authentication |
 | `url` | ✅ |  | URL of the DataStage server |
 | `user` | ✅ |  | Username for authentication |
@@ -206,8 +216,7 @@ jobs:
 
 ## 🧱 Implementation details
 
-- `runs.using`: `docker`
-- `runs.image`: `Dockerfile`
+- `runs.using`: `composite`
 
 ---
 
