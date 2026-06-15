@@ -130,6 +130,12 @@ echo "$@"
 # Generate outputs
 # -------------------
 {
+  printf 'container-registry=%s\n' "$PARAM_CONTAINER_REGISTRY"
+  printf 'image-name=%s\n' "$PARAM_IMAGE_NAME"
+  printf 'image-ntag=%s\n' "$PARAM_IMAGE_TAG"
+  printf 'registry-user=%s\n' "$PARAM_REGISTRY_USER"
+  printf 'registry-api-key=%s\n' "$PARAM_REGISTRY_API_KEY"
+
   # Shared (import + compile)
   printf 'api_key=%s\n' "$PARAM_API_KEY"
   printf 'url=%s\n' "$PARAM_URL"

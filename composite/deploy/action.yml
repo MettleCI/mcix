@@ -27,6 +27,28 @@ branding:
   color: "blue"
 
 inputs:
+  container-registry:
+    description: 'The path of the container registry, eg "icr.io"'
+    required: false
+    default: ''
+  image-name:
+    description: 'The namespace and name of the MCIX container image providing this task'
+    required: false
+    default: ''
+  image-tag:
+    description: 'The tag of the MCIX container image providing this task'
+    required: false
+    default: ''
+  registry-user:
+    description: 'Username for sourcing the image from a private container registry'
+    required: false
+    default: ''
+  registry-api-key:
+    description: 'API Key for sourcing the image from a private container registry'
+    required: false
+    default: ''
+
+
   # Shared (import + compile)
   api-key:
     description: "API key for authentication"
@@ -121,6 +143,13 @@ runs:
       run: |
         "${{ github.action_path }}/entrypoint.sh"
       env:
+        PARAM_CONTAINER_REGISTRY: ${{ inputs.container-registry }}
+        PARAM_IMAGE_NAME: ${{ inputs.image-name }}
+        PARAM_IMAGE_TAG: ${{ inputs.image-tag }}
+        PARAM_REGISTRY_USER: ${{ inputs.registry-user }}
+        PARAM_REGISTRY_API_KEY: ${{ inputs.registry-api-key }}
+
+
         # Overlay Apply parameters
         PARAM_ASSETS: ${{ inputs.assets }}
         PARAM_OVERLAYS: ${{ inputs.overlays }}
@@ -147,6 +176,11 @@ runs:
       id: overlay
       uses: mettleci/mcix/overlay/apply@latest
       with:
+        container-registry: ${{ steps.prep.container-registry }}
+        image-name: ${{ steps.prep.image-name }}
+        image-tag: ${{ steps.prep.image-tag }}
+        registry-user: ${{ steps.prep.registry-user }}
+        registry-api-key: ${{ steps.prep.registry-api-key }}
         assets: ${{ steps.prep.outputs.assets }}
         overlays: ${{ steps.prep.outputs.overlays }}
         output: ${{ steps.prep.outputs.overlay_output }}
@@ -157,6 +191,11 @@ runs:
       id: import
       uses: mettleci/mcix/datastage/import@latest
       with:
+        container-registry: ${{ steps.prep.container-registry }}
+        image-name: ${{ steps.prep.image-name }}
+        image-tag: ${{ steps.prep.image-tag }}
+        registry-user: ${{ steps.prep.registry-user }}
+        registry-api-key: ${{ steps.prep.registry-api-key }}
         api-key: ${{ steps.prep.outputs.api_key }}
         url: ${{ steps.prep.outputs.url }}
         user: ${{ steps.prep.outputs.user }}
@@ -170,6 +209,11 @@ runs:
       id: compile
       uses: mettleci/mcix/datastage/compile@latest
       with:
+        container-registry: ${{ steps.prep.container-registry }}
+        image-name: ${{ steps.prep.image-name }}
+        image-tag: ${{ steps.prep.image-tag }}
+        registry-user: ${{ steps.prep.registry-user }}
+        registry-api-key: ${{ steps.prep.registry-api-key }}
         api-key: ${{ steps.prep.outputs.api_key }}
         url: ${{ steps.prep.outputs.url }}
         user: ${{ steps.prep.outputs.user }}
