@@ -94,6 +94,8 @@ runs:
           TAG="${IMAGE_TAG:-latest}"
         fi
 
+        echo "Selected container image: $REG/$IMG:$TAG"
+
         echo registry="$REG">> $GITHUB_OUTPUT
         echo full_path="$REG/$IMG:$TAG">> $GITHUB_OUTPUT
 
@@ -108,7 +110,6 @@ runs:
           echo username="${{ inputs.registry-user }}">> $GITHUB_OUTPUT
           echo apikey="${{ inputs.registry-api-key }}">> $GITHUB_OUTPUT
         else
-          echo "Found default environment variable REGISTRY_USER: using REGISTRY_USER/REGISTRY_API_KEY"
           echo username="$REGISTRY_USER">> $GITHUB_OUTPUT
           echo apikey="$REGISTRY_API_KEY">> $GITHUB_OUTPUT
         fi
@@ -124,6 +125,7 @@ runs:
       run: |
         #1. If credentials have been specified, the assumption is that the container registry is private and authentication is required
         if [[ "$REG_USR" != "" && "$REG_APIKEY" != "" ]]; then
+          echo "Credentials have been specified. Attempting to log into a private or managed registry."
           echo "$REG_APIKEY" | docker --log-level debug login $REG --username "$REG_USR" --password-stdin
         fi
 
