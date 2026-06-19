@@ -35,11 +35,6 @@ jobs:
         id: system-version
         uses: ${{ github.repository }}/system/version@v1
         with:
-          # container-registry: <optional>
-          # image-name: <optional>
-          # image-tag: <optional>
-          # registry-user: <optional>
-          # registry-api-key: <optional>
           # additional-args: <optional>
 ```
 
@@ -49,11 +44,6 @@ jobs:
 
 | Name | Required | Default | Description |
 | --- | --- | --- | --- |
-| `container-registry` | ❌ |  | The path of the container registry, eg "icr.io" |
-| `image-name` | ❌ |  | The namespace and name of the MCIX container image providing this task |
-| `image-tag` | ❌ |  | The tag of the MCIX container image providing this task |
-| `registry-user` | ❌ |  | Username for sourcing the image from a private container registry |
-| `registry-api-key` | ❌ |  | API Key for sourcing the image from a private container registry |
 | `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
@@ -68,7 +58,8 @@ jobs:
 
 ## 🧱 Implementation details
 
-- `runs.using`: `composite`
+- `runs.using`: `docker`
+- `runs.image`: `Dockerfile`
 
 ---
 
