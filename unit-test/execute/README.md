@@ -86,7 +86,7 @@ jobs:
           # ignore-test-failures: false
           # max-concurrency: 8
           # test-suite: mcix tests
-          # run-all: True
+          # run-all: true
           # additional-args: <optional>
 ```
 
@@ -112,7 +112,7 @@ jobs:
 | `ignore-test-failures` | ❌ | false (if omitted) | Ignore test failures (always return 0)? (true/false) |
 | `max-concurrency` | ❌ | 8 | Maximum number of concurrently executing test case jobs to run |
 | `test-suite` | ❌ | mcix tests | The test suite name for this invocation of unit testing |
-| `run-all` | ❌ | True | Skips incremental behavior and runs all unit tests (true/false) |
+| `run-all` | ❌ | true | Skips incremental behavior and runs all unit tests (true/false) |
 | `additional-args` | ❌ |  | Additional raw arguments to append to the mcix command |
 
 ---
