@@ -73,7 +73,7 @@ inputs:
   run-all:
     description: 'Skips incremental behavior and runs all unit tests (true/false)'
     required: false
-    default: true        # Optional boolean input; if not provided, defaults to true
+    default: 'true'        # Optional boolean input; if not provided, defaults to true
   additional-args:
     description: 'Additional raw arguments to append to the mcix command'
     required: false

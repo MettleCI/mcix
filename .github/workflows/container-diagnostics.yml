@@ -29,13 +29,6 @@ permissions:
   contents: read
   checks: write
 
-env:
-  CONTAINER_REGISTRY: ${{ vars.CONTAINER_REGISTRY }}
-  IMAGE_NAME: ${{ vars.CONTAINER_IMAGE_NAME }}
-  IMAGE_TAG: ${{ vars.CONTAINER_IMAGE_TAG }}
-  REGISTRY_USER: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
-  REGISTRY_API_KEY: ${{ secrets.CONTAINER_REGISTRY_APIKEY }}
-
 # This setting allows a subsequently queued workflow run to interrupt previous runs.
 # Useful if you forget to commit a dependent asset - just commit the new asset and
 # any pipelines in-progress will be stopped and a new pipeline initiated.
@@ -55,7 +48,6 @@ jobs:
   # the workflow is running within an environment with the expected resources and configuration.
   Diagnostics:
     name: Diagnostics
-    #runs-on: [self-hosted, Windows, dev-runner, MettleCI, CP4D]
     runs-on: ubuntu-latest
     steps:
       # Call system version action
