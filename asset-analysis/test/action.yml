@@ -116,4 +116,10 @@ runs:
   #   PARAM_REPORT: ${{ inputs.report }}
   #   PARAM_PROJECT: ${{ inputs.project }}
   #   PARAM_PROJECT_ID: ${{ inputs.project-id }}
+  #   PARAM_PATH: ${{ inputs.path }}
+  #   PARAM_RULES: ${{ inputs.rules }}
+  #   PARAM_INCLUDE_TAGS: ${{ inputs.include-tags }}
+  #   PARAM_EXCLUDE_TAGS: ${{ inputs.exclude-tags }}
+  #   PARAM_TEST_SUITE: ${{ inputs.test-suite }}
+  #   PARAM_IGNORE_TEST_FAILURES: ${{ inputs.ignore-test-failures }}
   #   PARAM_ADDITIONAL_ARGS: ${{ inputs.additional-args }}
