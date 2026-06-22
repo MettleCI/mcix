@@ -70,8 +70,9 @@ OVERLAYS_NL="${PARAM_OVERLAYS//,/$'\n'}"
 while IFS= read -r line; do
   trimmed="$(printf '%s' "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
   resolved="$(resolve_workspace_path "$trimmed")"
-  [ -z "$trimmed" ] && continue
-  set -- "$@" -overlay "$resolved"
+  [ -z "$resolved" ] && continue
+  result="${resolved//$PARAM_EXT_WS/$GITHUB_WORKSPACE}"
+  set -- "$@" -overlay "$result"
 done <<EOF
 ${OVERLAYS_NL}
 EOF

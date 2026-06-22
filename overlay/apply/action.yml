@@ -66,3 +66,4 @@ runs:
     PARAM_OVERLAYS: ${{ inputs.overlays }}
     PARAM_PROPERTIES: ${{ inputs.properties }}
     PARAM_ADDITIONAL_ARGS: ${{ inputs.additional-args }}
+    PARAM_EXT_WS: ${{ github.workspace }}
