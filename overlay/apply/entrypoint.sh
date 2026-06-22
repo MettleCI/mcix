@@ -45,7 +45,7 @@ MCIX_STATUS=0
 MCIX_LOGGED_ERROR_ID=""
 
 # Recreate the default workspace for the runner that GitHub runs Docker inside of
-EXT_WS = "/home/runner/work/$GITHUB_REPOSITORY/$GITHUB_REPOSITORY"
+EXT_WS="/home/runner/work/$GITHUB_REPOSITORY/$GITHUB_REPOSITORY"
 
 # -------------------
 # Validate parameters
