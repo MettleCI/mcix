@@ -46,7 +46,9 @@ MCIX_LOGGED_ERROR_ID=""
 
 # Recreate the default workspace for the runner that GitHub runs Docker inside of
 EXT_WS="/home/runner/work/${GITHUB_REPOSITORY#*/}/${GITHUB_REPOSITORY#*/}"
-echo "External workspace: $EXT_WS"
+echo "External workspace constructed: $EXT_WS"
+
+echo "Passed in external workspace using GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
 
 PARAM_OVERLAYS="$1"
 echo "PARAM_OVERLAYS = $PARAM_OVERLAYS"
