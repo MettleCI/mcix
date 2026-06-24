@@ -61,11 +61,9 @@ runs:
   using: docker
   image: Dockerfile
   args: 
-    - ${{ inputs.overlays }}
   env:
     PARAM_ASSETS: ${{ inputs.assets }}
     PARAM_OUTPUT: ${{ inputs.output }}
-#    PARAM_OVERLAYS: ${{ inputs.overlays }}
+    PARAM_OVERLAYS: ${{ inputs.overlays }}
     PARAM_PROPERTIES: ${{ inputs.properties }}
     PARAM_ADDITIONAL_ARGS: ${{ inputs.additional-args }}
-    PARAM_WS_EXT: $GITHUB_WORKSPACE
