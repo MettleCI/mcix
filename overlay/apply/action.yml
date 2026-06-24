@@ -60,7 +60,6 @@ outputs:
 runs:
   using: docker
   image: Dockerfile
-  args: 
   env:
     PARAM_ASSETS: ${{ inputs.assets }}
     PARAM_OUTPUT: ${{ inputs.output }}
